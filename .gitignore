@@ -1,0 +1,11 @@
+# code editor settings 
+.vscode
+
+# environment variables
+.env
+
+# dependencies
+node_modules
+
+# next build folder
+.next

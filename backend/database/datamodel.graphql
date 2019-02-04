@@ -1,0 +1,19 @@
+type User {
+  id: ID! @unique
+  googleID: String! @unique
+  email: String! @unique
+  name: String!
+  image: String!
+  role: Role!
+  createdAt: DateTime!
+}
+
+type Video {
+  id: ID! @unique
+  title: String!
+}
+
+enum Role {
+  USER
+  ADMIN
+}

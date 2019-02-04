@@ -1,0 +1,33 @@
+{
+  "name": "youtube-clone-backend",
+  "version": "1.0.0",
+  "description": "A clone of YouTube",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon -e js,graphql -x node --inspect src/index.js"
+  },
+  "keywords": [],
+  "author": "benjaminadk",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^5.2.0"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.3.3",
+    "aws-sdk": "^2.395.0",
+    "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "googleapis": "^27.0.0",
+    "graphql": "^14.1.1",
+    "graphql-import": "^0.7.1",
+    "jsonwebtoken": "^8.4.0",
+    "md5": "^2.2.1",
+    "nodemon": "^1.18.9",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
+    "prisma-client-lib": "^1.25.4"
+  }
+}
