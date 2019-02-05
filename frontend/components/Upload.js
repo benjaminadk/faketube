@@ -3,10 +3,10 @@ import { lighten, darken } from 'polished'
 import Link from 'next/link'
 import { Close } from 'styled-icons/material/Close'
 import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
-import { Help } from 'styled-icons/material/Help'
 import axios from 'axios'
 import formatFilename from '../lib/formatFilename'
 import InitialScreen from './Upload/InitialScreen'
+import Thumbnails from './Upload/Thumbnails'
 
 const source = axios.CancelToken.source()
 
@@ -24,6 +24,7 @@ const Container = styled.div`
   display: grid;
   justify-items: center;
   background: ${props => props.theme.grey[0]};
+  margin-bottom: 5rem;
   input[type='file'] {
     display: none;
   }
@@ -44,7 +45,7 @@ const VideoScreen = styled.div`
       grid-template-columns: 5fr 1fr;
       grid-gap: 1rem;
       border-bottom: 1px solid ${props => props.theme.grey[5]};
-      .left {
+      .progress-left {
         display: grid;
         grid-template-rows: 3rem auto 1fr;
         .message {
@@ -71,7 +72,7 @@ const VideoScreen = styled.div`
           display: flex;
         }
       }
-      .right {
+      .progress-right {
         display: grid;
         grid-template-rows: 3rem 1fr;
         span {
@@ -243,24 +244,8 @@ const BasicInfo = styled.div`
       }
     }
     .right {
+      height: 55rem;
     }
-  }
-`
-
-const Thumbnails = styled.div`
-  display: grid;
-  grid-template-rows: 2.5rem 1fr;
-  grid-gap: 1rem;
-  & > :first-child {
-    font-size: 1.1rem;
-    text-transform: uppercase;
-    svg {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-  }
-  & > :last-child {
-    display: grid;
   }
 `
 
@@ -271,8 +256,10 @@ class Upload extends React.Component {
     time: 0,
     remaining: null,
     canceled: false,
-    showThumbnails: false,
-    fileURL: '',
+    showThumbnails: true,
+    thumbnail: null,
+    fileURL:
+      'https://s3-us-west-1.amazonaws.com/faketube/user/cjrl9gxfwi93h0a22yr0pjebd/videos/elephants-dream.webm',
     tab: 0,
     title: '',
     description: '',
@@ -356,6 +343,11 @@ class Upload extends React.Component {
     this.setState({ [name]: value })
   }
 
+  onThumbnailClick = thumbnail => {
+    if (!this.state.showThumbnails) return
+    this.setState({ thumbnail })
+  }
+
   getThumbnailSrc = x =>
     this.state.fileURL.replace(/\.\w+$/, `-${x}.jpg`).replace('/videos/', '/thumbnails/')
 
@@ -366,6 +358,7 @@ class Upload extends React.Component {
         remaining,
         canceled,
         showThumbnails,
+        thumbnail,
         fileURL,
         tab,
         title,
@@ -389,7 +382,7 @@ class Upload extends React.Component {
                 <Spinner />
               </Thumbnail>
               <div className="progress">
-                <div className="left">
+                <div className="progress-left">
                   <ProgressBar progress={progress}>
                     <ProgressFill progress={progress} />
                     <div className="bar-left">
@@ -426,7 +419,7 @@ class Upload extends React.Component {
                     </Tab>
                   </div>
                 </div>
-                <div className="right">
+                <div className="progress-right">
                   <PublishButton>Publish</PublishButton>
                   <span>Draft saved.</span>
                 </div>
@@ -482,23 +475,12 @@ class Upload extends React.Component {
                         <fieldset className="right">right</fieldset>
                       </div>
                     </form>
-                    <Thumbnails>
-                      <div>
-                        <span>Video Thumbnails</span>
-                        <Help />
-                      </div>
-                      <div>
-                        <div className="thumbnails">
-                          <div className="thumbnail" />
-                          <div className="thumbnail" />
-                          <div className="thumbnail" />
-                        </div>
-                        <div className="uploader">
-                          <button>Custom thumbnail</button>
-                          <span>Maximum file size is 2 MB.</span>
-                        </div>
-                      </div>
-                    </Thumbnails>
+                    <Thumbnails
+                      thumbnail={thumbnail}
+                      showThumbnails={showThumbnails}
+                      getThumbnailSrc={this.getThumbnailSrc}
+                      onThumbnailClick={this.onThumbnailClick}
+                    />
                   </BasicInfo>
                 ) : tab === 1 ? (
                   <div>1</div>
@@ -515,13 +497,3 @@ class Upload extends React.Component {
 }
 
 export default Upload
-
-// {
-//   showThumbnails && (
-//     <React.Fragment>
-//       <img src={this.getThumbnailSrc(1)} />
-//       <img src={this.getThumbnailSrc(2)} />
-//       <img src={this.getThumbnailSrc(3)} />
-//     </React.Fragment>
-//   )
-// }
