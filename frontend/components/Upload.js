@@ -1,11 +1,14 @@
 import styled, { keyframes } from 'styled-components'
 import { lighten, darken } from 'polished'
-import Link from 'next/link'
-import { Close } from 'styled-icons/material/Close'
 import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
 import axios from 'axios'
 import formatFilename from '../lib/formatFilename'
 import InitialScreen from './Upload/InitialScreen'
+import ProgressBar from './Upload/ProgressBar'
+import ProgressMsg from './Upload/ProgressMsg'
+import TabBar from './Upload/TabBar'
+import UploadStatus from './Upload/UploadStatus'
+import BasicForm from './Upload/BasicForm'
 import Thumbnails from './Upload/Thumbnails'
 
 const source = axios.CancelToken.source()
@@ -20,10 +23,9 @@ const spin = keyframes`
 `
 
 const Container = styled.div`
-  /* height: calc(100vh - 5.5rem); */
+  height: calc(100% - 5.5rem);
   display: grid;
   justify-items: center;
-  background: ${props => props.theme.grey[0]};
   margin-bottom: 5rem;
   input[type='file'] {
     display: none;
@@ -48,29 +50,6 @@ const VideoScreen = styled.div`
       .progress-left {
         display: grid;
         grid-template-rows: 3rem auto 1fr;
-        .message {
-          display: flex;
-          align-items: center;
-          margin-top: 0.5rem;
-          & > :first-child {
-            display: block;
-            width: 2rem;
-            height: 2rem;
-            text-align: center;
-            font-size: 2.5rem;
-            background: ${props => darken(0.2, props.theme.secondary)};
-            color: ${props => props.theme.white};
-            border-radius: 3px;
-            margin-right: 1rem;
-          }
-          & > :last-child {
-            font-size: 1.3rem;
-          }
-        }
-        .tabs {
-          align-self: flex-end;
-          display: flex;
-        }
       }
       .progress-right {
         display: grid;
@@ -89,29 +68,6 @@ const VideoScreen = styled.div`
     grid-template-columns: 20rem 1fr;
     grid-gap: 1.5rem;
     margin-top: 1.5rem;
-    .upload-status {
-      display: flex;
-      flex-direction: column;
-      & > :nth-child(1) {
-        font-family: 'Roboto Bold';
-        font-size: 1.3rem;
-        color: ${props => props.theme.grey[12]};
-        margin-bottom: 0.5rem;
-      }
-      & > :nth-child(2) {
-        font-size: 1.1rem;
-        color: ${props => props.theme.grey[10]};
-        margin-bottom: 0.75rem;
-      }
-      & > :nth-child(3) {
-        font-size: 1.1rem;
-        color: ${props => props.theme.grey[10]};
-      }
-      & > :nth-child(4) {
-        font-size: 1.1rem;
-        color: ${props => darken(0.2, props.theme.secondary)};
-      }
-    }
   }
 `
 
@@ -132,58 +88,6 @@ const Thumbnail = styled.div`
   }
 `
 
-const ProgressBar = styled.div`
-  position: relative;
-  height: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: ${props =>
-    props.progress === 100 ? lighten(0.3, props.theme.secondary) : props.theme.white};
-  border: ${props =>
-    props.progress === 100 ? `1px solid transparent` : `1px solid ${props.theme.grey[2]}`};
-  border-right: ${props =>
-    props.progress === 100
-      ? `3px solid ${darken(0.2, props.theme.secondary)}`
-      : `1px solid ${props.theme.grey[2]}`};
-  font-family: 'Roboto Bold';
-  font-size: 1.1rem;
-  .bar-left {
-    z-index: 1;
-    text-transform: uppercase;
-    margin-left: 1rem;
-  }
-  .bar-right {
-    z-index: 1;
-    margin-right: 1rem;
-    & > :first-child {
-      margin-right: 1rem;
-    }
-    svg {
-      width: 1.25rem;
-      height: 1.25rem;
-      color: ${props => props.theme.grey[5]};
-      cursor: pointer;
-    }
-  }
-`
-
-const ProgressFill = styled.div.attrs(props => ({
-  style: {
-    width: props.progress === 100 ? `0%` : `${props.progress}%`
-  }
-}))`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 3rem;
-  background-color: transparent;
-  background-image: url('https://s3-us-west-1.amazonaws.com/faketube/assets/upload-bar-pattern.png');
-  background-origin: padding-box;
-  background-position: 0% 0%;
-  border: 1px solid ${props => lighten(0.3, props.theme.secondary)};
-`
-
 const PublishButton = styled.button`
   width: 12rem;
   height: 3rem;
@@ -196,70 +100,23 @@ const PublishButton = styled.button`
   cursor: pointer;
 `
 
-const Tab = styled.div`
-  font-family: 'Roboto Bold';
-  font-size: 1.1rem;
-  padding: 0 1rem 2rem 1rem;
-  margin-right: 2rem;
-  cursor: pointer;
-  border-bottom: 4px solid
-    ${props => (props.index === props.tab ? props.theme.primary : 'transparent')};
-  &:hover {
-    border-bottom: 4px solid ${props => props.theme.primary};
-  }
-`
-
 const BasicInfo = styled.div`
   display: grid;
   grid-template-rows: 1fr 10rem;
-  .top {
-    display: grid;
-    grid-template-columns: 45rem 1fr;
-    fieldset {
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
-    .left {
-      & > :first-child,
-      textarea {
-        width: 100%;
-        font-family: 'Roboto';
-        font-size: 1.3rem;
-        padding: 0.5rem 1rem;
-        margin-bottom: 1.5rem;
-        border: 1px solid ${props => props.theme.grey[5]};
-      }
-      .tags-wrapper {
-        width: 100%;
-        padding: 1rem 1rem;
-        border: 1px solid ${props => props.theme.grey[5]};
-        input {
-          width: inherit;
-          border: 0;
-          outline: 0;
-          font-family: 'Roboto';
-          font-size: 1.3rem;
-        }
-      }
-    }
-    .right {
-      height: 55rem;
-    }
-  }
 `
 
 class Upload extends React.Component {
   state = {
-    progress: 10,
+    progress: 0,
     progressDisplay: 0,
     time: 0,
     remaining: null,
     canceled: false,
     showThumbnails: true,
     thumbnail: null,
-    fileURL:
-      'https://s3-us-west-1.amazonaws.com/faketube/user/cjrl9gxfwi93h0a22yr0pjebd/videos/elephants-dream.webm',
+    imageFilename: '',
+    imageURL: '',
+    videoURL: ' ',
     tab: 0,
     title: '',
     description: '',
@@ -267,7 +124,8 @@ class Upload extends React.Component {
     tag: ''
   }
 
-  file = React.createRef()
+  videoInput = React.createRef()
+  imageInput = React.createRef()
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.progress && this.state.progress) {
@@ -292,9 +150,9 @@ class Upload extends React.Component {
     }
   }
 
-  onFileClick = () => this.file.current.click()
+  onVideoInputClick = () => this.videoInput.current.click()
 
-  onFileChange = async (e, signS3) => {
+  onVideoInputChange = async (e, signS3) => {
     e.persist()
     const file = e.target.files[0]
     const filename = formatFilename('user', this.props.user.id, 'videos', file.name)
@@ -306,7 +164,6 @@ class Upload extends React.Component {
     if (!success1) {
       return // handle error
     }
-    this.setState({ fileURL })
     await axios({
       method: 'PUT',
       url: requestURL,
@@ -326,6 +183,7 @@ class Upload extends React.Component {
         // handle error
       }
     })
+    this.setState({ videoURL: fileURL })
   }
 
   onCancelClick = () => {
@@ -349,7 +207,38 @@ class Upload extends React.Component {
   }
 
   getThumbnailSrc = x =>
-    this.state.fileURL.replace(/\.\w+$/, `-${x}.jpg`).replace('/videos/', '/thumbnails/')
+    this.state.videoURL.replace(/\.\w+$/, `-${x}.jpg`).replace('/videos/', '/thumbnails/')
+
+  onImageInputClick = () => this.imageInput.current.click()
+
+  onImageInputChange = async (e, signS3) => {
+    const file = e.target.files[0]
+    if (!file) return
+    const filename = formatFilename('user', this.props.user.id, 'thumbnails', file.name)
+    const filetype = file.type
+    await this.setState({ imageFilename: file.name })
+    const res = await signS3({
+      variables: { filename, filetype }
+    })
+    const { success, requestURL, fileURL } = res.data.signS3
+    if (!success) {
+      return // handle error
+    }
+    await axios({
+      method: 'PUT',
+      url: requestURL,
+      headers: {
+        'Content-Type': filetype
+      },
+      onUploadProgress: p => {
+        const progress = Math.round((p.loaded * 100) / p.total)
+        if (progress === 100) {
+          this.setState({ imageURL: fileURL })
+        }
+      },
+      data: file
+    })
+  }
 
   render() {
     const {
@@ -359,7 +248,9 @@ class Upload extends React.Component {
         canceled,
         showThumbnails,
         thumbnail,
-        fileURL,
+        imageURL,
+        imageFilename,
+        videoURL,
         tab,
         title,
         description,
@@ -371,53 +262,30 @@ class Upload extends React.Component {
       <Container>
         {progress === 0 ? (
           <InitialScreen
-            inputRef={this.file}
-            onFileChange={this.onFileChange}
-            onFileClick={this.onFileClick}
+            inputRef={this.videoInput}
+            onChange={this.onVideoInputChange}
+            onClick={this.onVideoInputClick}
           />
         ) : (
           <VideoScreen>
             <div className="top">
-              <Thumbnail show={showThumbnails} url={fileURL}>
+              <Thumbnail show={showThumbnails} url={imageURL ? imageURL : videoURL}>
                 <Spinner />
               </Thumbnail>
               <div className="progress">
                 <div className="progress-left">
-                  <ProgressBar progress={progress}>
-                    <ProgressFill progress={progress} />
-                    <div className="bar-left">
-                      {progress === 100 && showThumbnails
-                        ? 'Processing Done'
-                        : progress === 100 && !showThumbnails
-                        ? 'Processing...'
-                        : `Uploading ${progress}%`}
-                    </div>
-                    <div className="bar-right">
-                      <span>{remaining ? `About ${remaining} remaining.` : ''}</span>
-                      <span>{remaining ? <Close onClick={this.onCancelClick} /> : ''}</span>
-                    </div>
-                  </ProgressBar>
-                  <div className="message">
-                    <span>*</span>
-                    <span>
-                      {canceled
-                        ? 'Upload canceled.'
-                        : progress === 100 && showThumbnails
-                        ? `Click "Publish" to make your video live.`
-                        : `Your video is still uploading. Please keep this page open until it's done`}
-                    </span>
-                  </div>
-                  <div className="tabs">
-                    <Tab index={0} tab={tab} onClick={() => this.onTabClick(0)}>
-                      Basic info
-                    </Tab>
-                    <Tab index={1} tab={tab} onClick={() => this.onTabClick(1)}>
-                      Translations
-                    </Tab>
-                    <Tab index={2} tab={tab} onClick={() => this.onTabClick(2)}>
-                      Advanced settings
-                    </Tab>
-                  </div>
+                  <ProgressBar
+                    progress={progress}
+                    showThumbnails={showThumbnails}
+                    remaining={remaining}
+                    onCancelClick={this.onCancelClick}
+                  />
+                  <ProgressMsg
+                    progress={progress}
+                    showThumbnails={showThumbnails}
+                    canceled={canceled}
+                  />
+                  <TabBar tab={tab} onTabClick={this.onTabClick} />
                 </div>
                 <div className="progress-right">
                   <PublishButton>Publish</PublishButton>
@@ -426,60 +294,31 @@ class Upload extends React.Component {
               </div>
             </div>
             <div className="bottom">
-              <div className="upload-status">
-                <span>Upload status:</span>
-                <span>
-                  {canceled
-                    ? 'Upload canceled.'
-                    : progress === 100 && showThumbnails
-                    ? 'Upload complete!'
-                    : 'Uploading your video...'}
-                </span>
-                <span>Your video will be live at:</span>
-                <Link href={{ pathname: '/videos', query: { id: '12345' } }}>
-                  <a>http://faketube.com/video</a>
-                </Link>
-              </div>
+              <UploadStatus
+                progress={progress}
+                showThumbnails={showThumbnails}
+                canceled={canceled}
+              />
               <div className="right">
                 {tab === 0 ? (
                   <BasicInfo>
-                    <form>
-                      <div className="top">
-                        <fieldset className="left">
-                          <input
-                            type="text"
-                            name="title"
-                            placeholder="Title"
-                            value={title}
-                            onChange={this.onChange}
-                          />
-                          <textarea
-                            name="description"
-                            placeholder="Description"
-                            value={description}
-                            onChange={this.onChange}
-                            rows={5}
-                          />
-                          <div className="tags-wrapper">
-                            <input
-                              type="text"
-                              name="tag"
-                              placeholder={
-                                tags.length ? '' : 'Tags (e.g. albert einstein, flying pig, mashup)'
-                              }
-                              value={tag}
-                              onChange={this.onChange}
-                            />
-                          </div>
-                        </fieldset>
-                        <fieldset className="right">right</fieldset>
-                      </div>
-                    </form>
+                    <BasicForm
+                      title={title}
+                      description={description}
+                      tag={tag}
+                      tags={tags}
+                      onChange={this.onChange}
+                    />
                     <Thumbnails
+                      inputRef={this.imageInput}
+                      imageURL={imageURL}
+                      imageFilename={imageFilename}
                       thumbnail={thumbnail}
                       showThumbnails={showThumbnails}
                       getThumbnailSrc={this.getThumbnailSrc}
                       onThumbnailClick={this.onThumbnailClick}
+                      onImageInputClick={this.onImageInputClick}
+                      onImageInputChange={this.onImageInputChange}
                     />
                   </BasicInfo>
                 ) : tab === 1 ? (

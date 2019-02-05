@@ -4,7 +4,7 @@ import { SIGN_S3_MUTATION } from '../../apollo/signS3'
 
 const Container = styled.div`
   width: 66%;
-  height: 66%;
+  height: 90%;
   display: grid;
   grid-template-columns: 3fr 1fr;
   grid-gap: 1rem;
@@ -60,11 +60,11 @@ const Logo = styled.div`
   }
 `
 
-const InitialScreen = ({ inputRef, onFileChange, onFileClick }) => (
+const InitialScreen = ({ inputRef, onChange, onClick }) => (
   <Container>
     <div className="left">
       <div className="dropzone">
-        <Logo onClick={onFileClick} />
+        <Logo onClick={onClick} />
         <p className="heading">Select files to upload</p>
         <p className="subheading">Or drag and drop video files</p>
         <Mutation mutation={SIGN_S3_MUTATION}>
@@ -74,7 +74,7 @@ const InitialScreen = ({ inputRef, onFileChange, onFileClick }) => (
               type="file"
               accept="video/*"
               multiple={false}
-              onChange={e => onFileChange(e, signS3)}
+              onChange={e => onChange(e, signS3)}
             />
           )}
         </Mutation>

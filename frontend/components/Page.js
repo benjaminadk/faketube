@@ -12,7 +12,10 @@ const StyledPage = styled.div`
 `
 
 const Inner = styled.div`
+  height: calc(100vh - 5.5rem);
+  overflow: auto;
   margin: 0 auto;
+  background: ${props => props.theme.grey[0]};
 `
 
 const GlobalStyle = createGlobalStyle`

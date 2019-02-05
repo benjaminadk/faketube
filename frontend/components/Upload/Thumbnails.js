@@ -1,13 +1,22 @@
 import styled from 'styled-components'
+import { Mutation } from 'react-apollo'
 import { darken } from 'polished'
 import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
 import { Help } from 'styled-icons/material/Help'
 import { spin } from '../styles/animations'
+import { SIGN_S3_MUTATION } from '../../apollo/signS3'
+
+function cleanFilename(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/\s/g, '-')
+}
 
 const Container = styled.div`
   display: grid;
   grid-template-rows: 2.5rem 1fr;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
   & > :first-child {
     span {
       font-family: 'Roboto Bold';
@@ -33,28 +42,6 @@ const Container = styled.div`
       grid-gap: 1rem;
       margin-right: 1rem;
     }
-    .uploader {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-left: 1px solid ${props => props.theme.grey[5]};
-      padding-left: 1rem;
-      margin-bottom: 2rem;
-      button {
-        width: 12rem;
-        height: 2.5rem;
-        font-family: 'Roboto Bold';
-        font-size: 1.1rem;
-        background: ${props => props.theme.grey[0]};
-        color: ${props => props.theme.grey[14]};
-        border: 1px solid ${props => props.theme.grey[5]};
-        border-radius: 2px;
-      }
-      span {
-        font-size: 1.1rem;
-        color: ${props => props.theme.grey[10]};
-      }
-    }
   }
 `
 
@@ -69,8 +56,15 @@ const Thumbnail = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   outline: 4px solid ${props => (props.selected ? darken(0.1, props.theme.primary) : 'transparent')};
+  cursor: pointer;
+  &:hover .overlay {
+    display: ${props => (!props.show || props.selected ? 'none' : 'grid')};
+  }
+  &:hover .special {
+    display: ${props => (!props.show ? 'none' : 'grid')};
+  }
   .overlay {
-    display: ${props => (!props.show || props.selected ? 'none' : props.hovered ? 'grid' : 'none')};
+    display: none;
     justify-items: center;
     align-items: center;
     width: 100%;
@@ -83,6 +77,9 @@ const Thumbnail = styled.div`
       font-size: 1.1rem;
       color: ${props => props.theme.white};
     }
+    .change:hover {
+      text-decoration: underline;
+    }
   }
   svg {
     display: ${props => (!props.show ? 'block' : 'none')};
@@ -93,7 +90,60 @@ const Thumbnail = styled.div`
   }
 `
 
-const Thumbnails = ({ thumbnail, showThumbnails, getThumbnailSrc, onThumbnailClick }) => (
+const Uploader = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 1px solid ${props => (props.hideBorder ? 'transparent' : props.theme.grey[5])};
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+  button {
+    height: 2.6rem;
+    font-family: 'Roboto Bold';
+    font-size: 1.1rem;
+    background: ${props => props.theme.grey[0]};
+    color: ${props => props.theme.grey[14]};
+    border: 1px solid ${props => props.theme.grey[5]};
+    border-radius: 2px;
+    outline: 0;
+    box-shadow: ${props => props.theme.shadows[1]};
+    cursor: pointer;
+    &:hover {
+      border: 1px solid ${props => props.theme.grey[10]};
+      box-shadow: ${props => props.theme.shadows[2]};
+    }
+  }
+  .upload {
+    width: 12rem;
+  }
+  .cancel {
+    margin-top: 0.25rem;
+  }
+  span {
+    font-size: 1.1rem;
+    color: ${props => props.theme.grey[10]};
+  }
+  svg {
+    width: 2rem;
+    height: 2rem;
+    color: ${props => props.theme.grey[5]};
+    margin-bottom: 0.25rem;
+    animation: ${spin} 1s linear infinite;
+  }
+`
+
+const Thumbnails = ({
+  inputRef,
+  imageURL,
+  imageFilename,
+  thumbnail,
+  showThumbnails,
+  getThumbnailSrc,
+  onThumbnailClick,
+  onImageInputClick,
+  onImageInputChange
+}) => (
   <Container>
     <div>
       <span>Video Thumbnails</span>
@@ -101,42 +151,63 @@ const Thumbnails = ({ thumbnail, showThumbnails, getThumbnailSrc, onThumbnailCli
     </div>
     <div>
       <div className="thumbnails">
-        <Thumbnail
-          index={1}
-          show={showThumbnails}
-          url={getThumbnailSrc(1)}
-          selected={thumbnail === 1}
-          hovered={true}
-          onClick={() => onThumbnailClick(1)}
-        >
-          <Spinner />
-          <div className="overlay">
-            <span>Set as thumbnail</span>
-          </div>
-        </Thumbnail>
-        <Thumbnail
-          index={2}
-          show={showThumbnails}
-          url={getThumbnailSrc(2)}
-          selected={thumbnail === 2}
-          onClick={() => onThumbnailClick(2)}
-        >
-          <Spinner />
-        </Thumbnail>
-        <Thumbnail
-          index={3}
-          show={showThumbnails}
-          url={getThumbnailSrc(3)}
-          selected={thumbnail === 3}
-          onClick={() => onThumbnailClick(3)}
-        >
-          <Spinner />
-        </Thumbnail>
+        {[1, 2, 3].map(i => (
+          <Thumbnail
+            key={i}
+            index={i}
+            show={showThumbnails}
+            url={getThumbnailSrc(i)}
+            selected={thumbnail === i}
+            onClick={() => onThumbnailClick(i)}
+          >
+            <Spinner />
+            <div className="overlay">
+              <span>Set as thumbnail</span>
+            </div>
+          </Thumbnail>
+        ))}
       </div>
-      <div className="uploader">
-        <button>Custom thumbnail</button>
-        <span>Maximum file size is 2 MB.</span>
-      </div>
+      <Mutation mutation={SIGN_S3_MUTATION}>
+        {(signS3, { loading }) => (
+          <Uploader hideBorder={imageURL || loading}>
+            {loading ? (
+              <React.Fragment>
+                <Spinner />
+                <span>{cleanFilename(imageFilename)}</span>
+                <button className="cancel">Cancel</button>
+              </React.Fragment>
+            ) : imageURL ? (
+              <Thumbnail
+                index={4}
+                show={true}
+                url={imageURL}
+                selected={thumbnail === 4}
+                onClick={() => onThumbnailClick(4)}
+              >
+                <div className="overlay special">
+                  <span className="change" onClick={onImageInputClick}>
+                    Change image
+                  </span>
+                </div>
+              </Thumbnail>
+            ) : (
+              <React.Fragment>
+                <button className="upload" onClick={onImageInputClick}>
+                  Custom thumbnail
+                </button>
+                <span>Maximum file size is 2 MB.</span>
+              </React.Fragment>
+            )}
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/png,image/jpeg"
+              multiple={false}
+              onChange={e => onImageInputChange(e, signS3)}
+            />
+          </Uploader>
+        )}
+      </Mutation>
     </div>
   </Container>
 )
