@@ -63,9 +63,6 @@ const Container = styled.div`
         border-right: 0;
         border-top-left-radius: ${props => props.theme.borderRadius};
         border-bottom-left-radius: ${props => props.theme.borderRadius};
-        &:focus {
-          outline-color: ${props => darken(0.2, props.theme.secondary)};
-        }
       }
       button {
         width: 6.5rem;
@@ -142,7 +139,7 @@ class Header extends React.Component {
           </div>
         </div>
         <div className="icon-menu">
-          <div className="icon">
+          <div className="icon" onClick={() => Router.push('/upload')}>
             <Videocam />
           </div>
           <div className="icon">

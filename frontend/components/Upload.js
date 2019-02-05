@@ -1,75 +1,31 @@
-import { Mutation } from 'react-apollo'
-import gql from 'graphql-tag'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { lighten, darken } from 'polished'
+import Link from 'next/link'
 import { Close } from 'styled-icons/material/Close'
+import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
+import { Help } from 'styled-icons/material/Help'
 import axios from 'axios'
 import formatFilename from '../lib/formatFilename'
+import InitialScreen from './Upload/InitialScreen'
 
 const source = axios.CancelToken.source()
 
-const SIGN_S3_MUTATION = gql`
-  mutation SIGN_S3_MUTATION($filename: String!, $filetype: String!) {
-    signS3(filename: $filename, filetype: $filetype) {
-      success
-      requestURL
-      fileURL
-    }
+const spin = keyframes`
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(1turn);
   }
 `
 
 const Container = styled.div`
-  height: calc(100vh - 5.5rem);
+  /* height: calc(100vh - 5.5rem); */
   display: grid;
   justify-items: center;
   background: ${props => props.theme.grey[0]};
   input[type='file'] {
     display: none;
-  }
-`
-
-const InitialScreen = styled.div`
-  width: 66%;
-  height: 66%;
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 1rem;
-  .left {
-    display: grid;
-    grid-template-rows: 4fr 1fr;
-    grid-gap: 1rem;
-    .dropzone {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: ${props => props.theme.white};
-      box-shadow: ${props => props.theme.shadows[1]};
-      .heading {
-        font-size: 2rem;
-        margin: 0;
-        padding-bottom: 1rem;
-        color: ${props => props.theme.grey[14]};
-      }
-      .subheading {
-        color: ${props => props.theme.grey[10]};
-        margin: 0;
-      }
-    }
-    .help {
-      background: ${props => props.theme.white};
-      box-shadow: ${props => props.theme.shadows[1]};
-    }
-  }
-  .right {
-    display: grid;
-    grid-template-rows: 1fr 1fr 1.5fr;
-    grid-gap: 1rem;
-    & > * {
-      background: ${props => props.theme.white};
-      box-shadow: ${props => props.theme.shadows[1]};
-    }
   }
 `
 
@@ -83,17 +39,14 @@ const VideoScreen = styled.div`
     display: grid;
     grid-template-columns: 20rem 1fr;
     grid-gap: 1.5rem;
-    .thumbnail {
-      width: 20rem;
-      height: 11.25rem;
-      background: ${props => props.theme.grey[2]};
-      border: 2px solid ${props => props.theme.grey[5]};
-    }
     .progress {
       display: grid;
-      grid-template-columns: 4fr 1fr;
+      grid-template-columns: 5fr 1fr;
       grid-gap: 1rem;
+      border-bottom: 1px solid ${props => props.theme.grey[5]};
       .left {
+        display: grid;
+        grid-template-rows: 3rem auto 1fr;
         .message {
           display: flex;
           align-items: center;
@@ -113,12 +66,68 @@ const VideoScreen = styled.div`
             font-size: 1.3rem;
           }
         }
+        .tabs {
+          align-self: flex-end;
+          display: flex;
+        }
       }
       .right {
-        button {
+        display: grid;
+        grid-template-rows: 3rem 1fr;
+        span {
+          font-size: 1rem;
+          justify-self: flex-end;
+          margin-top: 1rem;
+          margin-right: 1rem;
         }
       }
     }
+  }
+  .bottom {
+    display: grid;
+    grid-template-columns: 20rem 1fr;
+    grid-gap: 1.5rem;
+    margin-top: 1.5rem;
+    .upload-status {
+      display: flex;
+      flex-direction: column;
+      & > :nth-child(1) {
+        font-family: 'Roboto Bold';
+        font-size: 1.3rem;
+        color: ${props => props.theme.grey[12]};
+        margin-bottom: 0.5rem;
+      }
+      & > :nth-child(2) {
+        font-size: 1.1rem;
+        color: ${props => props.theme.grey[10]};
+        margin-bottom: 0.75rem;
+      }
+      & > :nth-child(3) {
+        font-size: 1.1rem;
+        color: ${props => props.theme.grey[10]};
+      }
+      & > :nth-child(4) {
+        font-size: 1.1rem;
+        color: ${props => darken(0.2, props.theme.secondary)};
+      }
+    }
+  }
+`
+
+const Thumbnail = styled.div`
+  width: 20rem;
+  height: 11.25rem;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  background: ${props => props.theme.grey[2]};
+  border: 2px solid ${props => props.theme.grey[5]};
+  svg {
+    width: 2rem;
+    height: 2rem;
+    display: ${props => (props.show ? 'none' : 'block')};
+    color: ${props => props.theme.grey[10]};
+    animation: ${spin} 1s linear infinite;
   }
 `
 
@@ -183,27 +192,92 @@ const PublishButton = styled.button`
   background: ${props => darken(0.2, props.theme.secondary)};
   color: ${props => props.theme.white};
   border-radius: 2px;
+  cursor: pointer;
 `
 
-const Logo = styled.div`
-  width: 12rem;
-  height: 10rem;
-  background-image: url('https://s3-us-west-1.amazonaws.com/faketube/assets/upload-grey.svg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
+const Tab = styled.div`
+  font-family: 'Roboto Bold';
+  font-size: 1.1rem;
+  padding: 0 1rem 2rem 1rem;
+  margin-right: 2rem;
   cursor: pointer;
+  border-bottom: 4px solid
+    ${props => (props.index === props.tab ? props.theme.primary : 'transparent')};
   &:hover {
-    background-image: url('https://s3-us-west-1.amazonaws.com/faketube/assets/upload-red.svg');
+    border-bottom: 4px solid ${props => props.theme.primary};
+  }
+`
+
+const BasicInfo = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 10rem;
+  .top {
+    display: grid;
+    grid-template-columns: 45rem 1fr;
+    fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    .left {
+      & > :first-child,
+      textarea {
+        width: 100%;
+        font-family: 'Roboto';
+        font-size: 1.3rem;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid ${props => props.theme.grey[5]};
+      }
+      .tags-wrapper {
+        width: 100%;
+        padding: 1rem 1rem;
+        border: 1px solid ${props => props.theme.grey[5]};
+        input {
+          width: inherit;
+          border: 0;
+          outline: 0;
+          font-family: 'Roboto';
+          font-size: 1.3rem;
+        }
+      }
+    }
+    .right {
+    }
+  }
+`
+
+const Thumbnails = styled.div`
+  display: grid;
+  grid-template-rows: 2.5rem 1fr;
+  grid-gap: 1rem;
+  & > :first-child {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+  & > :last-child {
+    display: grid;
   }
 `
 
 class Upload extends React.Component {
   state = {
     progress: 10,
+    progressDisplay: 0,
     time: 0,
     remaining: null,
-    canceled: false
+    canceled: false,
+    showThumbnails: false,
+    fileURL: '',
+    tab: 0,
+    title: '',
+    description: '',
+    tags: [],
+    tag: ''
   }
 
   file = React.createRef()
@@ -222,9 +296,12 @@ class Upload extends React.Component {
         this.setState({ time: time + 1, remaining })
       }, 1000)
     }
+
     if (prevState.progress !== 100 && this.state.progress === 100) {
-      this.setState({ time: 0, remaining: null })
-      clearInterval(this.timer)
+      setTimeout(() => {
+        clearInterval(this.timer)
+        this.setState({ time: 0, remaining: null, showThumbnails: true })
+      }, 20000)
     }
   }
 
@@ -242,6 +319,7 @@ class Upload extends React.Component {
     if (!success1) {
       return // handle error
     }
+    this.setState({ fileURL })
     await axios({
       method: 'PUT',
       url: requestURL,
@@ -271,49 +349,55 @@ class Upload extends React.Component {
     }
   }
 
+  onTabClick = tab => this.setState({ tab })
+
+  onChange = e => {
+    const { name, value } = e.target
+    this.setState({ [name]: value })
+  }
+
+  getThumbnailSrc = x =>
+    this.state.fileURL.replace(/\.\w+$/, `-${x}.jpg`).replace('/videos/', '/thumbnails/')
+
   render() {
     const {
-      state: { progress, remaining, canceled }
+      state: {
+        progress,
+        remaining,
+        canceled,
+        showThumbnails,
+        fileURL,
+        tab,
+        title,
+        description,
+        tags,
+        tag
+      }
     } = this
     return (
       <Container>
         {progress === 0 ? (
-          <InitialScreen>
-            <div className="left">
-              <div className="dropzone">
-                <Logo onClick={this.onFileClick} />
-                <p className="heading">Select files to upload</p>
-                <p className="subheading">Or drag and drop video files</p>
-                <Mutation mutation={SIGN_S3_MUTATION}>
-                  {signS3 => (
-                    <input
-                      ref={this.file}
-                      type="file"
-                      accept="video/*"
-                      multiple={false}
-                      onChange={e => this.onFileChange(e, signS3)}
-                    />
-                  )}
-                </Mutation>
-              </div>
-              <div className="help" />
-            </div>
-            <div className="right">
-              <div />
-              <div />
-              <div />
-            </div>
-          </InitialScreen>
+          <InitialScreen
+            inputRef={this.file}
+            onFileChange={this.onFileChange}
+            onFileClick={this.onFileClick}
+          />
         ) : (
           <VideoScreen>
             <div className="top">
-              <div className="thumbnail" />
+              <Thumbnail show={showThumbnails} url={fileURL}>
+                <Spinner />
+              </Thumbnail>
               <div className="progress">
                 <div className="left">
                   <ProgressBar progress={progress}>
                     <ProgressFill progress={progress} />
                     <div className="bar-left">
-                      {progress === 100 ? 'Processing Done' : `Uploading ${progress}%`}
+                      {progress === 100 && showThumbnails
+                        ? 'Processing Done'
+                        : progress === 100 && !showThumbnails
+                        ? 'Processing...'
+                        : `Uploading ${progress}%`}
                     </div>
                     <div className="bar-right">
                       <span>{remaining ? `About ${remaining} remaining.` : ''}</span>
@@ -325,22 +409,103 @@ class Upload extends React.Component {
                     <span>
                       {canceled
                         ? 'Upload canceled.'
-                        : progress === 100
+                        : progress === 100 && showThumbnails
                         ? `Click "Publish" to make your video live.`
                         : `Your video is still uploading. Please keep this page open until it's done`}
                     </span>
                   </div>
+                  <div className="tabs">
+                    <Tab index={0} tab={tab} onClick={() => this.onTabClick(0)}>
+                      Basic info
+                    </Tab>
+                    <Tab index={1} tab={tab} onClick={() => this.onTabClick(1)}>
+                      Translations
+                    </Tab>
+                    <Tab index={2} tab={tab} onClick={() => this.onTabClick(2)}>
+                      Advanced settings
+                    </Tab>
+                  </div>
                 </div>
                 <div className="right">
                   <PublishButton>Publish</PublishButton>
+                  <span>Draft saved.</span>
                 </div>
               </div>
             </div>
             <div className="bottom">
-              <img
-                src="https://s3-us-west-1.amazonaws.com/faketube/user/cjrl9gxfwi93h0a22yr0pjebd/thumbnails/test-video.jpg"
-                width="800"
-              />
+              <div className="upload-status">
+                <span>Upload status:</span>
+                <span>
+                  {canceled
+                    ? 'Upload canceled.'
+                    : progress === 100 && showThumbnails
+                    ? 'Upload complete!'
+                    : 'Uploading your video...'}
+                </span>
+                <span>Your video will be live at:</span>
+                <Link href={{ pathname: '/videos', query: { id: '12345' } }}>
+                  <a>http://faketube.com/video</a>
+                </Link>
+              </div>
+              <div className="right">
+                {tab === 0 ? (
+                  <BasicInfo>
+                    <form>
+                      <div className="top">
+                        <fieldset className="left">
+                          <input
+                            type="text"
+                            name="title"
+                            placeholder="Title"
+                            value={title}
+                            onChange={this.onChange}
+                          />
+                          <textarea
+                            name="description"
+                            placeholder="Description"
+                            value={description}
+                            onChange={this.onChange}
+                            rows={5}
+                          />
+                          <div className="tags-wrapper">
+                            <input
+                              type="text"
+                              name="tag"
+                              placeholder={
+                                tags.length ? '' : 'Tags (e.g. albert einstein, flying pig, mashup)'
+                              }
+                              value={tag}
+                              onChange={this.onChange}
+                            />
+                          </div>
+                        </fieldset>
+                        <fieldset className="right">right</fieldset>
+                      </div>
+                    </form>
+                    <Thumbnails>
+                      <div>
+                        <span>Video Thumbnails</span>
+                        <Help />
+                      </div>
+                      <div>
+                        <div className="thumbnails">
+                          <div className="thumbnail" />
+                          <div className="thumbnail" />
+                          <div className="thumbnail" />
+                        </div>
+                        <div className="uploader">
+                          <button>Custom thumbnail</button>
+                          <span>Maximum file size is 2 MB.</span>
+                        </div>
+                      </div>
+                    </Thumbnails>
+                  </BasicInfo>
+                ) : tab === 1 ? (
+                  <div>1</div>
+                ) : (
+                  <div>2</div>
+                )}
+              </div>
             </div>
           </VideoScreen>
         )}
@@ -350,3 +515,13 @@ class Upload extends React.Component {
 }
 
 export default Upload
+
+// {
+//   showThumbnails && (
+//     <React.Fragment>
+//       <img src={this.getThumbnailSrc(1)} />
+//       <img src={this.getThumbnailSrc(2)} />
+//       <img src={this.getThumbnailSrc(3)} />
+//     </React.Fragment>
+//   )
+// }

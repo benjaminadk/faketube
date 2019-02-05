@@ -1,4 +1,5 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components'
+import { darken } from 'polished'
 import theme from './styles/Theme'
 import User from './User'
 import Meta from './Meta'
@@ -45,6 +46,12 @@ const GlobalStyle = createGlobalStyle`
   }
   a {
     text-decoration: none;
+  }
+  input,
+  textarea {
+    &:focus {
+      outline-color: ${darken(0.2, theme.secondary)};
+    }
   }
 `
 
