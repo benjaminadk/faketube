@@ -1,26 +1,31 @@
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import { lighten, darken } from 'polished'
-import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
 import axios from 'axios'
+import { withApollo } from 'react-apollo'
+import gql from 'graphql-tag'
 import formatFilename from '../lib/formatFilename'
 import InitialScreen from './Upload/InitialScreen'
+import BigThumbnail from './Upload/BigThumbnail'
 import ProgressBar from './Upload/ProgressBar'
 import ProgressMsg from './Upload/ProgressMsg'
+import Publish from './Upload/Publish'
 import TabBar from './Upload/TabBar'
 import UploadStatus from './Upload/UploadStatus'
 import BasicForm from './Upload/BasicForm'
 import Thumbnails from './Upload/Thumbnails'
 
-const source = axios.CancelToken.source()
-
-const spin = keyframes`
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(1turn);
+const CREATE_VIDEO_MUTATION = gql`
+  mutation CREATE_VIDEO_MUTATION($data: VideoCreateInput) {
+    createVideo(data: $data) {
+      success
+      video {
+        id
+      }
+    }
   }
 `
+
+const source = axios.CancelToken.source()
 
 const Container = styled.div`
   height: calc(100% - 5.5rem);
@@ -38,7 +43,7 @@ const VideoScreen = styled.div`
   padding: 1.5rem;
   margin-top: 1.5rem;
   box-shadow: ${props => props.theme.shadows[1]};
-  .top {
+  .video-top {
     display: grid;
     grid-template-columns: 20rem 1fr;
     grid-gap: 1.5rem;
@@ -51,53 +56,14 @@ const VideoScreen = styled.div`
         display: grid;
         grid-template-rows: 3rem auto 1fr;
       }
-      .progress-right {
-        display: grid;
-        grid-template-rows: 3rem 1fr;
-        span {
-          font-size: 1rem;
-          justify-self: flex-end;
-          margin-top: 1rem;
-          margin-right: 1rem;
-        }
-      }
     }
   }
-  .bottom {
+  .video-bottom {
     display: grid;
     grid-template-columns: 20rem 1fr;
     grid-gap: 1.5rem;
     margin-top: 1.5rem;
   }
-`
-
-const Thumbnail = styled.div`
-  width: 20rem;
-  height: 11.25rem;
-  display: grid;
-  justify-items: center;
-  align-items: center;
-  background: ${props => props.theme.grey[2]};
-  border: 2px solid ${props => props.theme.grey[5]};
-  svg {
-    width: 2rem;
-    height: 2rem;
-    display: ${props => (props.show ? 'none' : 'block')};
-    color: ${props => props.theme.grey[10]};
-    animation: ${spin} 1s linear infinite;
-  }
-`
-
-const PublishButton = styled.button`
-  width: 12rem;
-  height: 3rem;
-  border: 0;
-  font-family: 'Roboto Bold';
-  font-size: 1.1rem;
-  background: ${props => darken(0.2, props.theme.secondary)};
-  color: ${props => props.theme.white};
-  border-radius: 2px;
-  cursor: pointer;
 `
 
 const BasicInfo = styled.div`
@@ -107,21 +73,24 @@ const BasicInfo = styled.div`
 
 class Upload extends React.Component {
   state = {
+    draftSaved: false,
+    videoID: '',
     progress: 0,
-    progressDisplay: 0,
     time: 0,
-    remaining: null,
+    remaining: '',
     canceled: false,
-    showThumbnails: true,
-    thumbnail: null,
+    showThumbnails: false,
+    thumbnailIndex: null,
+    thumbnailURL: '',
     imageFilename: '',
     imageURL: '',
-    videoURL: ' ',
+    videoURL: '',
     tab: 0,
     title: '',
     description: '',
+    tag: '',
     tags: [],
-    tag: ''
+    isPublic: true
   }
 
   videoInput = React.createRef()
@@ -129,25 +98,41 @@ class Upload extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.progress && this.state.progress) {
-      this.timer = setInterval(() => {
-        const { progress, time } = this.state
-        const x = (time * 100) / progress - time
-        let remaining
-        if (x >= 60) {
-          remaining = Math.ceil(x / 60) + ' minutes'
-        } else {
-          remaining = Math.ceil(x) + ' seconds'
-        }
-        this.setState({ time: time + 1, remaining })
-      }, 1000)
+      this.timer1 = setInterval(this.uploadTimer, 1000)
     }
 
     if (prevState.progress !== 100 && this.state.progress === 100) {
+      clearInterval(this.timer1)
+      this.setState({ remaining: '20 seconds' })
+      this.timer2 = setInterval(this.processingTimer, 1000)
       setTimeout(() => {
-        clearInterval(this.timer)
-        this.setState({ time: 0, remaining: null, showThumbnails: true })
+        clearInterval(this.timer2)
+        this.setState(({ imageURL }) => ({
+          time: 0,
+          remaining: null,
+          showThumbnails: true,
+          thumbnailIndex: imageURL ? 4 : 2,
+          thumbnailURL: imageURL ? imageURL : this.getThumbnailSrc(2)
+        }))
       }, 20000)
     }
+  }
+
+  uploadTimer = () => {
+    const { progress, time } = this.state
+    const x = (time * 100) / progress - time + 20
+    let remaining
+    if (x >= 60) {
+      remaining = Math.ceil(x / 60) + ' minutes'
+    } else {
+      remaining = Math.ceil(x) + ' seconds'
+    }
+    this.setState({ time: time + 1, remaining })
+  }
+
+  processingTimer = () => {
+    let x = parseInt(this.state.remaining, 10)
+    this.setState({ remaining: `${x - 1} seconds` })
   }
 
   onVideoInputClick = () => this.videoInput.current.click()
@@ -162,8 +147,10 @@ class Upload extends React.Component {
     })
     const { success: success1, requestURL, fileURL } = res1.data.signS3
     if (!success1) {
-      return // handle error
+      return // error requesting upload url
     }
+    const title = file.name.replace(/\.\w+$/, '').replace(/[-_]/g, ' ')
+    await this.setState({ title, videoURL: fileURL })
     await axios({
       method: 'PUT',
       url: requestURL,
@@ -180,16 +167,24 @@ class Upload extends React.Component {
       if (axios.isCancel) {
         console.log(thrown.message)
       } else {
-        // handle error
+        // error uploading video
       }
     })
-    this.setState({ videoURL: fileURL })
+    const res2 = await this.props.client.mutate({
+      mutation: CREATE_VIDEO_MUTATION,
+      variables: { data: { title, videoURL: fileURL, imageURL: this.getThumbnailSrc(2) } }
+    })
+    const { success: success2, video } = res2.data.createVideo
+    if (!success2) {
+      return // error creating video
+    }
+    this.setState({ draftSaved: true, videoID: video.id })
   }
 
   onCancelClick = () => {
     if (confirm('Cancel upload?')) {
       source.cancel('Upload canceled by user.')
-      clearInterval(this.timer)
+      clearInterval(this.timer1)
       this.setState({ time: 0, remaining: null, canceled: true })
     }
   }
@@ -201,9 +196,13 @@ class Upload extends React.Component {
     this.setState({ [name]: value })
   }
 
-  onThumbnailClick = thumbnail => {
+  onThumbnailClick = thumbnailIndex => {
     if (!this.state.showThumbnails) return
-    this.setState({ thumbnail })
+    this.setState({
+      thumbnailIndex,
+      thumbnailURL:
+        thumbnailIndex === 4 ? this.state.imageURL : this.getThumbnailSrc(thumbnailIndex)
+    })
   }
 
   getThumbnailSrc = x =>
@@ -233,7 +232,7 @@ class Upload extends React.Component {
       onUploadProgress: p => {
         const progress = Math.round((p.loaded * 100) / p.total)
         if (progress === 100) {
-          this.setState({ imageURL: fileURL })
+          this.setState({ imageURL: fileURL, thumbnailURL: fileURL, thumbnailIndex: 4 })
         }
       },
       data: file
@@ -243,11 +242,14 @@ class Upload extends React.Component {
   render() {
     const {
       state: {
+        draftSaved,
+        videoID,
         progress,
         remaining,
         canceled,
         showThumbnails,
-        thumbnail,
+        thumbnailIndex,
+        thumbnailURL,
         imageURL,
         imageFilename,
         videoURL,
@@ -255,7 +257,8 @@ class Upload extends React.Component {
         title,
         description,
         tags,
-        tag
+        tag,
+        isPublic
       }
     } = this
     return (
@@ -263,15 +266,15 @@ class Upload extends React.Component {
         {progress === 0 ? (
           <InitialScreen
             inputRef={this.videoInput}
-            onChange={this.onVideoInputChange}
-            onClick={this.onVideoInputClick}
+            isPublic={isPublic}
+            onChange={this.onChange}
+            onVideoInputChange={this.onVideoInputChange}
+            onVideoInputClick={this.onVideoInputClick}
           />
         ) : (
           <VideoScreen>
-            <div className="top">
-              <Thumbnail show={showThumbnails} url={imageURL ? imageURL : videoURL}>
-                <Spinner />
-              </Thumbnail>
+            <div className="video-top">
+              <BigThumbnail showThumbnails={showThumbnails} url={thumbnailURL} />
               <div className="progress">
                 <div className="progress-left">
                   <ProgressBar
@@ -287,19 +290,17 @@ class Upload extends React.Component {
                   />
                   <TabBar tab={tab} onTabClick={this.onTabClick} />
                 </div>
-                <div className="progress-right">
-                  <PublishButton>Publish</PublishButton>
-                  <span>Draft saved.</span>
-                </div>
+                <Publish videoID={videoID} draftSaved={draftSaved} />
               </div>
             </div>
-            <div className="bottom">
+            <div className="video-bottom">
               <UploadStatus
                 progress={progress}
                 showThumbnails={showThumbnails}
                 canceled={canceled}
+                videoID={videoID}
               />
-              <div className="right">
+              <div>
                 {tab === 0 ? (
                   <BasicInfo>
                     <BasicForm
@@ -313,7 +314,7 @@ class Upload extends React.Component {
                       inputRef={this.imageInput}
                       imageURL={imageURL}
                       imageFilename={imageFilename}
-                      thumbnail={thumbnail}
+                      thumbnailIndex={thumbnailIndex}
                       showThumbnails={showThumbnails}
                       getThumbnailSrc={this.getThumbnailSrc}
                       onThumbnailClick={this.onThumbnailClick}
@@ -335,4 +336,4 @@ class Upload extends React.Component {
   }
 }
 
-export default Upload
+export default withApollo(Upload)

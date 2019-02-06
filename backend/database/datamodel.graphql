@@ -4,13 +4,22 @@ type User {
   email: String! @unique
   name: String!
   image: String!
+  videos: [Video]
   role: Role!
   createdAt: DateTime!
 }
 
 type Video {
   id: ID! @unique
+  videoURL: String!
+  imageURL: String
   title: String!
+  description: String
+  tags: [String]
+  isPublished: Boolean! @default(value: "false")
+  isPublic: Boolean! @default(value: "true")
+  user: User
+  createdAt: DateTime!
 }
 
 enum Role {

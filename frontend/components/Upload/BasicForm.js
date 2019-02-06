@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const Form = styled.form`
-  .top {
+  .basic-top {
     display: grid;
     grid-template-columns: 45rem 1fr;
     fieldset {
@@ -40,7 +40,7 @@ const Form = styled.form`
 
 const BasicForm = ({ title, description, tag, tags, onChange }) => (
   <Form>
-    <div className="top">
+    <div className="basic-top">
       <fieldset className="left">
         <input type="text" name="title" placeholder="Title" value={title} onChange={onChange} />
         <textarea

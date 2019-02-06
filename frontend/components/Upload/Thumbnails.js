@@ -6,13 +6,6 @@ import { Help } from 'styled-icons/material/Help'
 import { spin } from '../styles/animations'
 import { SIGN_S3_MUTATION } from '../../apollo/signS3'
 
-function cleanFilename(str) {
-  return str
-    .toLowerCase()
-    .trim()
-    .replace(/\s/g, '-')
-}
-
 const Container = styled.div`
   display: grid;
   grid-template-rows: 2.5rem 1fr;
@@ -137,7 +130,7 @@ const Thumbnails = ({
   inputRef,
   imageURL,
   imageFilename,
-  thumbnail,
+  thumbnailIndex,
   showThumbnails,
   getThumbnailSrc,
   onThumbnailClick,
@@ -157,7 +150,7 @@ const Thumbnails = ({
             index={i}
             show={showThumbnails}
             url={getThumbnailSrc(i)}
-            selected={thumbnail === i}
+            selected={thumbnailIndex === i}
             onClick={() => onThumbnailClick(i)}
           >
             <Spinner />
@@ -173,7 +166,12 @@ const Thumbnails = ({
             {loading ? (
               <React.Fragment>
                 <Spinner />
-                <span>{cleanFilename(imageFilename)}</span>
+                <span>
+                  {imageFilename
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s/g, '-')}
+                </span>
                 <button className="cancel">Cancel</button>
               </React.Fragment>
             ) : imageURL ? (
@@ -181,7 +179,7 @@ const Thumbnails = ({
                 index={4}
                 show={true}
                 url={imageURL}
-                selected={thumbnail === 4}
+                selected={thumbnailIndex === 4}
                 onClick={() => onThumbnailClick(4)}
               >
                 <div className="overlay special">

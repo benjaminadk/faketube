@@ -30,6 +30,17 @@ const Container = styled.div`
         color: ${props => props.theme.grey[10]};
         margin: 0;
       }
+      select {
+        font-family: 'Roboto Bold';
+        font-size: 1.1rem;
+        background: ${props => props.theme.grey[0]};
+        color: ${props => props.theme.grey[12]};
+        margin-top: 2rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid ${props => props.theme.grey[5]};
+        border-radius: 2px;
+        outline: 0;
+      }
     }
     .help {
       background: ${props => props.theme.white};
@@ -60,11 +71,11 @@ const Logo = styled.div`
   }
 `
 
-const InitialScreen = ({ inputRef, onChange, onClick }) => (
+const InitialScreen = ({ inputRef, isPublic, onChange, onVideoInputChange, onVideoInputClick }) => (
   <Container>
     <div className="left">
       <div className="dropzone">
-        <Logo onClick={onClick} />
+        <Logo onClick={onVideoInputClick} />
         <p className="heading">Select files to upload</p>
         <p className="subheading">Or drag and drop video files</p>
         <Mutation mutation={SIGN_S3_MUTATION}>
@@ -74,10 +85,14 @@ const InitialScreen = ({ inputRef, onChange, onClick }) => (
               type="file"
               accept="video/*"
               multiple={false}
-              onChange={e => onChange(e, signS3)}
+              onChange={e => onVideoInputChange(e, signS3)}
             />
           )}
         </Mutation>
+        <select name="isPublic" value={isPublic} onChange={onChange}>
+          <option value={true}>Public</option>
+          <option value={false}>Private</option>
+        </select>
       </div>
       <div className="help" />
     </div>

@@ -72,6 +72,7 @@ type User {
   email: String!
   name: String!
   image: String!
+  videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
   role: Role!
   createdAt: DateTime!
 }
@@ -83,6 +84,20 @@ type UserConnection {
 }
 
 input UserCreateInput {
+  googleID: String!
+  email: String!
+  name: String!
+  image: String!
+  videos: VideoCreateManyWithoutUserInput
+  role: Role!
+}
+
+input UserCreateOneWithoutVideosInput {
+  create: UserCreateWithoutVideosInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutVideosInput {
   googleID: String!
   email: String!
   name: String!
@@ -147,6 +162,7 @@ input UserUpdateInput {
   email: String
   name: String
   image: String
+  videos: VideoUpdateManyWithoutUserInput
   role: Role
 }
 
@@ -156,6 +172,28 @@ input UserUpdateManyMutationInput {
   name: String
   image: String
   role: Role
+}
+
+input UserUpdateOneWithoutVideosInput {
+  create: UserCreateWithoutVideosInput
+  update: UserUpdateWithoutVideosDataInput
+  upsert: UserUpsertWithoutVideosInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutVideosDataInput {
+  googleID: String
+  email: String
+  name: String
+  image: String
+  role: Role
+}
+
+input UserUpsertWithoutVideosInput {
+  update: UserUpdateWithoutVideosDataInput!
+  create: UserCreateWithoutVideosInput!
 }
 
 input UserWhereInput {
@@ -229,6 +267,9 @@ input UserWhereInput {
   image_not_starts_with: String
   image_ends_with: String
   image_not_ends_with: String
+  videos_every: VideoWhereInput
+  videos_some: VideoWhereInput
+  videos_none: VideoWhereInput
   role: Role
   role_not: Role
   role_in: [Role!]
@@ -254,7 +295,15 @@ input UserWhereUniqueInput {
 
 type Video {
   id: ID!
+  videoURL: String!
+  imageURL: String
   title: String!
+  description: String
+  tags: [String!]!
+  isPublished: Boolean!
+  isPublic: Boolean!
+  user: User
+  createdAt: DateTime!
 }
 
 type VideoConnection {
@@ -264,7 +313,33 @@ type VideoConnection {
 }
 
 input VideoCreateInput {
+  videoURL: String!
+  imageURL: String
   title: String!
+  description: String
+  tags: VideoCreatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  user: UserCreateOneWithoutVideosInput
+}
+
+input VideoCreateManyWithoutUserInput {
+  create: [VideoCreateWithoutUserInput!]
+  connect: [VideoWhereUniqueInput!]
+}
+
+input VideoCreatetagsInput {
+  set: [String!]
+}
+
+input VideoCreateWithoutUserInput {
+  videoURL: String!
+  imageURL: String
+  title: String!
+  description: String
+  tags: VideoCreatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
 }
 
 type VideoEdge {
@@ -275,8 +350,18 @@ type VideoEdge {
 enum VideoOrderByInput {
   id_ASC
   id_DESC
+  videoURL_ASC
+  videoURL_DESC
+  imageURL_ASC
+  imageURL_DESC
   title_ASC
   title_DESC
+  description_ASC
+  description_DESC
+  isPublished_ASC
+  isPublished_DESC
+  isPublic_ASC
+  isPublic_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -285,7 +370,102 @@ enum VideoOrderByInput {
 
 type VideoPreviousValues {
   id: ID!
+  videoURL: String!
+  imageURL: String
   title: String!
+  description: String
+  tags: [String!]!
+  isPublished: Boolean!
+  isPublic: Boolean!
+  createdAt: DateTime!
+}
+
+input VideoScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  videoURL: String
+  videoURL_not: String
+  videoURL_in: [String!]
+  videoURL_not_in: [String!]
+  videoURL_lt: String
+  videoURL_lte: String
+  videoURL_gt: String
+  videoURL_gte: String
+  videoURL_contains: String
+  videoURL_not_contains: String
+  videoURL_starts_with: String
+  videoURL_not_starts_with: String
+  videoURL_ends_with: String
+  videoURL_not_ends_with: String
+  imageURL: String
+  imageURL_not: String
+  imageURL_in: [String!]
+  imageURL_not_in: [String!]
+  imageURL_lt: String
+  imageURL_lte: String
+  imageURL_gt: String
+  imageURL_gte: String
+  imageURL_contains: String
+  imageURL_not_contains: String
+  imageURL_starts_with: String
+  imageURL_not_starts_with: String
+  imageURL_ends_with: String
+  imageURL_not_ends_with: String
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  isPublished: Boolean
+  isPublished_not: Boolean
+  isPublic: Boolean
+  isPublic_not: Boolean
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [VideoScalarWhereInput!]
+  OR: [VideoScalarWhereInput!]
+  NOT: [VideoScalarWhereInput!]
 }
 
 type VideoSubscriptionPayload {
@@ -307,11 +487,75 @@ input VideoSubscriptionWhereInput {
 }
 
 input VideoUpdateInput {
+  videoURL: String
+  imageURL: String
   title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  user: UserUpdateOneWithoutVideosInput
+}
+
+input VideoUpdateManyDataInput {
+  videoURL: String
+  imageURL: String
+  title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
 }
 
 input VideoUpdateManyMutationInput {
+  videoURL: String
+  imageURL: String
   title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+}
+
+input VideoUpdateManyWithoutUserInput {
+  create: [VideoCreateWithoutUserInput!]
+  delete: [VideoWhereUniqueInput!]
+  connect: [VideoWhereUniqueInput!]
+  disconnect: [VideoWhereUniqueInput!]
+  update: [VideoUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [VideoUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [VideoScalarWhereInput!]
+  updateMany: [VideoUpdateManyWithWhereNestedInput!]
+}
+
+input VideoUpdateManyWithWhereNestedInput {
+  where: VideoScalarWhereInput!
+  data: VideoUpdateManyDataInput!
+}
+
+input VideoUpdatetagsInput {
+  set: [String!]
+}
+
+input VideoUpdateWithoutUserDataInput {
+  videoURL: String
+  imageURL: String
+  title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+}
+
+input VideoUpdateWithWhereUniqueWithoutUserInput {
+  where: VideoWhereUniqueInput!
+  data: VideoUpdateWithoutUserDataInput!
+}
+
+input VideoUpsertWithWhereUniqueWithoutUserInput {
+  where: VideoWhereUniqueInput!
+  update: VideoUpdateWithoutUserDataInput!
+  create: VideoCreateWithoutUserInput!
 }
 
 input VideoWhereInput {
@@ -329,6 +573,34 @@ input VideoWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  videoURL: String
+  videoURL_not: String
+  videoURL_in: [String!]
+  videoURL_not_in: [String!]
+  videoURL_lt: String
+  videoURL_lte: String
+  videoURL_gt: String
+  videoURL_gte: String
+  videoURL_contains: String
+  videoURL_not_contains: String
+  videoURL_starts_with: String
+  videoURL_not_starts_with: String
+  videoURL_ends_with: String
+  videoURL_not_ends_with: String
+  imageURL: String
+  imageURL_not: String
+  imageURL_in: [String!]
+  imageURL_not_in: [String!]
+  imageURL_lt: String
+  imageURL_lte: String
+  imageURL_gt: String
+  imageURL_gte: String
+  imageURL_contains: String
+  imageURL_not_contains: String
+  imageURL_starts_with: String
+  imageURL_not_starts_with: String
+  imageURL_ends_with: String
+  imageURL_not_ends_with: String
   title: String
   title_not: String
   title_in: [String!]
@@ -343,6 +615,33 @@ input VideoWhereInput {
   title_not_starts_with: String
   title_ends_with: String
   title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  isPublished: Boolean
+  isPublished_not: Boolean
+  isPublic: Boolean
+  isPublic_not: Boolean
+  user: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
   AND: [VideoWhereInput!]
   OR: [VideoWhereInput!]
   NOT: [VideoWhereInput!]

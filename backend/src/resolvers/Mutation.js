@@ -21,5 +21,18 @@ module.exports = {
       console.log(error)
       return { success: false }
     }
+  },
+
+  createVideo: async (_, args, ctx, info) => {
+    try {
+      const video = await ctx.prisma.createVideo({
+        ...args.data,
+        user: { connect: { id: ctx.userId } }
+      })
+      return { success: true, video }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
   }
 }

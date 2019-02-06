@@ -26,7 +26,7 @@ const Container = styled.div`
   }
 `
 
-const UploadStatus = ({ progress, showThumbnails, canceled }) => (
+const UploadStatus = ({ progress, showThumbnails, canceled, videoID }) => (
   <Container>
     <span>Upload status:</span>
     <span>
@@ -36,10 +36,14 @@ const UploadStatus = ({ progress, showThumbnails, canceled }) => (
         ? 'Upload complete!'
         : 'Uploading your video.'}
     </span>
-    <span>Your video will be live at:</span>
-    <Link href={{ pathname: '/videos', query: { id: '12345' } }}>
-      <a>http://faketube.com/video</a>
-    </Link>
+    {videoID ? (
+      <React.Fragment>
+        <span>Your video will be live at:</span>
+        <Link href={{ pathname: '/videos', query: { id: videoID } }}>
+          <a>http://localhost:8889/videos?id={videoID}</a>
+        </Link>
+      </React.Fragment>
+    ) : null}
   </Container>
 )
 
