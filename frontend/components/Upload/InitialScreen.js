@@ -41,19 +41,29 @@ const Container = styled.div`
         border-radius: 2px;
         outline: 0;
       }
+      option {
+        font-family: 'Roboto';
+        font-size: 1.3rem;
+      }
     }
     .help {
-      background: ${props => props.theme.white};
-      box-shadow: ${props => props.theme.shadows[1]};
     }
   }
   .right {
     display: grid;
     grid-template-rows: 1fr 1fr 1.5fr;
     grid-gap: 1rem;
-    & > * {
-      background: ${props => props.theme.white};
-      box-shadow: ${props => props.theme.shadows[1]};
+  }
+  .section {
+    background: ${props => props.theme.white};
+    box-shadow: ${props => props.theme.shadows[1]};
+    padding: 1.5rem;
+    .section-heading {
+      text-transform: uppercase;
+      font-family: 'Roboto Bold';
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: ${props => props.theme.grey[12]};
     }
   }
 `
@@ -94,12 +104,20 @@ const InitialScreen = ({ inputRef, isPublic, onChange, onVideoInputChange, onVid
           <option value={false}>Private</option>
         </select>
       </div>
-      <div className="help" />
+      <div className="help section">
+        <div className="section-heading">Help and suggestions</div>
+      </div>
     </div>
     <div className="right">
-      <div />
-      <div />
-      <div />
+      <div className="section">
+        <div className="section-heading">Import videos</div>
+      </div>
+      <div className="section">
+        <div className="section-heading">Live streaming</div>
+      </div>
+      <div className="section">
+        <div className="section-heading">New! Premieres</div>
+      </div>
     </div>
   </Container>
 )

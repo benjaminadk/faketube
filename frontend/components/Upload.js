@@ -73,7 +73,7 @@ const BasicInfo = styled.div`
 
 class Upload extends React.Component {
   state = {
-    draftSaved: false,
+    saved: false,
     videoID: '',
     progress: 0,
     time: 0,
@@ -90,7 +90,8 @@ class Upload extends React.Component {
     description: '',
     tag: '',
     tags: [],
-    isPublic: true
+    isPublic: true,
+    isPublished: false
   }
 
   videoInput = React.createRef()
@@ -102,19 +103,23 @@ class Upload extends React.Component {
     }
 
     if (prevState.progress !== 100 && this.state.progress === 100) {
-      clearInterval(this.timer1)
-      this.setState({ remaining: '20 seconds' })
-      this.timer2 = setInterval(this.processingTimer, 1000)
-      setTimeout(() => {
-        clearInterval(this.timer2)
-        this.setState(({ imageURL }) => ({
-          time: 0,
-          remaining: null,
-          showThumbnails: true,
-          thumbnailIndex: imageURL ? 4 : 2,
-          thumbnailURL: imageURL ? imageURL : this.getThumbnailSrc(2)
-        }))
-      }, 20000)
+      this.onVideoUploadComplete()
+    }
+
+    if (prevState.thumbnailURL !== this.state.thumbnailURL) {
+      this.setState({ saved: false })
+    }
+
+    if (prevState.title !== this.state.title) {
+      this.setState({ saved: false })
+    }
+
+    if (prevState.description !== this.state.description) {
+      this.setState({ saved: false })
+    }
+
+    if (prevState.tags.length !== this.state.tags.length) {
+      this.setState({ saved: false })
     }
   }
 
@@ -133,6 +138,22 @@ class Upload extends React.Component {
   processingTimer = () => {
     let x = parseInt(this.state.remaining, 10)
     this.setState({ remaining: `${x - 1} seconds` })
+  }
+
+  onVideoUploadComplete = () => {
+    clearInterval(this.timer1)
+    this.setState({ remaining: '20 seconds' })
+    this.timer2 = setInterval(this.processingTimer, 1000)
+    setTimeout(() => {
+      clearInterval(this.timer2)
+      this.setState(({ imageURL }) => ({
+        time: 0,
+        remaining: null,
+        showThumbnails: true,
+        thumbnailIndex: imageURL ? 4 : 2,
+        thumbnailURL: imageURL ? imageURL : this.getThumbnailSrc(2)
+      }))
+    }, 20000)
   }
 
   onVideoInputClick = () => this.videoInput.current.click()
@@ -172,13 +193,20 @@ class Upload extends React.Component {
     })
     const res2 = await this.props.client.mutate({
       mutation: CREATE_VIDEO_MUTATION,
-      variables: { data: { title, videoURL: fileURL, imageURL: this.getThumbnailSrc(2) } }
+      variables: {
+        data: {
+          title,
+          videoURL: fileURL,
+          imageURL: this.getThumbnailSrc(2),
+          isPublic: this.state.isPublic
+        }
+      }
     })
     const { success: success2, video } = res2.data.createVideo
     if (!success2) {
       return // error creating video
     }
-    this.setState({ draftSaved: true, videoID: video.id })
+    this.setState({ saved: true, videoID: video.id })
   }
 
   onCancelClick = () => {
@@ -187,6 +215,42 @@ class Upload extends React.Component {
       clearInterval(this.timer1)
       this.setState({ time: 0, remaining: null, canceled: true })
     }
+  }
+
+  onPublishClick = async updateVideo => {
+    if (!this.state.videoID) return
+    if (!this.state.isPublished) {
+      await this.setState({ isPublished: true })
+    }
+    const {
+      videoID,
+      title,
+      description,
+      tags,
+      isPublic,
+      isPublished,
+      thumbnailURL,
+      videoURL
+    } = this.state
+    const res = await updateVideo({
+      variables: {
+        id: videoID,
+        data: {
+          videoURL,
+          imageURL: thumbnailURL,
+          title,
+          description,
+          tags: { set: tags },
+          isPublic,
+          isPublished
+        }
+      }
+    })
+    const { success } = res.data.updateVideo
+    if (!success) {
+      return // error updating video
+    }
+    this.setState({ saved: true })
   }
 
   onTabClick = tab => this.setState({ tab })
@@ -221,7 +285,7 @@ class Upload extends React.Component {
     })
     const { success, requestURL, fileURL } = res.data.signS3
     if (!success) {
-      return // handle error
+      return // error requesting upload url
     }
     await axios({
       method: 'PUT',
@@ -242,7 +306,7 @@ class Upload extends React.Component {
   render() {
     const {
       state: {
-        draftSaved,
+        saved,
         videoID,
         progress,
         remaining,
@@ -258,7 +322,8 @@ class Upload extends React.Component {
         description,
         tags,
         tag,
-        isPublic
+        isPublic,
+        isPublished
       }
     } = this
     return (
@@ -290,7 +355,12 @@ class Upload extends React.Component {
                   />
                   <TabBar tab={tab} onTabClick={this.onTabClick} />
                 </div>
-                <Publish videoID={videoID} draftSaved={draftSaved} />
+                <Publish
+                  videoID={videoID}
+                  saved={saved}
+                  isPublished={isPublished}
+                  onPublishClick={this.onPublishClick}
+                />
               </div>
             </div>
             <div className="video-bottom">
@@ -308,6 +378,7 @@ class Upload extends React.Component {
                       description={description}
                       tag={tag}
                       tags={tags}
+                      isPublic={isPublic}
                       onChange={this.onChange}
                     />
                     <Thumbnails

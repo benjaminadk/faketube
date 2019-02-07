@@ -1,6 +1,5 @@
 require('dotenv').config()
 const express = require('express')
-const passport = require('passport')
 const { ApolloServer } = require('apollo-server-express')
 const { importSchema } = require('graphql-import')
 const cookieParser = require('cookie-parser')
@@ -9,7 +8,6 @@ const addUserIdToRequest = require('./middleware/addUserIdToRequest')
 const addUserToRequest = require('./middleware/addUserToRequest')
 const { prisma } = require('./generated')
 const resolvers = require('./resolvers')
-const { googleOAuth, googleScope, googleCallback, googleRedirect } = require('./services/passport')
 
 const { NODE_ENV, FRONTEND_DEV, FRONTEND_PROD, PORT } = process.env
 
@@ -39,12 +37,7 @@ const server = new ApolloServer({
   })
 })
 
-passport.use(googleOAuth)
-app.use(passport.initialize())
-app.get('/api/google', googleScope)
-app.get('/api/google/callback', googleCallback, googleRedirect)
 app.use(cookieParser(), addUserIdToRequest, addUserToRequest)
-
 server.applyMiddleware({ app, path, server, cors })
 
 const httpServer = http.createServer(app)

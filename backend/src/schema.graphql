@@ -5,9 +5,11 @@ type Query {
 }
 
 type Mutation {
+  signin(data: UserCreateInput): Payload
   signout: Payload
   signS3(filename: String!, filetype: String!): S3Payload
   createVideo(data: VideoCreateInput): VideoPayload
+  updateVideo(id: ID!, data: VideoCreateInput): VideoPayload
 }
 
 type User {

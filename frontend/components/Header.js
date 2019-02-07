@@ -9,6 +9,7 @@ import { Apps } from 'styled-icons/material/Apps'
 import { Chat } from 'styled-icons/material/Chat'
 import { Notifications } from 'styled-icons/material/Notifications'
 import { MoreVert } from 'styled-icons/material/MoreVert'
+import SignIn from './SignIn'
 
 Router.onRouteChangeStart = () => {
   NProgress.start()
@@ -153,9 +154,10 @@ class Header extends React.Component {
             {user ? (
               <img src={user.image} />
             ) : (
-              <a href="http://localhost:8888/api/google">
-                <span className="sign-in">Sign in</span>
-              </a>
+              <SignIn />
+              // <a href="http://localhost:8888/api/google">
+              //   <span className="sign-in">Sign in</span>
+              // </a>
             )}
           </div>
         </div>
