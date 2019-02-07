@@ -1,4 +1,4 @@
-import { GoogleLogin, GoogleLogout } from 'react-google-login'
+import { GoogleLogin } from 'react-google-login'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { ME_QUERY } from './User'
@@ -28,7 +28,7 @@ class SignIn extends React.Component {
   }
 
   onFailure = res => {
-    console.log(res)
+    alert('Error authenticating with Google Sign In')
   }
 
   render() {

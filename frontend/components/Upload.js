@@ -4,6 +4,7 @@ import axios from 'axios'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import formatFilename from '../lib/formatFilename'
+import formatTag from '../lib/formatTag'
 import InitialScreen from './Upload/InitialScreen'
 import BigThumbnail from './Upload/BigThumbnail'
 import ProgressBar from './Upload/ProgressBar'
@@ -96,6 +97,7 @@ class Upload extends React.Component {
 
   videoInput = React.createRef()
   imageInput = React.createRef()
+  tagInput = React.createRef()
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.progress && this.state.progress) {
@@ -206,7 +208,7 @@ class Upload extends React.Component {
     if (!success2) {
       return // error creating video
     }
-    this.setState({ saved: true, videoID: video.id })
+    this.setState({ videoID: video.id })
   }
 
   onCancelClick = () => {
@@ -258,6 +260,48 @@ class Upload extends React.Component {
   onChange = e => {
     const { name, value } = e.target
     this.setState({ [name]: value })
+  }
+
+  onTagsClick = () => {
+    this.tagInput.current.focus()
+  }
+
+  onTagChange = e => {
+    const { value } = e.target
+    const re = /,$/
+    if (re.test(value)) return
+    this.setState({ tag: value })
+  }
+
+  onTagKeyDown = e => {
+    if (e.keyCode === 13 || e.keyCode === 188) {
+      const { tag, tags } = this.state
+      const x = formatTag(tag)
+      if (x.length < 2) return
+      tags.push(x)
+      this.setState({ tags, tag: '' }, () => {
+        this.tagInput.current.focus()
+      })
+    }
+    if (e.keyCode === 8) {
+      const { tag, tags } = this.state
+      if (!tags.length || tag.length) return
+      e.preventDefault()
+      const x = tags.pop()
+      this.setState({ tags }, () => {
+        this.setState({ tag: x })
+        setTimeout(() => this.tagInput.current.select(), 100)
+      })
+    }
+  }
+
+  onTagDelete = index => {
+    this.setState(
+      ({ tags }) => ({ tags: tags.filter((t, i) => i !== index) }),
+      () => {
+        this.tagInput.current.focus()
+      }
+    )
   }
 
   onThumbnailClick = thumbnailIndex => {
@@ -374,12 +418,17 @@ class Upload extends React.Component {
                 {tab === 0 ? (
                   <BasicInfo>
                     <BasicForm
+                      inputRef={this.tagInput}
                       title={title}
                       description={description}
                       tag={tag}
                       tags={tags}
                       isPublic={isPublic}
                       onChange={this.onChange}
+                      onTagsClick={this.onTagsClick}
+                      onTagChange={this.onTagChange}
+                      onTagDelete={this.onTagDelete}
+                      onTagKeyDown={this.onTagKeyDown}
                     />
                     <Thumbnails
                       inputRef={this.imageInput}

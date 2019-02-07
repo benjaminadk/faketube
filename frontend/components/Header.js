@@ -150,16 +150,7 @@ class Header extends React.Component {
             <Chat />
           </div>
           <div className="icon">{user ? <Notifications /> : <MoreVert />}</div>
-          <div className="user">
-            {user ? (
-              <img src={user.image} />
-            ) : (
-              <SignIn />
-              // <a href="http://localhost:8888/api/google">
-              //   <span className="sign-in">Sign in</span>
-              // </a>
-            )}
-          </div>
+          <div className="user">{user ? <img src={user.image} /> : <SignIn />}</div>
         </div>
       </Container>
     )

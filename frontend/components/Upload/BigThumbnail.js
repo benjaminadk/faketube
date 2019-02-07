@@ -1,6 +1,5 @@
 import styled from 'styled-components'
-import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
-import { spin } from '../styles/animations'
+import Loading from './Loading'
 
 const Container = styled.div`
   width: 20rem;
@@ -14,17 +13,13 @@ const Container = styled.div`
   background-size: cover;
   border: 2px solid ${props => (props.url ? 'transparent' : props.theme.grey[5])};
   svg {
-    width: 2rem;
-    height: 2rem;
     display: ${props => (props.show ? 'none' : 'block')};
-    color: ${props => props.theme.grey[10]};
-    animation: ${spin} 1s linear infinite;
   }
 `
 
 const BigThumbnail = ({ showThumbnails, url }) => (
   <Container show={showThumbnails} url={url}>
-    <Spinner />
+    <Loading size={2} color={5} child={1} />
   </Container>
 )
 

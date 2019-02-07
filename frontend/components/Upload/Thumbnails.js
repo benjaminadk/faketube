@@ -1,10 +1,9 @@
 import styled from 'styled-components'
 import { Mutation } from 'react-apollo'
 import { darken } from 'polished'
-import { Spinner7 as Spinner } from 'styled-icons/icomoon/Spinner7'
 import { Help } from 'styled-icons/material/Help'
-import { spin } from '../styles/animations'
 import { SIGN_S3_MUTATION } from '../../apollo/signS3'
+import Loading from './Loading'
 
 const Container = styled.div`
   display: grid;
@@ -76,10 +75,6 @@ const Thumbnail = styled.div`
   }
   svg {
     display: ${props => (!props.show ? 'block' : 'none')};
-    width: 5rem;
-    height: 5rem;
-    color: rgba(0, 0, 0, 0.1);
-    animation: ${spin} 2s linear infinite;
   }
 `
 
@@ -118,11 +113,7 @@ const Uploader = styled.div`
     color: ${props => props.theme.grey[10]};
   }
   svg {
-    width: 2rem;
-    height: 2rem;
-    color: ${props => props.theme.grey[5]};
     margin-bottom: 0.25rem;
-    animation: ${spin} 1s linear infinite;
   }
 `
 
@@ -153,7 +144,7 @@ const Thumbnails = ({
             selected={thumbnailIndex === i}
             onClick={() => onThumbnailClick(i)}
           >
-            <Spinner />
+            <Loading size={5} color={5} />
             <div className="overlay">
               <span>Set as thumbnail</span>
             </div>
@@ -165,7 +156,7 @@ const Thumbnails = ({
           <Uploader hideBorder={imageURL || loading}>
             {loading ? (
               <React.Fragment>
-                <Spinner />
+                <Loading size={2} color={5} />
                 <span>
                   {imageFilename
                     .toLowerCase()

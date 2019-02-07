@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
+import { Close } from 'styled-icons/material/Close'
 
 const Form = styled.form`
   .basic-top {
@@ -24,18 +25,6 @@ const Form = styled.form`
           outline: 1px solid ${props => darken(0.2, props.theme.secondary)};
         }
       }
-      .tags-wrapper {
-        width: 100%;
-        padding: 1rem 1rem;
-        border: 1px solid ${props => props.theme.grey[5]};
-        input {
-          width: inherit;
-          border: 0;
-          outline: 0;
-          font-family: 'Roboto';
-          font-size: 1.3rem;
-        }
-      }
     }
     .right {
       height: 55rem;
@@ -54,7 +43,7 @@ const Form = styled.form`
       }
       ul {
         font-size: 1.3rem;
-        padding-left: 0.5rem;
+        padding-left: 0.25rem;
         margin: 0;
         list-style: none;
       }
@@ -77,7 +66,66 @@ const Form = styled.form`
   }
 `
 
-const BasicForm = ({ title, description, tag, tags, isPublic, onChange }) => (
+const Tags = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem 1rem;
+  border: 1px solid ${props => props.theme.grey[5]};
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid ${props => props.theme.grey[5]};
+    border-radius: 3px;
+    padding: 0.25rem;
+    padding-left: 0.75rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    span {
+      font-family: 'Roboto';
+      font-size: 1.3rem;
+      margin-right: 0.25rem;
+    }
+    svg {
+      width: 1.35rem;
+      height: 1.35rem;
+      color: ${props => props.theme.grey[10]};
+      cursor: pointer;
+    }
+  }
+`
+
+const TagInput = styled.input.attrs(props => ({
+  type: 'text',
+  placeholder: props.tags ? '' : 'Tags (e.g. albert einstein, flying pig, mashup)',
+  style: {
+    display: props.tags ? 'inline' : 'block',
+    width: props.tags ? (props.tag.length + 1) * 8 : '100%'
+  }
+}))`
+  border: 0;
+  outline: 0;
+  font-family: 'Roboto';
+  font-size: 1.3rem;
+  padding: 0;
+  &::placeholder {
+    font-family: 'Roboto';
+  }
+`
+
+const BasicForm = ({
+  inputRef,
+  title,
+  description,
+  tag,
+  tags,
+  isPublic,
+  onChange,
+  onTagsClick,
+  onTagChange,
+  onTagDelete,
+  onTagKeyDown
+}) => (
   <Form>
     <div className="basic-top">
       <fieldset className="left">
@@ -89,15 +137,22 @@ const BasicForm = ({ title, description, tag, tags, isPublic, onChange }) => (
           onChange={onChange}
           rows={5}
         />
-        <div className="tags-wrapper">
-          <input
-            type="text"
-            name="tag"
-            placeholder={tags.length ? '' : 'Tags (e.g. albert einstein, flying pig, mashup)'}
+        <Tags onClick={onTagsClick}>
+          {tags.map((t, i) => (
+            <div key={i} className="tag">
+              <span>{t}</span>
+              <Close onClick={() => onTagDelete(i)} />
+            </div>
+          ))}
+          <TagInput
+            ref={inputRef}
+            tag={tag}
+            tags={!!tags.length}
             value={tag}
-            onChange={onChange}
+            onChange={onTagChange}
+            onKeyDown={onTagKeyDown}
           />
-        </div>
+        </Tags>
       </fieldset>
       <fieldset className="right">
         <img
@@ -109,10 +164,10 @@ const BasicForm = ({ title, description, tag, tags, isPublic, onChange }) => (
           Make it a moment! Build the hype and get fans excited about your next video.
         </div>
         <ul>
-          <li>Schedule your Premiere</li>
-          <li>Share your watch page URL with your fans</li>
-          <li>Chat with fans before and during the Premiere</li>
-          <li>Watch the Premiere with fans in real time</li>
+          <li>{'\u00b7'} Schedule your Premiere</li>
+          <li>{'\u00b7'} Share your watch page URL with your fans</li>
+          <li>{'\u00b7'} Chat with fans before and during the Premiere</li>
+          <li>{'\u00b7'} Watch the Premiere with fans in real time</li>
         </ul>
         <select name="isPublic" value={isPublic} onChange={onChange}>
           <option value={true}>Public</option>

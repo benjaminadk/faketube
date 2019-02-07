@@ -33,6 +33,13 @@ const GlobalStyle = createGlobalStyle`
     font-weight: normal;
     font-style: normal;
   }
+  @font-face {
+    font-family: 'Roboto Mono';
+    src: url('/static/RobotoMono-Regular.ttf') format('opentype');
+    font-display: auto;
+    font-weight: normal;
+    font-style: normal;
+  }
   html {
     scroll-behavior: smooth;
     box-sizing: border-box;
