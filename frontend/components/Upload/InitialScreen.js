@@ -64,6 +64,29 @@ const Container = styled.div`
       font-size: 1.2rem;
       font-weight: normal;
       color: ${props => props.theme.grey[12]};
+      margin-bottom: 1.5rem;
+    }
+    .section-main {
+      display: flex;
+      font-family: 'Roboto Bold';
+      font-size: 1.2rem;
+      img {
+        margin-right: 1rem;
+      }
+      .section-right {
+        display: flex;
+        flex-direction: column;
+        button {
+          width: 6rem;
+          font-size: 1.1rem;
+          background: ${props => props.theme.grey[0]};
+          border: 1px solid ${props => props.theme.grey[5]};
+          border-radius: 2px;
+          padding: 0.4rem 0;
+          margin-top: 1rem;
+          box-shadow: ${props => props.theme.shadows[1]};
+        }
+      }
     }
   }
 `
@@ -111,6 +134,13 @@ const InitialScreen = ({ inputRef, isPublic, onChange, onVideoInputChange, onVid
     <div className="right">
       <div className="section">
         <div className="section-heading">Import videos</div>
+        <div className="section-main">
+          <img src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-import.png" />
+          <div className="section-right">
+            <div>Import your videos from Google Photos</div>
+            <button>Import</button>
+          </div>
+        </div>
       </div>
       <div className="section">
         <div className="section-heading">Live streaming</div>
