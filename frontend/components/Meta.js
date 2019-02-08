@@ -6,6 +6,6 @@ export default () => (
     <meta charSet="utf-8" />
     <link rel="stylesheet" type="text/css" href="/static/nprogress.css" />
     {/* <link rel="icon" type="image/x-icon" href="static/favicon.ico" /> */}
-    <title>FakeTube</title>
+    <title>FooTube</title>
   </Head>
 )

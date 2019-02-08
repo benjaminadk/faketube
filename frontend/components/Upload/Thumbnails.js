@@ -59,8 +59,8 @@ const Thumbnail = styled.div`
     display: none;
     justify-items: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 12rem;
+    height: 6.75rem;
     background: rgba(0, 0, 0, 0.4);
     outline: 3px solid ${props => props.theme.black[0]};
     outline-offset: 2px;
@@ -144,7 +144,7 @@ const Thumbnails = ({
             selected={thumbnailIndex === i}
             onClick={() => onThumbnailClick(i)}
           >
-            <Loading size={5} color={5} />
+            <Loading size={5} color={5} stop={showThumbnails} />
             <div className="overlay">
               <span>Set as thumbnail</span>
             </div>
@@ -156,7 +156,7 @@ const Thumbnails = ({
           <Uploader hideBorder={imageURL || loading}>
             {loading ? (
               <React.Fragment>
-                <Loading size={2} color={5} />
+                <Loading size={2} color={5} stop={!loading} />
                 <span>
                   {imageFilename
                     .toLowerCase()

@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { lighten, darken } from 'polished'
 import axios from 'axios'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -8,7 +7,7 @@ import formatTag from '../lib/formatTag'
 import InitialScreen from './Upload/InitialScreen'
 import BigThumbnail from './Upload/BigThumbnail'
 import ProgressBar from './Upload/ProgressBar'
-import ProgressMsg from './Upload/ProgressMsg'
+import SharingBar from './Upload/SharingBar'
 import Publish from './Upload/Publish'
 import TabBar from './Upload/TabBar'
 import UploadStatus from './Upload/UploadStatus'
@@ -76,7 +75,7 @@ class Upload extends React.Component {
   state = {
     saved: false,
     videoID: '',
-    progress: 0,
+    progress: 10,
     time: 0,
     remaining: '',
     canceled: false,
@@ -282,8 +281,7 @@ class Upload extends React.Component {
       this.setState({ tags, tag: '' }, () => {
         this.tagInput.current.focus()
       })
-    }
-    if (e.keyCode === 8) {
+    } else if (e.keyCode === 8) {
       const { tag, tags } = this.state
       if (!tags.length || tag.length) return
       e.preventDefault()
@@ -386,17 +384,22 @@ class Upload extends React.Component {
               <BigThumbnail showThumbnails={showThumbnails} url={thumbnailURL} />
               <div className="progress">
                 <div className="progress-left">
-                  <ProgressBar
-                    progress={progress}
-                    showThumbnails={showThumbnails}
-                    remaining={remaining}
-                    onCancelClick={this.onCancelClick}
-                  />
-                  <ProgressMsg
-                    progress={progress}
-                    showThumbnails={showThumbnails}
-                    canceled={canceled}
-                  />
+                  {isPublished ? (
+                    <SharingBar
+                      title={title}
+                      videoID={videoID}
+                      thumbnailURL={thumbnailURL}
+                      user={this.props.user}
+                    />
+                  ) : (
+                    <ProgressBar
+                      progress={progress}
+                      showThumbnails={showThumbnails}
+                      remaining={remaining}
+                      canceled={canceled}
+                      onCancelClick={this.onCancelClick}
+                    />
+                  )}
                   <TabBar tab={tab} onTabClick={this.onTabClick} />
                 </div>
                 <Publish

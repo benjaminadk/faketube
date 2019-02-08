@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo'
 import { SIGN_S3_MUTATION } from '../../apollo/signS3'
 
 const Container = styled.div`
-  width: 66%;
+  width: 100rem;
   height: 90%;
   display: grid;
   grid-template-columns: 3fr 1fr;

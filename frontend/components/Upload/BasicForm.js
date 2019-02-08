@@ -2,15 +2,10 @@ import styled from 'styled-components'
 import { darken } from 'polished'
 import { Close } from 'styled-icons/material/Close'
 
-const Form = styled.form`
+const Form = styled.div`
   .basic-top {
     display: grid;
     grid-template-columns: 45rem 1fr;
-    fieldset {
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
     .left {
       padding-right: 1.5rem;
       & > :first-child,
@@ -54,12 +49,35 @@ const Form = styled.form`
         background: ${props => props.theme.grey[0]};
         padding: 0.75rem;
         margin-top: 1rem;
+        margin-bottom: 1.5rem;
         &:focus {
           outline: 1px solid ${props => darken(0.2, props.theme.secondary)};
         }
         option {
           font-family: 'Roboto';
           font-size: 1.3rem;
+        }
+      }
+      .tip {
+        display: flex;
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        img {
+          width: 4.5rem;
+          height: 4.5rem;
+          margin-right: 2rem;
+        }
+        .tip-main {
+          & > :nth-child(1) {
+            font-family: 'Roboto Bold';
+            margin-bottom: 0.5rem;
+          }
+          a {
+            color: ${props => darken(0.2, props.theme.secondary)};
+            &:hover {
+              text-decoration: underline;
+            }
+          }
         }
       }
     }
@@ -113,6 +131,25 @@ const TagInput = styled.input.attrs(props => ({
   }
 `
 
+const PlaylistTool = styled.div`
+  width: 100%;
+  margin-bottom: 3rem;
+  .add {
+    width: 100%;
+    font-family: 'Roboto';
+    font-size: 1.1rem;
+    text-align: left;
+    background: ${props => props.theme.grey[0]};
+    padding: 0.75rem;
+    border: 1px solid ${props => props.theme.grey[7]};
+    border-radius: 2px;
+    cursor: pointer;
+    &:hover {
+      background: ${props => props.theme.grey[1]};
+    }
+  }
+`
+
 const BasicForm = ({
   inputRef,
   title,
@@ -128,7 +165,7 @@ const BasicForm = ({
 }) => (
   <Form>
     <div className="basic-top">
-      <fieldset className="left">
+      <div className="left">
         <input type="text" name="title" placeholder="Title" value={title} onChange={onChange} />
         <textarea
           name="description"
@@ -153,8 +190,8 @@ const BasicForm = ({
             onKeyDown={onTagKeyDown}
           />
         </Tags>
-      </fieldset>
-      <fieldset className="right">
+      </div>
+      <div className="right">
         <img
           className="premiere-banner"
           src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-premiere-promo.png"
@@ -173,7 +210,38 @@ const BasicForm = ({
           <option value={true}>Public</option>
           <option value={false}>Private</option>
         </select>
-      </fieldset>
+        <PlaylistTool>
+          <button type="button" className="add">
+            + Add to playlist
+          </button>
+        </PlaylistTool>
+        <div className="tip">
+          <img src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-child-safety.png" />
+          <div className="tip-main">
+            <div>Do minors appear in this video?</div>
+            <div>
+              Make sure you follow our policies around child safety on YouTube and comply with any
+              labor law obligations you may have.{' '}
+              <a href="https://support.google.com/youtube/answer/2801999?hl=en" target="blank">
+                Learn more
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="tip">
+          <img src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-education.png" />
+          <div className="tip-main">
+            <div>Looking for overall content guidance?</div>
+            <div>
+              Our Community Guidelines help you steer clear of trouble and ensure that YouTube
+              remains a place where creators, advertisers, and viewers can thrive.{' '}
+              <a href="https://www.youtube.com/yt/policyandsafety/" target="blank">
+                Learn more
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </Form>
 )

@@ -18,8 +18,8 @@ const Container = styled.div`
 `
 
 const BigThumbnail = ({ showThumbnails, url }) => (
-  <Container show={showThumbnails} url={url}>
-    <Loading size={2} color={5} child={1} />
+  <Container show={showThumbnails || url} url={url}>
+    <Loading size={2} color={5} child={1} stop={showThumbnails || url} />
   </Container>
 )
 
