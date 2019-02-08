@@ -1,21 +1,8 @@
 import styled from 'styled-components'
 import Router from 'next/router'
 import { darken } from 'polished'
-import {
-  FacebookShareButton,
-  FacebookIcon,
-  GooglePlusShareButton,
-  GooglePlusIcon,
-  TwitterShareButton,
-  TwitterIcon,
-  PinterestShareButton,
-  PinterestIcon,
-  RedditShareButton,
-  RedditIcon,
-  TumblrShareButton,
-  TumblrIcon
-} from 'react-share'
-import { PriorityHigh } from 'styled-icons/material/PriorityHigh'
+import ShareTab from './ShareTab'
+import EmailTab from './EmailTab'
 
 const Title = styled.div`
   justify-self: flex-start;
@@ -29,92 +16,6 @@ const Container = styled.div`
     display: flex;
     border-bottom: 1px solid ${props => props.theme.grey[5]};
     margin-bottom: 1.5rem;
-  }
-  .share {
-    .icons {
-      display: flex;
-      margin-bottom: 1rem;
-      & > * {
-        margin-right: 0.25rem;
-        cursor: pointer;
-        &:focus {
-          outline: 0;
-        }
-      }
-    }
-    input {
-      width: 66%;
-      font-size: 2rem;
-      padding: 0.5rem;
-      color: ${props => props.theme.grey[10]};
-      &:focus {
-        outline: 1px solid ${props => darken(0.2, props.theme.secondary)};
-      }
-    }
-  }
-  .email {
-    display: flex;
-    flex-direction: column;
-    textarea {
-      font-family: 'Roboto';
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      padding: 0.5rem;
-      &:focus {
-        outline: 1px solid ${props => darken(0.2, props.theme.secondary)};
-      }
-    }
-    .email-error {
-      display: ${props => (props.error ? 'flex' : 'none')};
-      align-items: center;
-      background: ${props => darken(0.1, props.theme.primary)};
-      color: ${props => props.theme.white};
-      font-family: 'Roboto Bold';
-      font-size: 1.3rem;
-      padding: 0.75rem;
-      svg {
-        width: 3rem;
-        height: 3rem;
-        color: ${props => props.theme.white};
-        margin-right: 10rem;
-      }
-    }
-    .email-subheading {
-      font-size: 1.3rem;
-      color: ${props => props.theme.grey[10]};
-      margin-bottom: 0.5rem;
-    }
-    .email-preview {
-      font-size: 1.3rem;
-      background: ${props => props.theme.grey[1]};
-      padding: 1rem;
-      margin-bottom: 1rem;
-      .email-highlight,
-      .email-link {
-        color: ${props => darken(0.2, props.theme.secondary)};
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-      .email-message {
-        margin: 0.5rem 0 0.5rem 1rem;
-      }
-      .email-link {
-        font-family: 'Roboto Bold';
-        margin-left: 0.5rem;
-      }
-    }
-    button {
-      align-self: flex-start;
-      font-family: 'Roboto Bold';
-      font-size: 1.1rem;
-      border: 0;
-      border-radius: 2px;
-      padding: 0.85rem 1rem;
-      background: ${props => darken(0.2, props.theme.secondary)};
-      color: ${props => props.theme.white};
-      cursor: pointer;
-    }
   }
 `
 
@@ -132,7 +33,10 @@ class SharingBar extends React.Component {
   state = {
     title: '',
     tab: 0,
-    message: ''
+    to: '',
+    message: '',
+    emailError: false,
+    emailSent: false
   }
 
   shareInput = React.createRef()
@@ -154,9 +58,25 @@ class SharingBar extends React.Component {
     this.setState({ [name]: value })
   }
 
+  onSendEmail = async emailVideo => {
+    const { to, title, message } = this.state
+    const { videoID, thumbnailURL: imageURL } = this.props
+    if (!to) return this.setState({ emailError: true })
+    const res = await emailVideo({
+      variables: { data: { to, title, message, videoID, imageURL } }
+    })
+    if (res.data.emailVideo.success) {
+      this.setState({ emailError: false, emailSent: true, to: '', message: '' })
+    } else {
+      // error sending emails
+    }
+  }
+
+  onResetEmail = () => this.setState({ emailSent: false })
+
   render() {
     const {
-      state: { title, tab, message },
+      state: { title, tab, to, message, emailError, emailSent },
       props: { videoID, thumbnailURL, user }
     } = this
     const url = `http://localhost:8889/videos?id=${videoID}`
@@ -176,62 +96,27 @@ class SharingBar extends React.Component {
             </Tab>
           </div>
           {tab === 0 ? (
-            <div className="share">
-              <div className="icons">
-                <FacebookShareButton url={url} quote={title}>
-                  <FacebookIcon size={32} />
-                </FacebookShareButton>
-                <TwitterShareButton url={url} title={title}>
-                  <TwitterIcon size={32} />
-                </TwitterShareButton>
-                <GooglePlusShareButton url={url}>
-                  <GooglePlusIcon size={32} />
-                </GooglePlusShareButton>
-                <RedditShareButton url={url} title={title}>
-                  <RedditIcon size={32} />
-                </RedditShareButton>
-                <TumblrShareButton url={url} title={title}>
-                  <TumblrIcon size={32} />
-                </TumblrShareButton>
-                <PinterestShareButton url={url} media={thumbnailURL}>
-                  <PinterestIcon size={32} />
-                </PinterestShareButton>
-              </div>
-              <input
-                ref={this.shareInput}
-                type="text"
-                value={url}
-                readOnly
-                onClick={this.onShareInputClick}
-              />
-            </div>
+            <ShareTab
+              inputRef={this.shareInput}
+              url={url}
+              title={title}
+              thumbnailURL={thumbnailURL}
+              onShareInputClick={this.onShareInputClick}
+            />
           ) : tab === 1 ? (
             <div>embed</div>
           ) : (
-            <div className="email">
-              <div className="email-error">
-                <PriorityHigh />
-                <span>Please enter a valid email address in the Email Addresses field </span>
-              </div>
-              <textarea placeholder="To" />
-              <textarea
-                name="message"
-                placeholder="Optional message"
-                value={message}
-                onChange={this.onChange}
-                maxLength={300}
-              />
-              <div className="email-subheading">Message preview:</div>
-              <div className="email-preview">
-                <div>
-                  <span className="email-highlight">{user.name}</span> has shared a video with you
-                  on FooTube
-                </div>
-                <div className="email-message">{message}</div>
-                <div className="email-link">"{title}"</div>
-              </div>
-              <button>Send email</button>
-            </div>
+            <EmailTab
+              emailSent={emailSent}
+              emailError={emailError}
+              title={title}
+              to={to}
+              message={message}
+              user={user}
+              onChange={this.onChange}
+              onSendEmail={this.onSendEmail}
+              onResetEmail={this.onResetEmail}
+            />
           )}
         </Container>
       </React.Fragment>

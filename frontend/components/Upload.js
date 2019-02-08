@@ -75,7 +75,7 @@ class Upload extends React.Component {
   state = {
     saved: false,
     videoID: '',
-    progress: 10,
+    progress: 0,
     time: 0,
     remaining: '',
     canceled: false,

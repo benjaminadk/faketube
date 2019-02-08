@@ -10,6 +10,7 @@ type Mutation {
   signS3(filename: String!, filetype: String!): S3Payload
   createVideo(data: VideoCreateInput): VideoPayload
   updateVideo(id: ID!, data: VideoCreateInput): VideoPayload
+  emailVideo(data: EmailVideoInput): Payload
 }
 
 type User {
@@ -54,4 +55,12 @@ type VideoPayload {
 enum Role {
   USER
   ADMIN
+}
+
+input EmailVideoInput {
+  to: String!
+  title: String!
+  message: String!
+  videoID: String!
+  imageURL: String!
 }

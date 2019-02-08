@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { getSignedUrl } = require('../services/aws')
-const { COOKIE, JWT_SECRET } = process.env
+const { transport } = require('../services/email')
+const { COOKIE, JWT_SECRET, MAIL_FROM } = process.env
 
 module.exports = {
   signin: async (_, args, ctx, info) => {
@@ -67,6 +68,25 @@ module.exports = {
         data: { ...args.data }
       })
       return { success: true, video }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
+  emailVideo: async (_, args, ctx, info) => {
+    try {
+      const { to, title, message, videoID, imageURL } = args.data
+      const recipients = to.split(',').map(t => t.trim().toLowerCase())
+      recipients.forEach(async to => {
+        await transport.sendMail({
+          to,
+          from: `'"${ctx.user.name} via FooTube" <${MAIL_FROM}>'`,
+          subject: `${ctx.user.name} sent you a video: "${title}"`,
+          html: `<div><a href="http://localhost:8889/videos?id=${videoID}">${title}</a></div>`
+        })
+      })
+      return { success: true }
     } catch (error) {
       console.log(error)
       return { success: false }

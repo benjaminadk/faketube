@@ -12,3 +12,8 @@
 - aws lambda function to create thumbnails
   - uses ffmpeg and ffprobe w/Nodejs `child_process`
   - sends three thumbnails to s3
+
+## Todos
+
+- [ ] Design email template function
+- [ ] Research Google Photos API
