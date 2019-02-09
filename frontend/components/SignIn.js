@@ -37,7 +37,7 @@ class SignIn extends React.Component {
         clientId="162812165284-hvi6iqeqtatt48d2cv824d3bl4n9b5ig.apps.googleusercontent.com"
         onSuccess={this.onSuccess}
         onFailure={this.onFailure}
-        scope="profile email https://www.googleapis.com/auth/photoslibrary.readonly"
+        scope="profile email"
         render={props => (
           <span onClick={props.onClick} className="sign-in">
             Sign in

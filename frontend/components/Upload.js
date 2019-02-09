@@ -13,6 +13,7 @@ import TabBar from './Upload/TabBar'
 import UploadStatus from './Upload/UploadStatus'
 import BasicForm from './Upload/BasicForm'
 import Thumbnails from './Upload/Thumbnails'
+import ImportModal from './Upload/ImportModal'
 
 const CREATE_VIDEO_MUTATION = gql`
   mutation CREATE_VIDEO_MUTATION($data: VideoCreateInput) {
@@ -91,7 +92,9 @@ class Upload extends React.Component {
     tag: '',
     tags: [],
     isPublic: true,
-    isPublished: false
+    isPublished: false,
+    showImportModal: false,
+    googleVideos: null
   }
 
   videoInput = React.createRef()
@@ -197,6 +200,7 @@ class Upload extends React.Component {
       variables: {
         data: {
           title,
+          description: '',
           videoURL: fileURL,
           imageURL: this.getThumbnailSrc(2),
           isPublic: this.state.isPublic
@@ -345,6 +349,29 @@ class Upload extends React.Component {
     })
   }
 
+  onImportClick = async () => {
+    const { googlePhotoAT } = this.props.user
+    if (!googlePhotoAT) {
+      window.location.href = 'http://localhost:8888/api/photoAuth'
+    }
+    try {
+      const res = await axios({
+        method: 'GET',
+        url: 'https://photoslibrary.googleapis.com/v1/mediaItems',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${googlePhotoAT}`
+        }
+      })
+      const googleVideos = res.data.mediaItems.filter(m => m.mimeType.slice(0, 5) === 'video')
+      this.setState({ showImportModal: true, googleVideos })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  onCloseImportModal = () => this.setState({ showImportModal: false })
+
   render() {
     const {
       state: {
@@ -365,7 +392,9 @@ class Upload extends React.Component {
         tags,
         tag,
         isPublic,
-        isPublished
+        isPublished,
+        showImportModal,
+        googleVideos
       }
     } = this
     return (
@@ -377,6 +406,7 @@ class Upload extends React.Component {
             onChange={this.onChange}
             onVideoInputChange={this.onVideoInputChange}
             onVideoInputClick={this.onVideoInputClick}
+            onImportClick={this.onImportClick}
           />
         ) : (
           <VideoScreen>
@@ -454,6 +484,11 @@ class Upload extends React.Component {
             </div>
           </VideoScreen>
         )}
+        <ImportModal
+          show={showImportModal}
+          videos={googleVideos}
+          onClose={this.onCloseImportModal}
+        />
       </Container>
     )
   }

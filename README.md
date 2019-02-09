@@ -15,5 +15,8 @@
 
 ## Todos
 
-- [ ] Design email template function
+- [ ] Create a poster size image with thumbnails
+- [ ] Refactor lambda thumbnail function
+- [x] Design email template function
+  - [ ] Add user profile link to emailVideo
 - [ ] Research Google Photos API

@@ -8,6 +8,8 @@ export const ME_QUERY = gql`
       name
       email
       image
+      googlePhotoAT
+      googlePhotoRT
       role
       createdAt
     }

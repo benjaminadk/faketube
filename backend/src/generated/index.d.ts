@@ -171,6 +171,10 @@ export type UserOrderByInput =
   | "name_DESC"
   | "image_ASC"
   | "image_DESC"
+  | "googlePhotoAT_ASC"
+  | "googlePhotoAT_DESC"
+  | "googlePhotoRT_ASC"
+  | "googlePhotoRT_DESC"
   | "role_ASC"
   | "role_DESC"
   | "createdAt_ASC"
@@ -185,6 +189,8 @@ export interface UserUpdateInput {
   email?: String;
   name?: String;
   image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   videos?: VideoUpdateManyWithoutUserInput;
   role?: Role;
 }
@@ -276,6 +282,34 @@ export interface UserWhereInput {
   image_not_starts_with?: String;
   image_ends_with?: String;
   image_not_ends_with?: String;
+  googlePhotoAT?: String;
+  googlePhotoAT_not?: String;
+  googlePhotoAT_in?: String[] | String;
+  googlePhotoAT_not_in?: String[] | String;
+  googlePhotoAT_lt?: String;
+  googlePhotoAT_lte?: String;
+  googlePhotoAT_gt?: String;
+  googlePhotoAT_gte?: String;
+  googlePhotoAT_contains?: String;
+  googlePhotoAT_not_contains?: String;
+  googlePhotoAT_starts_with?: String;
+  googlePhotoAT_not_starts_with?: String;
+  googlePhotoAT_ends_with?: String;
+  googlePhotoAT_not_ends_with?: String;
+  googlePhotoRT?: String;
+  googlePhotoRT_not?: String;
+  googlePhotoRT_in?: String[] | String;
+  googlePhotoRT_not_in?: String[] | String;
+  googlePhotoRT_lt?: String;
+  googlePhotoRT_lte?: String;
+  googlePhotoRT_gt?: String;
+  googlePhotoRT_gte?: String;
+  googlePhotoRT_contains?: String;
+  googlePhotoRT_not_contains?: String;
+  googlePhotoRT_starts_with?: String;
+  googlePhotoRT_not_starts_with?: String;
+  googlePhotoRT_ends_with?: String;
+  googlePhotoRT_not_ends_with?: String;
   videos_every?: VideoWhereInput;
   videos_some?: VideoWhereInput;
   videos_none?: VideoWhereInput;
@@ -310,6 +344,8 @@ export interface UserCreateInput {
   email: String;
   name: String;
   image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   videos?: VideoCreateManyWithoutUserInput;
   role: Role;
 }
@@ -367,6 +403,8 @@ export interface UserUpdateManyMutationInput {
   email?: String;
   name?: String;
   image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   role?: Role;
 }
 
@@ -413,6 +451,8 @@ export interface UserUpdateWithoutVideosDataInput {
   email?: String;
   name?: String;
   image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   role?: Role;
 }
 
@@ -646,6 +686,8 @@ export interface UserCreateWithoutVideosInput {
   email: String;
   name: String;
   image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   role: Role;
 }
 
@@ -845,6 +887,8 @@ export interface User {
   email: String;
   name: String;
   image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   role: Role;
   createdAt: DateTimeOutput;
 }
@@ -855,6 +899,8 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   name: () => Promise<String>;
   image: () => Promise<String>;
+  googlePhotoAT: () => Promise<String>;
+  googlePhotoRT: () => Promise<String>;
   videos: <T = FragmentableArray<Video>>(args?: {
     where?: VideoWhereInput;
     orderBy?: VideoOrderByInput;
@@ -876,6 +922,8 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
+  googlePhotoAT: () => Promise<AsyncIterator<String>>;
+  googlePhotoRT: () => Promise<AsyncIterator<String>>;
   videos: <T = Promise<AsyncIterator<VideoSubscription>>>(args?: {
     where?: VideoWhereInput;
     orderBy?: VideoOrderByInput;
@@ -916,6 +964,8 @@ export interface UserPreviousValues {
   email: String;
   name: String;
   image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
   role: Role;
   createdAt: DateTimeOutput;
 }
@@ -928,6 +978,8 @@ export interface UserPreviousValuesPromise
   email: () => Promise<String>;
   name: () => Promise<String>;
   image: () => Promise<String>;
+  googlePhotoAT: () => Promise<String>;
+  googlePhotoRT: () => Promise<String>;
   role: () => Promise<Role>;
   createdAt: () => Promise<DateTimeOutput>;
 }
@@ -940,6 +992,8 @@ export interface UserPreviousValuesSubscription
   email: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
+  googlePhotoAT: () => Promise<AsyncIterator<String>>;
+  googlePhotoRT: () => Promise<AsyncIterator<String>>;
   role: () => Promise<AsyncIterator<Role>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }

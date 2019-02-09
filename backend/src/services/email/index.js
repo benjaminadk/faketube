@@ -13,5 +13,6 @@ const devOptions = {
 const transport = nodemailer.createTransport(devOptions)
 
 module.exports = {
-  transport
+  transport,
+  makeEmail: require('./makeEmail')
 }

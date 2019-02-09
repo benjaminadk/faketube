@@ -73,6 +73,8 @@ type User {
   email: String!
   name: String!
   image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
   role: Role!
   createdAt: DateTime!
@@ -89,6 +91,8 @@ input UserCreateInput {
   email: String!
   name: String!
   image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
   role: Role!
 }
@@ -103,6 +107,8 @@ input UserCreateWithoutVideosInput {
   email: String!
   name: String!
   image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
   role: Role!
 }
 
@@ -122,6 +128,10 @@ enum UserOrderByInput {
   name_DESC
   image_ASC
   image_DESC
+  googlePhotoAT_ASC
+  googlePhotoAT_DESC
+  googlePhotoRT_ASC
+  googlePhotoRT_DESC
   role_ASC
   role_DESC
   createdAt_ASC
@@ -136,6 +146,8 @@ type UserPreviousValues {
   email: String!
   name: String!
   image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
   role: Role!
   createdAt: DateTime!
 }
@@ -163,6 +175,8 @@ input UserUpdateInput {
   email: String
   name: String
   image: String
+  googlePhotoAT: String
+  googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
   role: Role
 }
@@ -172,6 +186,8 @@ input UserUpdateManyMutationInput {
   email: String
   name: String
   image: String
+  googlePhotoAT: String
+  googlePhotoRT: String
   role: Role
 }
 
@@ -189,6 +205,8 @@ input UserUpdateWithoutVideosDataInput {
   email: String
   name: String
   image: String
+  googlePhotoAT: String
+  googlePhotoRT: String
   role: Role
 }
 
@@ -268,6 +286,34 @@ input UserWhereInput {
   image_not_starts_with: String
   image_ends_with: String
   image_not_ends_with: String
+  googlePhotoAT: String
+  googlePhotoAT_not: String
+  googlePhotoAT_in: [String!]
+  googlePhotoAT_not_in: [String!]
+  googlePhotoAT_lt: String
+  googlePhotoAT_lte: String
+  googlePhotoAT_gt: String
+  googlePhotoAT_gte: String
+  googlePhotoAT_contains: String
+  googlePhotoAT_not_contains: String
+  googlePhotoAT_starts_with: String
+  googlePhotoAT_not_starts_with: String
+  googlePhotoAT_ends_with: String
+  googlePhotoAT_not_ends_with: String
+  googlePhotoRT: String
+  googlePhotoRT_not: String
+  googlePhotoRT_in: [String!]
+  googlePhotoRT_not_in: [String!]
+  googlePhotoRT_lt: String
+  googlePhotoRT_lte: String
+  googlePhotoRT_gt: String
+  googlePhotoRT_gte: String
+  googlePhotoRT_contains: String
+  googlePhotoRT_not_contains: String
+  googlePhotoRT_starts_with: String
+  googlePhotoRT_not_starts_with: String
+  googlePhotoRT_ends_with: String
+  googlePhotoRT_not_ends_with: String
   videos_every: VideoWhereInput
   videos_some: VideoWhereInput
   videos_none: VideoWhereInput

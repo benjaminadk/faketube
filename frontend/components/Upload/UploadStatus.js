@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
 import Link from 'next/link'
+import { frontend } from '../../config'
 
 const Container = styled.div`
   display: flex;
@@ -40,7 +41,7 @@ const UploadStatus = ({ progress, showThumbnails, canceled, videoID }) => (
       <React.Fragment>
         <span>Your video will be live at:</span>
         <Link href={{ pathname: '/videos', query: { id: videoID } }}>
-          <a>http://localhost:8889/videos?id={videoID}</a>
+          <a>{`${frontend}/videos?id=${videoID}`}</a>
         </Link>
       </React.Fragment>
     ) : null}

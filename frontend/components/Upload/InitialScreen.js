@@ -85,6 +85,13 @@ const Container = styled.div`
           padding: 0.4rem 0;
           margin-top: 1rem;
           box-shadow: ${props => props.theme.shadows[1]};
+          cursor: pointer;
+          &:hover {
+            background: ${props => props.theme.grey[1]};
+          }
+          &:focus {
+            outline: 0;
+          }
         }
       }
     }
@@ -104,7 +111,14 @@ const Logo = styled.div`
   }
 `
 
-const InitialScreen = ({ inputRef, isPublic, onChange, onVideoInputChange, onVideoInputClick }) => (
+const InitialScreen = ({
+  inputRef,
+  isPublic,
+  onChange,
+  onVideoInputChange,
+  onVideoInputClick,
+  onImportClick
+}) => (
   <Container>
     <div className="left">
       <div className="dropzone">
@@ -138,7 +152,7 @@ const InitialScreen = ({ inputRef, isPublic, onChange, onVideoInputChange, onVid
           <img src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-import.png" />
           <div className="section-right">
             <div>Import your videos from Google Photos</div>
-            <button>Import</button>
+            <button onClick={onImportClick}>Import</button>
           </div>
         </div>
       </div>

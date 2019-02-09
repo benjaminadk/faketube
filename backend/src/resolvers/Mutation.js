@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { getSignedUrl } = require('../services/aws')
-const { transport } = require('../services/email')
+const { transport, makeEmail } = require('../services/email')
+
 const { COOKIE, JWT_SECRET, MAIL_FROM } = process.env
 
 module.exports = {
@@ -83,7 +84,7 @@ module.exports = {
           to,
           from: `'"${ctx.user.name} via FooTube" <${MAIL_FROM}>'`,
           subject: `${ctx.user.name} sent you a video: "${title}"`,
-          html: `<div><a href="http://localhost:8889/videos?id=${videoID}">${title}</a></div>`
+          html: await makeEmail(ctx.user, title, message, videoID, imageURL)
         })
       })
       return { success: true }

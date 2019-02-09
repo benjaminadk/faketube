@@ -19,6 +19,8 @@ type User {
   email: String!
   name: String!
   image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
   videos: [Video]
   role: Role!
   createdAt: DateTime

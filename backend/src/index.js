@@ -8,6 +8,7 @@ const addUserIdToRequest = require('./middleware/addUserIdToRequest')
 const addUserToRequest = require('./middleware/addUserToRequest')
 const { prisma } = require('./generated')
 const resolvers = require('./resolvers')
+const { photoAuth, photoAuthCallback } = require('./services/photoAuth')
 
 const { NODE_ENV, FRONTEND_DEV, FRONTEND_PROD, PORT } = process.env
 
@@ -38,6 +39,10 @@ const server = new ApolloServer({
 })
 
 app.use(cookieParser(), addUserIdToRequest, addUserToRequest)
+
+app.get('/api/photoAuth', photoAuth)
+app.get('/api/photoAuth/callback', photoAuthCallback)
+
 server.applyMiddleware({ app, path, server, cors })
 
 const httpServer = http.createServer(app)
