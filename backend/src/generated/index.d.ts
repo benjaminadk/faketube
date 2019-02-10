@@ -138,6 +138,23 @@ export interface ClientConstructor<T> {
  * Types
  */
 
+export type Category =
+  | "FILM_ANIMATION"
+  | "AUTOS_VEHICLES"
+  | "MUSIC"
+  | "PETS_ANIMALS"
+  | "SPORTS"
+  | "TRAVEL_EVENTS"
+  | "GAMING"
+  | "PEOPLE_BLOGS"
+  | "COMEDY"
+  | "ENTERTAINMENT"
+  | "NEWS_POLITICS"
+  | "HOWTO_STYLE"
+  | "EDUCATION"
+  | "SCIENCE_TECHNOLOGY"
+  | "NONPROFITS_ACTIVISM";
+
 export type Role = "USER" | "ADMIN";
 
 export type VideoOrderByInput =
@@ -155,6 +172,8 @@ export type VideoOrderByInput =
   | "isPublished_DESC"
   | "isPublic_ASC"
   | "isPublic_DESC"
+  | "category_ASC"
+  | "category_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -209,6 +228,7 @@ export interface VideoUpdateWithoutUserDataInput {
   tags?: VideoUpdatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
+  category?: Category;
 }
 
 export interface UserWhereInput {
@@ -379,6 +399,7 @@ export interface VideoCreateWithoutUserInput {
   tags?: VideoCreatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
+  category?: Category;
 }
 
 export interface UserUpdateOneWithoutVideosInput {
@@ -531,6 +552,10 @@ export interface VideoScalarWhereInput {
   isPublished_not?: Boolean;
   isPublic?: Boolean;
   isPublic_not?: Boolean;
+  category?: Category;
+  category_not?: Category;
+  category_in?: Category[] | Category;
+  category_not_in?: Category[] | Category;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
   createdAt_in?: DateTimeInput[] | DateTimeInput;
@@ -625,6 +650,10 @@ export interface VideoWhereInput {
   isPublished_not?: Boolean;
   isPublic?: Boolean;
   isPublic_not?: Boolean;
+  category?: Category;
+  category_not?: Category;
+  category_in?: Category[] | Category;
+  category_not_in?: Category[] | Category;
   user?: UserWhereInput;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
@@ -647,6 +676,7 @@ export interface VideoUpdateManyDataInput {
   tags?: VideoUpdatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
+  category?: Category;
 }
 
 export interface VideoUpdateInput {
@@ -657,6 +687,7 @@ export interface VideoUpdateInput {
   tags?: VideoUpdatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
+  category?: Category;
   user?: UserUpdateOneWithoutVideosInput;
 }
 
@@ -668,6 +699,7 @@ export interface VideoUpdateManyMutationInput {
   tags?: VideoUpdatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
+  category?: Category;
 }
 
 export interface VideoCreateInput {
@@ -678,6 +710,7 @@ export interface VideoCreateInput {
   tags?: VideoCreatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
+  category?: Category;
   user?: UserCreateOneWithoutVideosInput;
 }
 
@@ -704,6 +737,7 @@ export interface VideoPreviousValues {
   tags: String[];
   isPublished: Boolean;
   isPublic: Boolean;
+  category?: Category;
   createdAt: DateTimeOutput;
 }
 
@@ -718,6 +752,7 @@ export interface VideoPreviousValuesPromise
   tags: () => Promise<String[]>;
   isPublished: () => Promise<Boolean>;
   isPublic: () => Promise<Boolean>;
+  category: () => Promise<Category>;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
@@ -732,6 +767,7 @@ export interface VideoPreviousValuesSubscription
   tags: () => Promise<AsyncIterator<String[]>>;
   isPublished: () => Promise<AsyncIterator<Boolean>>;
   isPublic: () => Promise<AsyncIterator<Boolean>>;
+  category: () => Promise<AsyncIterator<Category>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
@@ -850,6 +886,7 @@ export interface Video {
   tags: String[];
   isPublished: Boolean;
   isPublic: Boolean;
+  category?: Category;
   createdAt: DateTimeOutput;
 }
 
@@ -862,6 +899,7 @@ export interface VideoPromise extends Promise<Video>, Fragmentable {
   tags: () => Promise<String[]>;
   isPublished: () => Promise<Boolean>;
   isPublic: () => Promise<Boolean>;
+  category: () => Promise<Category>;
   user: <T = UserPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
 }
@@ -877,6 +915,7 @@ export interface VideoSubscription
   tags: () => Promise<AsyncIterator<String[]>>;
   isPublished: () => Promise<AsyncIterator<Boolean>>;
   isPublic: () => Promise<AsyncIterator<Boolean>>;
+  category: () => Promise<AsyncIterator<Category>>;
   user: <T = UserSubscription>() => T;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1106,6 +1145,10 @@ export type String = string;
  */
 
 export const models: Model[] = [
+  {
+    name: "Category",
+    embedded: false
+  },
   {
     name: "Role",
     embedded: false

@@ -20,6 +20,7 @@ type Video {
   tags: [String]
   isPublished: Boolean! @default(value: "false")
   isPublic: Boolean! @default(value: "true")
+  category: Category @default(value: "ENTERTAINMENT")
   user: User
   createdAt: DateTime!
 }
@@ -27,4 +28,22 @@ type Video {
 enum Role {
   USER
   ADMIN
+}
+
+enum Category {
+  FILM_ANIMATION
+  AUTOS_VEHICLES
+  MUSIC
+  PETS_ANIMALS
+  SPORTS
+  TRAVEL_EVENTS
+  GAMING
+  PEOPLE_BLOGS
+  COMEDY
+  ENTERTAINMENT
+  NEWS_POLITICS
+  HOWTO_STYLE
+  EDUCATION
+  SCIENCE_TECHNOLOGY
+  NONPROFITS_ACTIVISM
 }

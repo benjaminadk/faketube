@@ -44,19 +44,8 @@ const Form = styled.div`
       }
       select {
         width: 100%;
-        font-family: 'Roboto';
-        font-size: 1.1rem;
-        background: ${props => props.theme.grey[0]};
-        padding: 0.75rem;
         margin-top: 1rem;
         margin-bottom: 1.5rem;
-        &:focus {
-          outline: 1px solid ${props => darken(0.2, props.theme.secondary)};
-        }
-        option {
-          font-family: 'Roboto';
-          font-size: 1.3rem;
-        }
       }
       .tip {
         display: flex;
@@ -88,7 +77,7 @@ const Tags = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  padding: 1rem 1rem;
+  padding: 1.5rem 1rem;
   border: 1px solid ${props => props.theme.grey[5]};
   .tag {
     display: inline-flex;
@@ -128,6 +117,9 @@ const TagInput = styled.input.attrs(props => ({
   padding: 0;
   &::placeholder {
     font-family: 'Roboto';
+  }
+  &:focus {
+    outline: 0;
   }
 `
 

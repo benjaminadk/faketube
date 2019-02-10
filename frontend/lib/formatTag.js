@@ -2,5 +2,6 @@ export default function(str) {
   return str
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9-_,]/g, '')
+    .replace(/\s\s+/g, ' ')
+    .replace(/[^a-z0-9-_,\s]/g, '')
 }

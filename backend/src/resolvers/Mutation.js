@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken')
+const axios = require('axios')
 const { getSignedUrl } = require('../services/aws')
 const { transport, makeEmail } = require('../services/email')
 
-const { COOKIE, JWT_SECRET, MAIL_FROM } = process.env
+const { COOKIE, JWT_SECRET, MAIL_FROM, GOOGLE_PHOTO_ID, GOOGLE_PHOTO_SECRET } = process.env
 
 module.exports = {
   signin: async (_, args, ctx, info) => {
@@ -87,6 +88,30 @@ module.exports = {
           html: await makeEmail(ctx.user, title, message, videoID, imageURL)
         })
       })
+      return { success: true }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
+  refreshGooglePhotoToken: async (_, args, ctx, info) => {
+    try {
+      const { id, googlePhotoRT } = ctx.user
+      const res = await axios({
+        method: 'POST',
+        url: 'https://www.googleapis.com/oauth2/v4/token',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: {
+          client_id: GOOGLE_PHOTO_ID,
+          client_secret: GOOGLE_PHOTO_SECRET,
+          refresh_token: googlePhotoRT,
+          grant_type: 'refresh_token'
+        }
+      })
+      await ctx.prisma.updateUser({ where: { id }, data: { googlePhotoAT: res.data.access_token } })
       return { success: true }
     } catch (error) {
       console.log(error)

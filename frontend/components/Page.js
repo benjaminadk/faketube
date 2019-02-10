@@ -58,10 +58,21 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
   input,
-  textarea {
+  textarea, 
+  select {
     &:focus {
-      outline-color: ${darken(0.2, theme.secondary)};
+      outline: 1px solid ${darken(0.2, theme.secondary)};
     }
+  }
+  select {
+    font-family: 'Roboto';
+    font-size: 1.1rem;
+    background: ${theme.grey[0]};
+    padding: 0.75rem;
+  }
+  option {
+    font-family: 'Roboto';
+    font-size: 1.3rem;
   }
 `
 

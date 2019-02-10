@@ -11,6 +11,7 @@ type Mutation {
   createVideo(data: VideoCreateInput): VideoPayload
   updateVideo(id: ID!, data: VideoCreateInput): VideoPayload
   emailVideo(data: EmailVideoInput): Payload
+  refreshGooglePhotoToken: Payload
 }
 
 type User {
@@ -35,6 +36,7 @@ type Video {
   tags: [String]
   isPublished: Boolean!
   isPublic: Boolean!
+  category: Category
   user: User
   createdAt: DateTime!
 }
@@ -54,15 +56,33 @@ type VideoPayload {
   video: Video
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
 input EmailVideoInput {
   to: String!
   title: String!
   message: String!
   videoID: String!
   imageURL: String!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Category {
+  FILM_ANIMATION
+  AUTOS_VEHICLES
+  MUSIC
+  PETS_ANIMALS
+  SPORTS
+  TRAVEL_EVENTS
+  GAMING
+  PEOPLE_BLOGS
+  COMEDY
+  ENTERTAINMENT
+  NEWS_POLITICS
+  HOWTO_STYLE
+  EDUCATION
+  SCIENCE_TECHNOLOGY
+  NONPROFITS_ACTIVISM
 }

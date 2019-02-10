@@ -19,4 +19,7 @@
 - [ ] Refactor lambda thumbnail function
 - [x] Design email template function
   - [ ] Add user profile link to emailVideo
-- [ ] Research Google Photos API
+- [ ] Google Photos API
+  - [x] Separate permission from login
+  - [x] Refresh access token logic
+  - [ ] How to get video from GP to AWS

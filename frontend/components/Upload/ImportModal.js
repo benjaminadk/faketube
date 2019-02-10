@@ -114,6 +114,12 @@ class ImportModal extends React.Component {
     selected: []
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.show && !this.props.show) {
+      this.setState({ selected: [] })
+    }
+  }
+
   onVideoClick = index => {
     const { selected } = this.state
     if (selected.includes(index)) {
@@ -123,6 +129,13 @@ class ImportModal extends React.Component {
       selected.push(index)
       this.setState({ selected })
     }
+  }
+
+  onSelectClick = () => {
+    const { videos } = this.props
+    const { selected } = this.state
+    const video = videos[selected[0]]
+    this.props.onSelectGoogleVideo(video)
   }
 
   render() {
@@ -150,7 +163,9 @@ class ImportModal extends React.Component {
               ))}
           </div>
           <div className="import-bottom">
-            <button disabled={!selected.length}>Select</button>
+            <button disabled={!selected.length} onClick={this.onSelectClick}>
+              Select
+            </button>
             <button onClick={onClose}>Cancel</button>
           </div>
         </Container>

@@ -11,6 +11,24 @@ type BatchPayload {
   count: Long!
 }
 
+enum Category {
+  FILM_ANIMATION
+  AUTOS_VEHICLES
+  MUSIC
+  PETS_ANIMALS
+  SPORTS
+  TRAVEL_EVENTS
+  GAMING
+  PEOPLE_BLOGS
+  COMEDY
+  ENTERTAINMENT
+  NEWS_POLITICS
+  HOWTO_STYLE
+  EDUCATION
+  SCIENCE_TECHNOLOGY
+  NONPROFITS_ACTIVISM
+}
+
 scalar DateTime
 
 scalar Long
@@ -349,6 +367,7 @@ type Video {
   tags: [String!]!
   isPublished: Boolean!
   isPublic: Boolean!
+  category: Category
   user: User
   createdAt: DateTime!
 }
@@ -367,6 +386,7 @@ input VideoCreateInput {
   tags: VideoCreatetagsInput
   isPublished: Boolean
   isPublic: Boolean
+  category: Category
   user: UserCreateOneWithoutVideosInput
 }
 
@@ -387,6 +407,7 @@ input VideoCreateWithoutUserInput {
   tags: VideoCreatetagsInput
   isPublished: Boolean
   isPublic: Boolean
+  category: Category
 }
 
 type VideoEdge {
@@ -409,6 +430,8 @@ enum VideoOrderByInput {
   isPublished_DESC
   isPublic_ASC
   isPublic_DESC
+  category_ASC
+  category_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -424,6 +447,7 @@ type VideoPreviousValues {
   tags: [String!]!
   isPublished: Boolean!
   isPublic: Boolean!
+  category: Category
   createdAt: DateTime!
 }
 
@@ -502,6 +526,10 @@ input VideoScalarWhereInput {
   isPublished_not: Boolean
   isPublic: Boolean
   isPublic_not: Boolean
+  category: Category
+  category_not: Category
+  category_in: [Category!]
+  category_not_in: [Category!]
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -541,6 +569,7 @@ input VideoUpdateInput {
   tags: VideoUpdatetagsInput
   isPublished: Boolean
   isPublic: Boolean
+  category: Category
   user: UserUpdateOneWithoutVideosInput
 }
 
@@ -552,6 +581,7 @@ input VideoUpdateManyDataInput {
   tags: VideoUpdatetagsInput
   isPublished: Boolean
   isPublic: Boolean
+  category: Category
 }
 
 input VideoUpdateManyMutationInput {
@@ -562,6 +592,7 @@ input VideoUpdateManyMutationInput {
   tags: VideoUpdatetagsInput
   isPublished: Boolean
   isPublic: Boolean
+  category: Category
 }
 
 input VideoUpdateManyWithoutUserInput {
@@ -592,6 +623,7 @@ input VideoUpdateWithoutUserDataInput {
   tags: VideoUpdatetagsInput
   isPublished: Boolean
   isPublic: Boolean
+  category: Category
 }
 
 input VideoUpdateWithWhereUniqueWithoutUserInput {
@@ -680,6 +712,10 @@ input VideoWhereInput {
   isPublished_not: Boolean
   isPublic: Boolean
   isPublic_not: Boolean
+  category: Category
+  category_not: Category
+  category_in: [Category!]
+  category_not_in: [Category!]
   user: UserWhereInput
   createdAt: DateTime
   createdAt_not: DateTime

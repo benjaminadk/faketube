@@ -12,8 +12,11 @@ import Publish from './Upload/Publish'
 import TabBar from './Upload/TabBar'
 import UploadStatus from './Upload/UploadStatus'
 import BasicForm from './Upload/BasicForm'
+import AdvancedForm from './Upload/AdvancedForm'
 import Thumbnails from './Upload/Thumbnails'
 import ImportModal from './Upload/ImportModal'
+import { ME_QUERY } from './User'
+import { SIGN_S3_MUTATION } from '../apollo/signS3'
 
 const CREATE_VIDEO_MUTATION = gql`
   mutation CREATE_VIDEO_MUTATION($data: VideoCreateInput) {
@@ -22,6 +25,14 @@ const CREATE_VIDEO_MUTATION = gql`
       video {
         id
       }
+    }
+  }
+`
+
+const REFRESH_GOOGLE_PHOTO_TOKEN = gql`
+  mutation REFRESH_GOOGLE_PHOTO_TOKEN {
+    refreshGooglePhotoToken {
+      success
     }
   }
 `
@@ -93,6 +104,7 @@ class Upload extends React.Component {
     tags: [],
     isPublic: true,
     isPublished: false,
+    category: 'ENTERTAINMENT',
     showImportModal: false,
     googleVideos: null
   }
@@ -234,6 +246,7 @@ class Upload extends React.Component {
       tags,
       isPublic,
       isPublished,
+      category,
       thumbnailURL,
       videoURL
     } = this.state
@@ -247,7 +260,8 @@ class Upload extends React.Component {
           description,
           tags: { set: tags },
           isPublic,
-          isPublished
+          isPublished,
+          category
         }
       }
     })
@@ -350,24 +364,60 @@ class Upload extends React.Component {
   }
 
   onImportClick = async () => {
-    const { googlePhotoAT } = this.props.user
-    if (!googlePhotoAT) {
+    let { googlePhotoAT: token } = this.props.user
+    if (!token) {
       window.location.href = 'http://localhost:8888/api/photoAuth'
+      return
     }
     try {
-      const res = await axios({
-        method: 'GET',
-        url: 'https://photoslibrary.googleapis.com/v1/mediaItems',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${googlePhotoAT}`
-        }
-      })
-      const googleVideos = res.data.mediaItems.filter(m => m.mimeType.slice(0, 5) === 'video')
-      this.setState({ showImportModal: true, googleVideos })
+      await this.fetchGoogleVideosList(token)
     } catch (error) {
-      console.log(error)
+      await this.props.client.mutate({
+        mutation: REFRESH_GOOGLE_PHOTO_TOKEN,
+        refetchQueries: [{ query: ME_QUERY }]
+      })
+      let { googlePhotoAT: newToken } = this.props.user
+      await this.fetchGoogleVideosList(newToken)
     }
+  }
+
+  fetchGoogleVideosList = async token => {
+    const res = await axios({
+      method: 'GET',
+      url: 'https://photoslibrary.googleapis.com/v1/mediaItems',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const googleVideos = res.data.mediaItems.filter(m => m.mimeType.slice(0, 5) === 'video')
+    this.setState({ showImportModal: true, googleVideos })
+  }
+
+  onSelectGoogleVideo = async video => {
+    await this.setState({ showImportModal: false })
+    const filename = formatFilename('user', this.props.user.id, 'videos', video.filename)
+    const filetype = video.mimeType
+    const res1 = await this.props.client.mutate({
+      mutation: SIGN_S3_MUTATION,
+      variables: { filename, filetype }
+    })
+    const { success, requestURL, fileURL } = res1.data.signS3
+    if (!success) {
+      return // error requesting upload url
+    }
+    await axios({
+      method: 'PUT',
+      url: requestURL,
+      headers: {
+        'Content-Type': filetype
+      },
+      onUploadProgress: p => {
+        const progress = Math.round((p.loaded * 100) / p.total)
+        this.setState({ progress })
+      },
+      data: video.baseUrl // this does not work
+    })
   }
 
   onCloseImportModal = () => this.setState({ showImportModal: false })
@@ -393,6 +443,7 @@ class Upload extends React.Component {
         tag,
         isPublic,
         isPublished,
+        category,
         showImportModal,
         googleVideos
       }
@@ -478,7 +529,7 @@ class Upload extends React.Component {
                 ) : tab === 1 ? (
                   <div>1</div>
                 ) : (
-                  <div>2</div>
+                  <AdvancedForm category={category} onChange={this.onChange} />
                 )}
               </div>
             </div>
@@ -488,6 +539,7 @@ class Upload extends React.Component {
           show={showImportModal}
           videos={googleVideos}
           onClose={this.onCloseImportModal}
+          onSelectGoogleVideo={this.onSelectGoogleVideo}
         />
       </Container>
     )
