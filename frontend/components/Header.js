@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import Router from 'next/router'
-import NProgress from 'nprogress'
 import { darken } from 'polished'
 import { Menu } from 'styled-icons/material/Menu'
 import { Search } from 'styled-icons/material/Search'
@@ -10,18 +9,6 @@ import { Chat } from 'styled-icons/material/Chat'
 import { Notifications } from 'styled-icons/material/Notifications'
 import { MoreVert } from 'styled-icons/material/MoreVert'
 import SignIn from './SignIn'
-
-Router.onRouteChangeStart = () => {
-  NProgress.start()
-}
-
-Router.onRouteChangeComplete = () => {
-  NProgress.done()
-}
-
-Router.onRouteChangeError = () => {
-  NProgress.done()
-}
 
 const Container = styled.div`
   height: 5.5rem;

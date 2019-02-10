@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import Router from 'next/router'
 import { Menu } from 'styled-icons/material/Menu'
 import { Home } from 'styled-icons/material/Home'
 import { Whatshot } from 'styled-icons/material/Whatshot'
@@ -9,7 +10,7 @@ import { WatchLater } from 'styled-icons/material/WatchLater'
 import { ThumbUp } from 'styled-icons/material/ThumbUp'
 
 const Backdrop = styled.div`
-  display: ${props => (props.show ? 'block' : 'none')};
+  display: ${props => (props.backdrop ? 'block' : 'none')};
   position: fixed;
   top: 0;
   left: 0;
@@ -28,8 +29,8 @@ const Container = styled.div`
   left: 0;
   z-index: 3;
   transform: ${props => (props.show ? `translateX(0)` : `translateX(-100%)`)};
-  transition: all 0.5s ease-out;
-  background: ${props => props.theme.white};
+  transition: all 0.25s ease-out;
+  background: ${props => props.theme.grey[0]};
   .header {
     height: 5.5rem;
     display: grid;
@@ -60,33 +61,34 @@ const Container = styled.div`
     flex-direction: column;
     padding: 1.2rem 0;
     border-bottom: 1px solid ${props => props.theme.grey[2]};
-    .menu-item {
-      min-height: 4rem;
-      display: flex;
-      align-items: center;
-      padding: 0 2.4rem;
-      cursor: pointer;
-      &:hover {
-        background: ${props => props.theme.grey[1]};
-      }
-      & > :first-child {
-        margin-right: 2.4rem;
-        svg {
-          width: 2.4rem;
-          height: 2.4rem;
-          color: ${props => props.theme.grey[8]};
-        }
-      }
-      & > :last-child {
-        font-family: 'Roboto';
-        font-size: 1.4rem;
-      }
+  }
+`
+
+const MenuItem = styled.div`
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  padding: 0 2.4rem;
+  cursor: pointer;
+  &:hover {
+    background: ${props => props.theme.grey[1]};
+  }
+  & > :first-child {
+    margin-right: 2.4rem;
+    svg {
+      width: 2.4rem;
+      height: 2.4rem;
+      color: ${props => (props.highlight ? props.theme.primary : props.theme.grey[8])};
     }
+  }
+  & > :last-child {
+    font-family: 'Roboto';
+    font-size: 1.4rem;
   }
 `
 
 const menu1 = [
-  { text: 'Home', icon: <Home /> },
+  { text: 'Home', icon: <Home />, pathname: '/', onClick: () => Router.push('/') },
   { text: 'Trending', icon: <Whatshot /> },
   { text: 'Subscriptions', icon: <Subscriptions /> }
 ]
@@ -98,9 +100,9 @@ const menu2 = [
   { text: 'Liked videos', icon: <ThumbUp /> }
 ]
 
-const Drawer = ({ show, closeDrawer }) => (
+const Drawer = ({ show, backdrop, pathname, closeDrawer }) => (
   <React.Fragment>
-    <Backdrop show={show} />
+    <Backdrop backdrop={backdrop} />
     <Container show={show}>
       <div className="header">
         <div className="drawer-button">
@@ -112,18 +114,18 @@ const Drawer = ({ show, closeDrawer }) => (
       </div>
       <div className="menu">
         {menu1.map(m => (
-          <div key={m.text} className="menu-item">
+          <MenuItem key={m.text} highlight={pathname === m.pathname} onClick={m.onClick}>
             <span>{m.icon}</span>
             <span>{m.text}</span>
-          </div>
+          </MenuItem>
         ))}
       </div>
       <div className="menu">
         {menu2.map(m => (
-          <div key={m.text} className="menu-item">
+          <MenuItem key={m.text}>
             <span>{m.icon}</span>
             <span>{m.text}</span>
-          </div>
+          </MenuItem>
         ))}
       </div>
     </Container>

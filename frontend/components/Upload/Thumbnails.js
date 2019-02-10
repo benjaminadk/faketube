@@ -119,7 +119,7 @@ const Uploader = styled.div`
 
 const Thumbnails = ({
   inputRef,
-  imageURL,
+  thumbURL,
   imageFilename,
   thumbnailIndex,
   showThumbnails,
@@ -153,7 +153,7 @@ const Thumbnails = ({
       </div>
       <Mutation mutation={SIGN_S3_MUTATION}>
         {(signS3, { loading }) => (
-          <Uploader hideBorder={imageURL || loading}>
+          <Uploader hideBorder={thumbURL || loading}>
             {loading ? (
               <React.Fragment>
                 <Loading size={2} color={5} stop={!loading} />
@@ -165,11 +165,11 @@ const Thumbnails = ({
                 </span>
                 <button className="cancel">Cancel</button>
               </React.Fragment>
-            ) : imageURL ? (
+            ) : thumbURL ? (
               <Thumbnail
                 index={4}
                 show={true}
-                url={imageURL}
+                url={thumbURL}
                 selected={thumbnailIndex === 4}
                 onClick={() => onThumbnailClick(4)}
               >

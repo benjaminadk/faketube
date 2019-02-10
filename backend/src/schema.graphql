@@ -2,6 +2,7 @@
 
 type Query {
   me: User
+  videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, first: Int): [Video]
 }
 
 type Mutation {
@@ -11,7 +12,7 @@ type Mutation {
   createVideo(data: VideoCreateInput): VideoPayload
   updateVideo(id: ID!, data: VideoCreateInput): VideoPayload
   emailVideo(data: EmailVideoInput): Payload
-  refreshGooglePhotoToken: Payload
+  refreshGooglePhotoToken: TokenPayload
 }
 
 type User {
@@ -30,7 +31,9 @@ type User {
 type Video {
   id: ID!
   videoURL: String!
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String!
   description: String
   tags: [String]
@@ -56,12 +59,17 @@ type VideoPayload {
   video: Video
 }
 
+type TokenPayload {
+  success: Boolean
+  token: String
+}
+
 input EmailVideoInput {
   to: String!
   title: String!
   message: String!
   videoID: String!
-  imageURL: String!
+  thumbURL: String!
 }
 
 enum Role {

@@ -162,8 +162,12 @@ export type VideoOrderByInput =
   | "id_DESC"
   | "videoURL_ASC"
   | "videoURL_DESC"
-  | "imageURL_ASC"
-  | "imageURL_DESC"
+  | "thumbURL_ASC"
+  | "thumbURL_DESC"
+  | "posterURL_ASC"
+  | "posterURL_DESC"
+  | "previewURL_ASC"
+  | "previewURL_DESC"
   | "title_ASC"
   | "title_DESC"
   | "description_ASC"
@@ -222,7 +226,9 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface VideoUpdateWithoutUserDataInput {
   videoURL?: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
@@ -393,7 +399,9 @@ export interface UserUpsertWithoutVideosInput {
 
 export interface VideoCreateWithoutUserInput {
   videoURL: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title: String;
   description?: String;
   tags?: VideoCreatetagsInput;
@@ -506,20 +514,48 @@ export interface VideoScalarWhereInput {
   videoURL_not_starts_with?: String;
   videoURL_ends_with?: String;
   videoURL_not_ends_with?: String;
-  imageURL?: String;
-  imageURL_not?: String;
-  imageURL_in?: String[] | String;
-  imageURL_not_in?: String[] | String;
-  imageURL_lt?: String;
-  imageURL_lte?: String;
-  imageURL_gt?: String;
-  imageURL_gte?: String;
-  imageURL_contains?: String;
-  imageURL_not_contains?: String;
-  imageURL_starts_with?: String;
-  imageURL_not_starts_with?: String;
-  imageURL_ends_with?: String;
-  imageURL_not_ends_with?: String;
+  thumbURL?: String;
+  thumbURL_not?: String;
+  thumbURL_in?: String[] | String;
+  thumbURL_not_in?: String[] | String;
+  thumbURL_lt?: String;
+  thumbURL_lte?: String;
+  thumbURL_gt?: String;
+  thumbURL_gte?: String;
+  thumbURL_contains?: String;
+  thumbURL_not_contains?: String;
+  thumbURL_starts_with?: String;
+  thumbURL_not_starts_with?: String;
+  thumbURL_ends_with?: String;
+  thumbURL_not_ends_with?: String;
+  posterURL?: String;
+  posterURL_not?: String;
+  posterURL_in?: String[] | String;
+  posterURL_not_in?: String[] | String;
+  posterURL_lt?: String;
+  posterURL_lte?: String;
+  posterURL_gt?: String;
+  posterURL_gte?: String;
+  posterURL_contains?: String;
+  posterURL_not_contains?: String;
+  posterURL_starts_with?: String;
+  posterURL_not_starts_with?: String;
+  posterURL_ends_with?: String;
+  posterURL_not_ends_with?: String;
+  previewURL?: String;
+  previewURL_not?: String;
+  previewURL_in?: String[] | String;
+  previewURL_not_in?: String[] | String;
+  previewURL_lt?: String;
+  previewURL_lte?: String;
+  previewURL_gt?: String;
+  previewURL_gte?: String;
+  previewURL_contains?: String;
+  previewURL_not_contains?: String;
+  previewURL_starts_with?: String;
+  previewURL_not_starts_with?: String;
+  previewURL_ends_with?: String;
+  previewURL_not_ends_with?: String;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -604,20 +640,48 @@ export interface VideoWhereInput {
   videoURL_not_starts_with?: String;
   videoURL_ends_with?: String;
   videoURL_not_ends_with?: String;
-  imageURL?: String;
-  imageURL_not?: String;
-  imageURL_in?: String[] | String;
-  imageURL_not_in?: String[] | String;
-  imageURL_lt?: String;
-  imageURL_lte?: String;
-  imageURL_gt?: String;
-  imageURL_gte?: String;
-  imageURL_contains?: String;
-  imageURL_not_contains?: String;
-  imageURL_starts_with?: String;
-  imageURL_not_starts_with?: String;
-  imageURL_ends_with?: String;
-  imageURL_not_ends_with?: String;
+  thumbURL?: String;
+  thumbURL_not?: String;
+  thumbURL_in?: String[] | String;
+  thumbURL_not_in?: String[] | String;
+  thumbURL_lt?: String;
+  thumbURL_lte?: String;
+  thumbURL_gt?: String;
+  thumbURL_gte?: String;
+  thumbURL_contains?: String;
+  thumbURL_not_contains?: String;
+  thumbURL_starts_with?: String;
+  thumbURL_not_starts_with?: String;
+  thumbURL_ends_with?: String;
+  thumbURL_not_ends_with?: String;
+  posterURL?: String;
+  posterURL_not?: String;
+  posterURL_in?: String[] | String;
+  posterURL_not_in?: String[] | String;
+  posterURL_lt?: String;
+  posterURL_lte?: String;
+  posterURL_gt?: String;
+  posterURL_gte?: String;
+  posterURL_contains?: String;
+  posterURL_not_contains?: String;
+  posterURL_starts_with?: String;
+  posterURL_not_starts_with?: String;
+  posterURL_ends_with?: String;
+  posterURL_not_ends_with?: String;
+  previewURL?: String;
+  previewURL_not?: String;
+  previewURL_in?: String[] | String;
+  previewURL_not_in?: String[] | String;
+  previewURL_lt?: String;
+  previewURL_lte?: String;
+  previewURL_gt?: String;
+  previewURL_gte?: String;
+  previewURL_contains?: String;
+  previewURL_not_contains?: String;
+  previewURL_starts_with?: String;
+  previewURL_not_starts_with?: String;
+  previewURL_ends_with?: String;
+  previewURL_not_ends_with?: String;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -670,7 +734,9 @@ export interface VideoWhereInput {
 
 export interface VideoUpdateManyDataInput {
   videoURL?: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
@@ -681,7 +747,9 @@ export interface VideoUpdateManyDataInput {
 
 export interface VideoUpdateInput {
   videoURL?: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
@@ -693,7 +761,9 @@ export interface VideoUpdateInput {
 
 export interface VideoUpdateManyMutationInput {
   videoURL?: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
@@ -704,7 +774,9 @@ export interface VideoUpdateManyMutationInput {
 
 export interface VideoCreateInput {
   videoURL: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title: String;
   description?: String;
   tags?: VideoCreatetagsInput;
@@ -731,7 +803,9 @@ export interface NodeNode {
 export interface VideoPreviousValues {
   id: ID_Output;
   videoURL: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title: String;
   description?: String;
   tags: String[];
@@ -746,7 +820,9 @@ export interface VideoPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   videoURL: () => Promise<String>;
-  imageURL: () => Promise<String>;
+  thumbURL: () => Promise<String>;
+  posterURL: () => Promise<String>;
+  previewURL: () => Promise<String>;
   title: () => Promise<String>;
   description: () => Promise<String>;
   tags: () => Promise<String[]>;
@@ -761,7 +837,9 @@ export interface VideoPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   videoURL: () => Promise<AsyncIterator<String>>;
-  imageURL: () => Promise<AsyncIterator<String>>;
+  thumbURL: () => Promise<AsyncIterator<String>>;
+  posterURL: () => Promise<AsyncIterator<String>>;
+  previewURL: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
   tags: () => Promise<AsyncIterator<String[]>>;
@@ -880,7 +958,9 @@ export interface VideoSubscriptionPayloadSubscription
 export interface Video {
   id: ID_Output;
   videoURL: String;
-  imageURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
   title: String;
   description?: String;
   tags: String[];
@@ -893,7 +973,9 @@ export interface Video {
 export interface VideoPromise extends Promise<Video>, Fragmentable {
   id: () => Promise<ID_Output>;
   videoURL: () => Promise<String>;
-  imageURL: () => Promise<String>;
+  thumbURL: () => Promise<String>;
+  posterURL: () => Promise<String>;
+  previewURL: () => Promise<String>;
   title: () => Promise<String>;
   description: () => Promise<String>;
   tags: () => Promise<String[]>;
@@ -909,7 +991,9 @@ export interface VideoSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   videoURL: () => Promise<AsyncIterator<String>>;
-  imageURL: () => Promise<AsyncIterator<String>>;
+  thumbURL: () => Promise<AsyncIterator<String>>;
+  posterURL: () => Promise<AsyncIterator<String>>;
+  previewURL: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
   tags: () => Promise<AsyncIterator<String[]>>;

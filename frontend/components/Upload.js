@@ -33,6 +33,7 @@ const REFRESH_GOOGLE_PHOTO_TOKEN = gql`
   mutation REFRESH_GOOGLE_PHOTO_TOKEN {
     refreshGooglePhotoToken {
       success
+      token
     }
   }
 `
@@ -95,7 +96,7 @@ class Upload extends React.Component {
     thumbnailIndex: null,
     thumbnailURL: '',
     imageFilename: '',
-    imageURL: '',
+    thumbURL: '',
     videoURL: '',
     tab: 0,
     title: '',
@@ -162,12 +163,12 @@ class Upload extends React.Component {
     this.timer2 = setInterval(this.processingTimer, 1000)
     setTimeout(() => {
       clearInterval(this.timer2)
-      this.setState(({ imageURL }) => ({
+      this.setState(({ thumbURL }) => ({
         time: 0,
         remaining: null,
         showThumbnails: true,
-        thumbnailIndex: imageURL ? 4 : 2,
-        thumbnailURL: imageURL ? imageURL : this.getThumbnailSrc(2)
+        thumbnailIndex: thumbURL ? 4 : 2,
+        thumbnailURL: thumbURL ? thumbURL : this.getThumbnailSrc(2)
       }))
     }, 20000)
   }
@@ -214,7 +215,8 @@ class Upload extends React.Component {
           title,
           description: '',
           videoURL: fileURL,
-          imageURL: this.getThumbnailSrc(2),
+          thumbURL: this.getThumbnailSrc(2),
+          previewURL: this.getPreviewSrc(),
           isPublic: this.state.isPublic
         }
       }
@@ -255,7 +257,7 @@ class Upload extends React.Component {
         id: videoID,
         data: {
           videoURL,
-          imageURL: thumbnailURL,
+          thumbURL: thumbnailURL,
           title,
           description,
           tags: { set: tags },
@@ -325,12 +327,15 @@ class Upload extends React.Component {
     this.setState({
       thumbnailIndex,
       thumbnailURL:
-        thumbnailIndex === 4 ? this.state.imageURL : this.getThumbnailSrc(thumbnailIndex)
+        thumbnailIndex === 4 ? this.state.thumbURL : this.getThumbnailSrc(thumbnailIndex)
     })
   }
 
   getThumbnailSrc = x =>
     this.state.videoURL.replace(/\.\w+$/, `-${x}.jpg`).replace('/videos/', '/thumbnails/')
+
+  getPreviewSrc = () =>
+    this.state.videoURL.replace(/\.\w+$/, `-preview.gif`).replace('/videos/', '/thumbnails/')
 
   onImageInputClick = () => this.imageInput.current.click()
 
@@ -356,7 +361,9 @@ class Upload extends React.Component {
       onUploadProgress: p => {
         const progress = Math.round((p.loaded * 100) / p.total)
         if (progress === 100) {
-          this.setState({ imageURL: fileURL, thumbnailURL: fileURL, thumbnailIndex: 4 })
+          setTimeout(() => {
+            this.setState({ thumbURL: fileURL, thumbnailURL: fileURL, thumbnailIndex: 4 })
+          }, 500)
         }
       },
       data: file
@@ -364,20 +371,24 @@ class Upload extends React.Component {
   }
 
   onImportClick = async () => {
-    let { googlePhotoAT: token } = this.props.user
+    const { googlePhotoAT } = this.props.user
     if (!token) {
       window.location.href = 'http://localhost:8888/api/photoAuth'
       return
     }
     try {
-      await this.fetchGoogleVideosList(token)
+      await this.fetchGoogleVideosList(googlePhotoAT)
     } catch (error) {
-      await this.props.client.mutate({
+      const res = await this.props.client.mutate({
         mutation: REFRESH_GOOGLE_PHOTO_TOKEN,
         refetchQueries: [{ query: ME_QUERY }]
       })
-      let { googlePhotoAT: newToken } = this.props.user
-      await this.fetchGoogleVideosList(newToken)
+      const { success, token } = res.data.refreshGooglePhotoToken
+      if (!success) {
+        // error refreshing token
+        return
+      }
+      await this.fetchGoogleVideosList(token)
     }
   }
 
@@ -433,7 +444,7 @@ class Upload extends React.Component {
         showThumbnails,
         thumbnailIndex,
         thumbnailURL,
-        imageURL,
+        thumbURL,
         imageFilename,
         videoURL,
         tab,
@@ -516,7 +527,7 @@ class Upload extends React.Component {
                     />
                     <Thumbnails
                       inputRef={this.imageInput}
-                      imageURL={imageURL}
+                      thumbURL={thumbURL}
                       imageFilename={imageFilename}
                       thumbnailIndex={thumbnailIndex}
                       showThumbnails={showThumbnails}

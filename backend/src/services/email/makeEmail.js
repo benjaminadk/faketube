@@ -3,7 +3,7 @@ const mjml2html = require('mjml')
 const { NODE_ENV, FRONTEND_DEV, FRONTEND_PROD } = process.env
 const frontend = NODE_ENV === 'development' ? FRONTEND_DEV : FRONTEND_PROD
 
-module.exports = async (user, title, message, videoID, imageURL) => {
+module.exports = async (user, title, message, videoID, thumbURL) => {
   const htmlOutput = await mjml2html(`<mjml>
 
   <mjml-head>
@@ -34,7 +34,7 @@ module.exports = async (user, title, message, videoID, imageURL) => {
 
           <mj-divider border-width="1px" border-style="solid" border-color="lightgrey" />
 
-          <mj-image width="400" padding-bottom="50px" href="${frontend}/videos?id=${videoID}" src="${imageURL}"></mj-image>
+          <mj-image width="400" padding-bottom="50px" href="${frontend}/videos?id=${videoID}" src="${thumbURL}"></mj-image>
 
           <mj-button href="${frontend}/videos?id=${videoID}" font-family="Roboto, Arial" font-size="16px" font-weight="bold" background-color="transparent" color="#333" align="left">
             ${title}

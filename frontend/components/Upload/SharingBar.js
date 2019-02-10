@@ -60,10 +60,10 @@ class SharingBar extends React.Component {
 
   onSendEmail = async emailVideo => {
     const { to, title, message } = this.state
-    const { videoID, thumbnailURL: imageURL } = this.props
+    const { videoID, thumbnailURL: thumbURL } = this.props
     if (!to) return this.setState({ emailError: true })
     const res = await emailVideo({
-      variables: { data: { to, title, message, videoID, imageURL } }
+      variables: { data: { to, title, message, videoID, thumbURL } }
     })
     if (res.data.emailVideo.success) {
       this.setState({ emailError: false, emailSent: true, to: '', message: '' })

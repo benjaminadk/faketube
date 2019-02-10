@@ -1,5 +1,7 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components'
 import { darken } from 'polished'
+import Router from 'next/router'
+import NProgress from 'nprogress'
 import theme from './styles/Theme'
 import User from './User'
 import Meta from './Meta'
@@ -78,14 +80,34 @@ const GlobalStyle = createGlobalStyle`
 
 export default class Page extends React.Component {
   state = {
-    drawer: false
+    drawer: false,
+    backdrop: false
   }
 
-  openDrawer = () => this.setState({ drawer: true })
+  componentDidMount() {
+    Router.onRouteChangeStart = () => {
+      NProgress.start()
+    }
 
-  closeDrawer = () => this.setState({ drawer: false })
+    Router.onRouteChangeComplete = () => {
+      NProgress.done()
+      this.setState({ backdrop: false })
+    }
+
+    Router.onRouteChangeError = () => {
+      NProgress.done()
+    }
+  }
+
+  openDrawer = () => this.setState({ drawer: true, backdrop: true })
+
+  closeDrawer = () => this.setState({ drawer: false, backdrop: false })
 
   render() {
+    const {
+      state: { drawer, backdrop },
+      props: { pathname }
+    } = this
     return (
       <ThemeProvider theme={theme}>
         <User>
@@ -99,11 +121,17 @@ export default class Page extends React.Component {
                 <Inner>
                   {React.Children.map(this.props.children, child =>
                     React.cloneElement(child, {
-                      user: data.me
+                      user: data.me,
+                      drawer
                     })
                   )}
                 </Inner>
-                <Drawer show={this.state.drawer} closeDrawer={this.closeDrawer} />
+                <Drawer
+                  show={drawer}
+                  backdrop={backdrop}
+                  pathname={pathname}
+                  closeDrawer={this.closeDrawer}
+                />
               </StyledPage>
             )
           }}

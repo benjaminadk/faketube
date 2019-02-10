@@ -78,14 +78,14 @@ module.exports = {
 
   emailVideo: async (_, args, ctx, info) => {
     try {
-      const { to, title, message, videoID, imageURL } = args.data
+      const { to, title, message, videoID, thumbURL } = args.data
       const recipients = to.split(',').map(t => t.trim().toLowerCase())
       recipients.forEach(async to => {
         await transport.sendMail({
           to,
           from: `'"${ctx.user.name} via FooTube" <${MAIL_FROM}>'`,
           subject: `${ctx.user.name} sent you a video: "${title}"`,
-          html: await makeEmail(ctx.user, title, message, videoID, imageURL)
+          html: await makeEmail(ctx.user, title, message, videoID, thumbURL)
         })
       })
       return { success: true }
@@ -112,7 +112,7 @@ module.exports = {
         }
       })
       await ctx.prisma.updateUser({ where: { id }, data: { googlePhotoAT: res.data.access_token } })
-      return { success: true }
+      return { success: true, token: res.data.access_token }
     } catch (error) {
       console.log(error)
       return { success: false }

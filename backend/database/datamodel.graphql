@@ -14,7 +14,9 @@ type User {
 type Video {
   id: ID! @unique
   videoURL: String!
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String!
   description: String
   tags: [String]

@@ -361,7 +361,9 @@ input UserWhereUniqueInput {
 type Video {
   id: ID!
   videoURL: String!
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String!
   description: String
   tags: [String!]!
@@ -380,7 +382,9 @@ type VideoConnection {
 
 input VideoCreateInput {
   videoURL: String!
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String!
   description: String
   tags: VideoCreatetagsInput
@@ -401,7 +405,9 @@ input VideoCreatetagsInput {
 
 input VideoCreateWithoutUserInput {
   videoURL: String!
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String!
   description: String
   tags: VideoCreatetagsInput
@@ -420,8 +426,12 @@ enum VideoOrderByInput {
   id_DESC
   videoURL_ASC
   videoURL_DESC
-  imageURL_ASC
-  imageURL_DESC
+  thumbURL_ASC
+  thumbURL_DESC
+  posterURL_ASC
+  posterURL_DESC
+  previewURL_ASC
+  previewURL_DESC
   title_ASC
   title_DESC
   description_ASC
@@ -441,7 +451,9 @@ enum VideoOrderByInput {
 type VideoPreviousValues {
   id: ID!
   videoURL: String!
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String!
   description: String
   tags: [String!]!
@@ -480,20 +492,48 @@ input VideoScalarWhereInput {
   videoURL_not_starts_with: String
   videoURL_ends_with: String
   videoURL_not_ends_with: String
-  imageURL: String
-  imageURL_not: String
-  imageURL_in: [String!]
-  imageURL_not_in: [String!]
-  imageURL_lt: String
-  imageURL_lte: String
-  imageURL_gt: String
-  imageURL_gte: String
-  imageURL_contains: String
-  imageURL_not_contains: String
-  imageURL_starts_with: String
-  imageURL_not_starts_with: String
-  imageURL_ends_with: String
-  imageURL_not_ends_with: String
+  thumbURL: String
+  thumbURL_not: String
+  thumbURL_in: [String!]
+  thumbURL_not_in: [String!]
+  thumbURL_lt: String
+  thumbURL_lte: String
+  thumbURL_gt: String
+  thumbURL_gte: String
+  thumbURL_contains: String
+  thumbURL_not_contains: String
+  thumbURL_starts_with: String
+  thumbURL_not_starts_with: String
+  thumbURL_ends_with: String
+  thumbURL_not_ends_with: String
+  posterURL: String
+  posterURL_not: String
+  posterURL_in: [String!]
+  posterURL_not_in: [String!]
+  posterURL_lt: String
+  posterURL_lte: String
+  posterURL_gt: String
+  posterURL_gte: String
+  posterURL_contains: String
+  posterURL_not_contains: String
+  posterURL_starts_with: String
+  posterURL_not_starts_with: String
+  posterURL_ends_with: String
+  posterURL_not_ends_with: String
+  previewURL: String
+  previewURL_not: String
+  previewURL_in: [String!]
+  previewURL_not_in: [String!]
+  previewURL_lt: String
+  previewURL_lte: String
+  previewURL_gt: String
+  previewURL_gte: String
+  previewURL_contains: String
+  previewURL_not_contains: String
+  previewURL_starts_with: String
+  previewURL_not_starts_with: String
+  previewURL_ends_with: String
+  previewURL_not_ends_with: String
   title: String
   title_not: String
   title_in: [String!]
@@ -563,7 +603,9 @@ input VideoSubscriptionWhereInput {
 
 input VideoUpdateInput {
   videoURL: String
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String
   description: String
   tags: VideoUpdatetagsInput
@@ -575,7 +617,9 @@ input VideoUpdateInput {
 
 input VideoUpdateManyDataInput {
   videoURL: String
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String
   description: String
   tags: VideoUpdatetagsInput
@@ -586,7 +630,9 @@ input VideoUpdateManyDataInput {
 
 input VideoUpdateManyMutationInput {
   videoURL: String
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String
   description: String
   tags: VideoUpdatetagsInput
@@ -617,7 +663,9 @@ input VideoUpdatetagsInput {
 
 input VideoUpdateWithoutUserDataInput {
   videoURL: String
-  imageURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
   title: String
   description: String
   tags: VideoUpdatetagsInput
@@ -666,20 +714,48 @@ input VideoWhereInput {
   videoURL_not_starts_with: String
   videoURL_ends_with: String
   videoURL_not_ends_with: String
-  imageURL: String
-  imageURL_not: String
-  imageURL_in: [String!]
-  imageURL_not_in: [String!]
-  imageURL_lt: String
-  imageURL_lte: String
-  imageURL_gt: String
-  imageURL_gte: String
-  imageURL_contains: String
-  imageURL_not_contains: String
-  imageURL_starts_with: String
-  imageURL_not_starts_with: String
-  imageURL_ends_with: String
-  imageURL_not_ends_with: String
+  thumbURL: String
+  thumbURL_not: String
+  thumbURL_in: [String!]
+  thumbURL_not_in: [String!]
+  thumbURL_lt: String
+  thumbURL_lte: String
+  thumbURL_gt: String
+  thumbURL_gte: String
+  thumbURL_contains: String
+  thumbURL_not_contains: String
+  thumbURL_starts_with: String
+  thumbURL_not_starts_with: String
+  thumbURL_ends_with: String
+  thumbURL_not_ends_with: String
+  posterURL: String
+  posterURL_not: String
+  posterURL_in: [String!]
+  posterURL_not_in: [String!]
+  posterURL_lt: String
+  posterURL_lte: String
+  posterURL_gt: String
+  posterURL_gte: String
+  posterURL_contains: String
+  posterURL_not_contains: String
+  posterURL_starts_with: String
+  posterURL_not_starts_with: String
+  posterURL_ends_with: String
+  posterURL_not_ends_with: String
+  previewURL: String
+  previewURL_not: String
+  previewURL_in: [String!]
+  previewURL_not_in: [String!]
+  previewURL_lt: String
+  previewURL_lte: String
+  previewURL_gt: String
+  previewURL_gte: String
+  previewURL_contains: String
+  previewURL_not_contains: String
+  previewURL_starts_with: String
+  previewURL_not_starts_with: String
+  previewURL_ends_with: String
+  previewURL_not_ends_with: String
   title: String
   title_not: String
   title_in: [String!]
