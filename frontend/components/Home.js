@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import Video from './Home/Video'
 
 const VIDEOS_QUERY = gql`
   query VIDEOS_QUERY(
@@ -11,8 +12,18 @@ const VIDEOS_QUERY = gql`
   ) {
     videos(where: $where, orderBy: $orderBy, skip: $skip, first: $first) {
       id
+      videoURL
+      thumbURL
+      previewURL
       title
       description
+      tags
+      category
+      createdAt
+      user {
+        id
+        name
+      }
     }
   }
 `
@@ -28,20 +39,34 @@ const Container = styled.div`
   }
 `
 
+const Videos = styled.div`
+  display: flex;
+  padding: 2rem;
+`
+
 class Home extends React.Component {
   render() {
     const {
       props: { drawer }
     } = this
     return (
-      <Query query={VIDEOS_QUERY}>
+      <Query query={VIDEOS_QUERY} variables={{ where: { isPublished: true, isPublic: true } }}>
         {({ data, loading, error }) => {
           if (loading) return null
-          console.log(data)
+          const videos = data.videos
           return (
             <Container drawer={drawer}>
               <div className="spacer" />
-              <div>HOME</div>
+              <div>
+                <div>
+                  <div>Recommended</div>
+                  <Videos>
+                    {videos.map((v, i) => (
+                      <Video key={v.id} video={v} />
+                    ))}
+                  </Videos>
+                </div>
+              </div>
             </Container>
           )
         }}

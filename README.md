@@ -21,6 +21,7 @@
   - [ ] Create a poster size image with thumbnails
   - [ ] Refactor code
   - [x] Create 3sec preview GIF
+  - [ ] Check dimensions of GIF
 - [x] Design email template function
   - [ ] Add user profile link to emailVideo
 - [ ] Google Photos API
