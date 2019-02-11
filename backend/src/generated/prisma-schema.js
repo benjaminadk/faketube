@@ -7,6 +7,10 @@ type AggregateVideo {
   count: Int!
 }
 
+type AggregateView {
+  count: Int!
+}
+
 type BatchPayload {
   count: Long!
 }
@@ -46,6 +50,11 @@ type Mutation {
   upsertVideo(where: VideoWhereUniqueInput!, create: VideoCreateInput!, update: VideoUpdateInput!): Video!
   deleteVideo(where: VideoWhereUniqueInput!): Video
   deleteManyVideos(where: VideoWhereInput): BatchPayload!
+  createView(data: ViewCreateInput!): View!
+  updateView(data: ViewUpdateInput!, where: ViewWhereUniqueInput!): View
+  upsertView(where: ViewWhereUniqueInput!, create: ViewCreateInput!, update: ViewUpdateInput!): View!
+  deleteView(where: ViewWhereUniqueInput!): View
+  deleteManyViews(where: ViewWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -72,6 +81,9 @@ type Query {
   video(where: VideoWhereUniqueInput!): Video
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video]!
   videosConnection(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VideoConnection!
+  view(where: ViewWhereUniqueInput!): View
+  views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View]!
+  viewsConnection(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ViewConnection!
   node(id: ID!): Node
 }
 
@@ -83,6 +95,7 @@ enum Role {
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   video(where: VideoSubscriptionWhereInput): VideoSubscriptionPayload
+  view(where: ViewSubscriptionWhereInput): ViewSubscriptionPayload
 }
 
 type User {
@@ -113,6 +126,11 @@ input UserCreateInput {
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
   role: Role!
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutVideosInput {
@@ -188,6 +206,17 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  googleID: String
+  email: String
+  name: String
+  image: String
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoUpdateManyWithoutUserInput
+  role: Role
+}
+
 input UserUpdateInput {
   googleID: String
   email: String
@@ -209,6 +238,15 @@ input UserUpdateManyMutationInput {
   role: Role
 }
 
+input UserUpdateOneInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
 input UserUpdateOneWithoutVideosInput {
   create: UserCreateWithoutVideosInput
   update: UserUpdateWithoutVideosDataInput
@@ -226,6 +264,11 @@ input UserUpdateWithoutVideosDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   role: Role
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutVideosInput {
@@ -364,12 +407,14 @@ type Video {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String!
   description: String
   tags: [String!]!
   isPublished: Boolean!
   isPublic: Boolean!
   category: Category
+  views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
   user: User
   createdAt: DateTime!
 }
@@ -385,18 +430,25 @@ input VideoCreateInput {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String!
   description: String
   tags: VideoCreatetagsInput
   isPublished: Boolean
   isPublic: Boolean
   category: Category
+  views: ViewCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
 
 input VideoCreateManyWithoutUserInput {
   create: [VideoCreateWithoutUserInput!]
   connect: [VideoWhereUniqueInput!]
+}
+
+input VideoCreateOneWithoutViewsInput {
+  create: VideoCreateWithoutViewsInput
+  connect: VideoWhereUniqueInput
 }
 
 input VideoCreatetagsInput {
@@ -408,12 +460,29 @@ input VideoCreateWithoutUserInput {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String!
   description: String
   tags: VideoCreatetagsInput
   isPublished: Boolean
   isPublic: Boolean
   category: Category
+  views: ViewCreateManyWithoutVideoInput
+}
+
+input VideoCreateWithoutViewsInput {
+  videoURL: String!
+  thumbURL: String
+  posterURL: String
+  previewURL: String
+  duration: Int
+  title: String!
+  description: String
+  tags: VideoCreatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  category: Category
+  user: UserCreateOneWithoutVideosInput
 }
 
 type VideoEdge {
@@ -432,6 +501,8 @@ enum VideoOrderByInput {
   posterURL_DESC
   previewURL_ASC
   previewURL_DESC
+  duration_ASC
+  duration_DESC
   title_ASC
   title_DESC
   description_ASC
@@ -454,6 +525,7 @@ type VideoPreviousValues {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String!
   description: String
   tags: [String!]!
@@ -534,6 +606,14 @@ input VideoScalarWhereInput {
   previewURL_not_starts_with: String
   previewURL_ends_with: String
   previewURL_not_ends_with: String
+  duration: Int
+  duration_not: Int
+  duration_in: [Int!]
+  duration_not_in: [Int!]
+  duration_lt: Int
+  duration_lte: Int
+  duration_gt: Int
+  duration_gte: Int
   title: String
   title_not: String
   title_in: [String!]
@@ -606,12 +686,14 @@ input VideoUpdateInput {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String
   description: String
   tags: VideoUpdatetagsInput
   isPublished: Boolean
   isPublic: Boolean
   category: Category
+  views: ViewUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
 
@@ -620,6 +702,7 @@ input VideoUpdateManyDataInput {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String
   description: String
   tags: VideoUpdatetagsInput
@@ -633,6 +716,7 @@ input VideoUpdateManyMutationInput {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String
   description: String
   tags: VideoUpdatetagsInput
@@ -657,6 +741,15 @@ input VideoUpdateManyWithWhereNestedInput {
   data: VideoUpdateManyDataInput!
 }
 
+input VideoUpdateOneWithoutViewsInput {
+  create: VideoCreateWithoutViewsInput
+  update: VideoUpdateWithoutViewsDataInput
+  upsert: VideoUpsertWithoutViewsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: VideoWhereUniqueInput
+}
+
 input VideoUpdatetagsInput {
   set: [String!]
 }
@@ -666,17 +759,39 @@ input VideoUpdateWithoutUserDataInput {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String
   description: String
   tags: VideoUpdatetagsInput
   isPublished: Boolean
   isPublic: Boolean
   category: Category
+  views: ViewUpdateManyWithoutVideoInput
+}
+
+input VideoUpdateWithoutViewsDataInput {
+  videoURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
+  duration: Int
+  title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  category: Category
+  user: UserUpdateOneWithoutVideosInput
 }
 
 input VideoUpdateWithWhereUniqueWithoutUserInput {
   where: VideoWhereUniqueInput!
   data: VideoUpdateWithoutUserDataInput!
+}
+
+input VideoUpsertWithoutViewsInput {
+  update: VideoUpdateWithoutViewsDataInput!
+  create: VideoCreateWithoutViewsInput!
 }
 
 input VideoUpsertWithWhereUniqueWithoutUserInput {
@@ -756,6 +871,14 @@ input VideoWhereInput {
   previewURL_not_starts_with: String
   previewURL_ends_with: String
   previewURL_not_ends_with: String
+  duration: Int
+  duration_not: Int
+  duration_in: [Int!]
+  duration_not_in: [Int!]
+  duration_lt: Int
+  duration_lte: Int
+  duration_gt: Int
+  duration_gte: Int
   title: String
   title_not: String
   title_in: [String!]
@@ -792,6 +915,9 @@ input VideoWhereInput {
   category_not: Category
   category_in: [Category!]
   category_not_in: [Category!]
+  views_every: ViewWhereInput
+  views_some: ViewWhereInput
+  views_none: ViewWhereInput
   user: UserWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
@@ -807,6 +933,162 @@ input VideoWhereInput {
 }
 
 input VideoWhereUniqueInput {
+  id: ID
+}
+
+type View {
+  id: ID!
+  video: Video
+  user: User
+  createdAt: DateTime!
+}
+
+type ViewConnection {
+  pageInfo: PageInfo!
+  edges: [ViewEdge]!
+  aggregate: AggregateView!
+}
+
+input ViewCreateInput {
+  video: VideoCreateOneWithoutViewsInput
+  user: UserCreateOneInput
+}
+
+input ViewCreateManyWithoutVideoInput {
+  create: [ViewCreateWithoutVideoInput!]
+  connect: [ViewWhereUniqueInput!]
+}
+
+input ViewCreateWithoutVideoInput {
+  user: UserCreateOneInput
+}
+
+type ViewEdge {
+  node: View!
+  cursor: String!
+}
+
+enum ViewOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ViewPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+}
+
+input ViewScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [ViewScalarWhereInput!]
+  OR: [ViewScalarWhereInput!]
+  NOT: [ViewScalarWhereInput!]
+}
+
+type ViewSubscriptionPayload {
+  mutation: MutationType!
+  node: View
+  updatedFields: [String!]
+  previousValues: ViewPreviousValues
+}
+
+input ViewSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ViewWhereInput
+  AND: [ViewSubscriptionWhereInput!]
+  OR: [ViewSubscriptionWhereInput!]
+  NOT: [ViewSubscriptionWhereInput!]
+}
+
+input ViewUpdateInput {
+  video: VideoUpdateOneWithoutViewsInput
+  user: UserUpdateOneInput
+}
+
+input ViewUpdateManyWithoutVideoInput {
+  create: [ViewCreateWithoutVideoInput!]
+  delete: [ViewWhereUniqueInput!]
+  connect: [ViewWhereUniqueInput!]
+  disconnect: [ViewWhereUniqueInput!]
+  update: [ViewUpdateWithWhereUniqueWithoutVideoInput!]
+  upsert: [ViewUpsertWithWhereUniqueWithoutVideoInput!]
+  deleteMany: [ViewScalarWhereInput!]
+}
+
+input ViewUpdateWithoutVideoDataInput {
+  user: UserUpdateOneInput
+}
+
+input ViewUpdateWithWhereUniqueWithoutVideoInput {
+  where: ViewWhereUniqueInput!
+  data: ViewUpdateWithoutVideoDataInput!
+}
+
+input ViewUpsertWithWhereUniqueWithoutVideoInput {
+  where: ViewWhereUniqueInput!
+  update: ViewUpdateWithoutVideoDataInput!
+  create: ViewCreateWithoutVideoInput!
+}
+
+input ViewWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  video: VideoWhereInput
+  user: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [ViewWhereInput!]
+  OR: [ViewWhereInput!]
+  NOT: [ViewWhereInput!]
+}
+
+input ViewWhereUniqueInput {
   id: ID
 }
 `

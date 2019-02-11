@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-import Video from './Home/Video'
+import VideoThumb from './Home/VideoThumbVideoThumb'
 
 const VIDEOS_QUERY = gql`
   query VIDEOS_QUERY(
@@ -15,11 +15,15 @@ const VIDEOS_QUERY = gql`
       videoURL
       thumbURL
       previewURL
+      duration
       title
       description
       tags
       category
       createdAt
+      views {
+        id
+      }
       user {
         id
         name
@@ -62,7 +66,7 @@ class Home extends React.Component {
                   <div>Recommended</div>
                   <Videos>
                     {videos.map((v, i) => (
-                      <Video key={v.id} video={v} />
+                      <VideoThumb key={v.id} video={v} />
                     ))}
                   </Videos>
                 </div>

@@ -3,12 +3,14 @@ const express = require('express')
 const { ApolloServer } = require('apollo-server-express')
 const { importSchema } = require('graphql-import')
 const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 const http = require('http')
 const addUserIdToRequest = require('./middleware/addUserIdToRequest')
 const addUserToRequest = require('./middleware/addUserToRequest')
 const { prisma } = require('./generated')
 const resolvers = require('./resolvers')
-const { photoAuth, photoAuthCallback } = require('./services/photoAuth')
+const { photoAuth, photoAuthCallback } = require('./router/photoAuth')
+const lambda = require('./router/lambda')
 
 const { NODE_ENV, FRONTEND_DEV, FRONTEND_PROD, PORT } = process.env
 
@@ -42,6 +44,7 @@ app.use(cookieParser(), addUserIdToRequest, addUserToRequest)
 
 app.get('/api/photoAuth', photoAuth)
 app.get('/api/photoAuth/callback', photoAuthCallback)
+app.post('/api/lambda', bodyParser.json(), lambda)
 
 server.applyMiddleware({ app, path, server, cors })
 

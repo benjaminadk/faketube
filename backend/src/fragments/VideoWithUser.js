@@ -5,6 +5,7 @@ module.exports = `
     thumbURL
     posterURL
     previewURL
+    duration
     title
     description
     tags
@@ -12,6 +13,9 @@ module.exports = `
     isPublic
     category
     createdAt
+    views {
+      id
+    }
     user {
       id
       name

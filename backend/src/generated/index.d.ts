@@ -16,6 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export interface Exists {
   user: (where?: UserWhereInput) => Promise<boolean>;
   video: (where?: VideoWhereInput) => Promise<boolean>;
+  view: (where?: ViewWhereInput) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -75,6 +76,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => VideoConnectionPromise;
+  view: (where: ViewWhereUniqueInput) => ViewPromise;
+  views: (args?: {
+    where?: ViewWhereInput;
+    orderBy?: ViewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<View>;
+  viewsConnection: (args?: {
+    where?: ViewWhereInput;
+    orderBy?: ViewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => ViewConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -113,6 +133,18 @@ export interface Prisma {
   }) => VideoPromise;
   deleteVideo: (where: VideoWhereUniqueInput) => VideoPromise;
   deleteManyVideos: (where?: VideoWhereInput) => BatchPayloadPromise;
+  createView: (data: ViewCreateInput) => ViewPromise;
+  updateView: (args: {
+    data: ViewUpdateInput;
+    where: ViewWhereUniqueInput;
+  }) => ViewPromise;
+  upsertView: (args: {
+    where: ViewWhereUniqueInput;
+    create: ViewCreateInput;
+    update: ViewUpdateInput;
+  }) => ViewPromise;
+  deleteView: (where: ViewWhereUniqueInput) => ViewPromise;
+  deleteManyViews: (where?: ViewWhereInput) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -128,6 +160,9 @@ export interface Subscription {
   video: (
     where?: VideoSubscriptionWhereInput
   ) => VideoSubscriptionPayloadSubscription;
+  view: (
+    where?: ViewSubscriptionWhereInput
+  ) => ViewSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -168,6 +203,8 @@ export type VideoOrderByInput =
   | "posterURL_DESC"
   | "previewURL_ASC"
   | "previewURL_DESC"
+  | "duration_ASC"
+  | "duration_DESC"
   | "title_ASC"
   | "title_DESC"
   | "description_ASC"
@@ -178,6 +215,14 @@ export type VideoOrderByInput =
   | "isPublic_DESC"
   | "category_ASC"
   | "category_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type ViewOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -207,6 +252,107 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
+export interface VideoUpdatetagsInput {
+  set?: String[] | String;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  googleID?: String;
+  email?: String;
+}>;
+
+export interface UserUpdateOneInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface ViewWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  video?: VideoWhereInput;
+  user?: UserWhereInput;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: ViewWhereInput[] | ViewWhereInput;
+  OR?: ViewWhereInput[] | ViewWhereInput;
+  NOT?: ViewWhereInput[] | ViewWhereInput;
+}
+
+export interface ViewCreateManyWithoutVideoInput {
+  create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
+  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+}
+
+export interface VideoCreateInput {
+  videoURL: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title: String;
+  description?: String;
+  tags?: VideoCreatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewCreateManyWithoutVideoInput;
+  user?: UserCreateOneWithoutVideosInput;
+}
+
+export interface ViewCreateWithoutVideoInput {
+  user?: UserCreateOneInput;
+}
+
+export interface UserUpdateDataInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoUpdateManyWithoutUserInput;
+  role?: Role;
+}
+
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface VideoSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: VideoWhereInput;
+  AND?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
+  OR?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
+  NOT?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
+}
+
 export interface UserUpdateInput {
   googleID?: String;
   email?: String;
@@ -218,23 +364,139 @@ export interface UserUpdateInput {
   role?: Role;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  googleID?: String;
-  email?: String;
-}>;
+export interface UserSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserWhereInput;
+  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+}
 
-export interface VideoUpdateWithoutUserDataInput {
+export interface VideoUpdateManyWithoutUserInput {
+  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
+  delete?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+  disconnect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+  update?:
+    | VideoUpdateWithWhereUniqueWithoutUserInput[]
+    | VideoUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | VideoUpsertWithWhereUniqueWithoutUserInput[]
+    | VideoUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: VideoScalarWhereInput[] | VideoScalarWhereInput;
+  updateMany?:
+    | VideoUpdateManyWithWhereNestedInput[]
+    | VideoUpdateManyWithWhereNestedInput;
+}
+
+export interface VideoUpdateWithoutViewsDataInput {
   videoURL?: String;
   thumbURL?: String;
   posterURL?: String;
   previewURL?: String;
+  duration?: Int;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
   category?: Category;
+  user?: UserUpdateOneWithoutVideosInput;
+}
+
+export interface VideoUpdateWithWhereUniqueWithoutUserInput {
+  where: VideoWhereUniqueInput;
+  data: VideoUpdateWithoutUserDataInput;
+}
+
+export interface ViewUpdateInput {
+  video?: VideoUpdateOneWithoutViewsInput;
+  user?: UserUpdateOneInput;
+}
+
+export interface VideoUpdateWithoutUserDataInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewUpdateManyWithoutVideoInput;
+}
+
+export type VideoWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface VideoUpdateInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewUpdateManyWithoutVideoInput;
+  user?: UserUpdateOneWithoutVideosInput;
+}
+
+export interface ViewCreateInput {
+  video?: VideoCreateOneWithoutViewsInput;
+  user?: UserCreateOneInput;
+}
+
+export interface ViewUpdateManyWithoutVideoInput {
+  create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
+  delete?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+  disconnect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+  update?:
+    | ViewUpdateWithWhereUniqueWithoutVideoInput[]
+    | ViewUpdateWithWhereUniqueWithoutVideoInput;
+  upsert?:
+    | ViewUpsertWithWhereUniqueWithoutVideoInput[]
+    | ViewUpsertWithWhereUniqueWithoutVideoInput;
+  deleteMany?: ViewScalarWhereInput[] | ViewScalarWhereInput;
+}
+
+export type ViewWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface ViewUpdateWithWhereUniqueWithoutVideoInput {
+  where: ViewWhereUniqueInput;
+  data: ViewUpdateWithoutVideoDataInput;
+}
+
+export interface UserUpdateWithoutVideosDataInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  role?: Role;
+}
+
+export interface ViewUpdateWithoutVideoDataInput {
+  user?: UserUpdateOneInput;
+}
+
+export interface VideoCreateManyWithoutUserInput {
+  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
+  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
 }
 
 export interface UserWhereInput {
@@ -356,259 +618,18 @@ export interface UserWhereInput {
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
-export interface VideoUpdateManyWithWhereNestedInput {
-  where: VideoScalarWhereInput;
-  data: VideoUpdateManyDataInput;
-}
-
-export interface VideoUpdatetagsInput {
+export interface VideoCreatetagsInput {
   set?: String[] | String;
 }
 
-export interface UserCreateInput {
+export interface UserCreateWithoutVideosInput {
   googleID: String;
   email: String;
   name: String;
   image: String;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
-  videos?: VideoCreateManyWithoutUserInput;
   role: Role;
-}
-
-export interface UserSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: UserWhereInput;
-  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-}
-
-export interface VideoCreateManyWithoutUserInput {
-  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
-  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-}
-
-export interface UserUpsertWithoutVideosInput {
-  update: UserUpdateWithoutVideosDataInput;
-  create: UserCreateWithoutVideosInput;
-}
-
-export interface VideoCreateWithoutUserInput {
-  videoURL: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  title: String;
-  description?: String;
-  tags?: VideoCreatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-}
-
-export interface UserUpdateOneWithoutVideosInput {
-  create?: UserCreateWithoutVideosInput;
-  update?: UserUpdateWithoutVideosDataInput;
-  upsert?: UserUpsertWithoutVideosInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface VideoCreatetagsInput {
-  set?: String[] | String;
-}
-
-export type VideoWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface UserUpdateManyMutationInput {
-  googleID?: String;
-  email?: String;
-  name?: String;
-  image?: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  role?: Role;
-}
-
-export interface UserCreateOneWithoutVideosInput {
-  create?: UserCreateWithoutVideosInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface VideoUpdateManyWithoutUserInput {
-  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
-  delete?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-  disconnect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-  update?:
-    | VideoUpdateWithWhereUniqueWithoutUserInput[]
-    | VideoUpdateWithWhereUniqueWithoutUserInput;
-  upsert?:
-    | VideoUpsertWithWhereUniqueWithoutUserInput[]
-    | VideoUpsertWithWhereUniqueWithoutUserInput;
-  deleteMany?: VideoScalarWhereInput[] | VideoScalarWhereInput;
-  updateMany?:
-    | VideoUpdateManyWithWhereNestedInput[]
-    | VideoUpdateManyWithWhereNestedInput;
-}
-
-export interface VideoSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: VideoWhereInput;
-  AND?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
-  OR?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
-  NOT?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
-}
-
-export interface VideoUpdateWithWhereUniqueWithoutUserInput {
-  where: VideoWhereUniqueInput;
-  data: VideoUpdateWithoutUserDataInput;
-}
-
-export interface UserUpdateWithoutVideosDataInput {
-  googleID?: String;
-  email?: String;
-  name?: String;
-  image?: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  role?: Role;
-}
-
-export interface VideoScalarWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  videoURL?: String;
-  videoURL_not?: String;
-  videoURL_in?: String[] | String;
-  videoURL_not_in?: String[] | String;
-  videoURL_lt?: String;
-  videoURL_lte?: String;
-  videoURL_gt?: String;
-  videoURL_gte?: String;
-  videoURL_contains?: String;
-  videoURL_not_contains?: String;
-  videoURL_starts_with?: String;
-  videoURL_not_starts_with?: String;
-  videoURL_ends_with?: String;
-  videoURL_not_ends_with?: String;
-  thumbURL?: String;
-  thumbURL_not?: String;
-  thumbURL_in?: String[] | String;
-  thumbURL_not_in?: String[] | String;
-  thumbURL_lt?: String;
-  thumbURL_lte?: String;
-  thumbURL_gt?: String;
-  thumbURL_gte?: String;
-  thumbURL_contains?: String;
-  thumbURL_not_contains?: String;
-  thumbURL_starts_with?: String;
-  thumbURL_not_starts_with?: String;
-  thumbURL_ends_with?: String;
-  thumbURL_not_ends_with?: String;
-  posterURL?: String;
-  posterURL_not?: String;
-  posterURL_in?: String[] | String;
-  posterURL_not_in?: String[] | String;
-  posterURL_lt?: String;
-  posterURL_lte?: String;
-  posterURL_gt?: String;
-  posterURL_gte?: String;
-  posterURL_contains?: String;
-  posterURL_not_contains?: String;
-  posterURL_starts_with?: String;
-  posterURL_not_starts_with?: String;
-  posterURL_ends_with?: String;
-  posterURL_not_ends_with?: String;
-  previewURL?: String;
-  previewURL_not?: String;
-  previewURL_in?: String[] | String;
-  previewURL_not_in?: String[] | String;
-  previewURL_lt?: String;
-  previewURL_lte?: String;
-  previewURL_gt?: String;
-  previewURL_gte?: String;
-  previewURL_contains?: String;
-  previewURL_not_contains?: String;
-  previewURL_starts_with?: String;
-  previewURL_not_starts_with?: String;
-  previewURL_ends_with?: String;
-  previewURL_not_ends_with?: String;
-  title?: String;
-  title_not?: String;
-  title_in?: String[] | String;
-  title_not_in?: String[] | String;
-  title_lt?: String;
-  title_lte?: String;
-  title_gt?: String;
-  title_gte?: String;
-  title_contains?: String;
-  title_not_contains?: String;
-  title_starts_with?: String;
-  title_not_starts_with?: String;
-  title_ends_with?: String;
-  title_not_ends_with?: String;
-  description?: String;
-  description_not?: String;
-  description_in?: String[] | String;
-  description_not_in?: String[] | String;
-  description_lt?: String;
-  description_lte?: String;
-  description_gt?: String;
-  description_gte?: String;
-  description_contains?: String;
-  description_not_contains?: String;
-  description_starts_with?: String;
-  description_not_starts_with?: String;
-  description_ends_with?: String;
-  description_not_ends_with?: String;
-  isPublished?: Boolean;
-  isPublished_not?: Boolean;
-  isPublic?: Boolean;
-  isPublic_not?: Boolean;
-  category?: Category;
-  category_not?: Category;
-  category_in?: Category[] | Category;
-  category_not_in?: Category[] | Category;
-  createdAt?: DateTimeInput;
-  createdAt_not?: DateTimeInput;
-  createdAt_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_lt?: DateTimeInput;
-  createdAt_lte?: DateTimeInput;
-  createdAt_gt?: DateTimeInput;
-  createdAt_gte?: DateTimeInput;
-  AND?: VideoScalarWhereInput[] | VideoScalarWhereInput;
-  OR?: VideoScalarWhereInput[] | VideoScalarWhereInput;
-  NOT?: VideoScalarWhereInput[] | VideoScalarWhereInput;
-}
-
-export interface VideoUpsertWithWhereUniqueWithoutUserInput {
-  where: VideoWhereUniqueInput;
-  update: VideoUpdateWithoutUserDataInput;
-  create: VideoCreateWithoutUserInput;
 }
 
 export interface VideoWhereInput {
@@ -682,6 +703,14 @@ export interface VideoWhereInput {
   previewURL_not_starts_with?: String;
   previewURL_ends_with?: String;
   previewURL_not_ends_with?: String;
+  duration?: Int;
+  duration_not?: Int;
+  duration_in?: Int[] | Int;
+  duration_not_in?: Int[] | Int;
+  duration_lt?: Int;
+  duration_lte?: Int;
+  duration_gt?: Int;
+  duration_gte?: Int;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -718,6 +747,9 @@ export interface VideoWhereInput {
   category_not?: Category;
   category_in?: Category[] | Category;
   category_not_in?: Category[] | Category;
+  views_every?: ViewWhereInput;
+  views_some?: ViewWhereInput;
+  views_none?: ViewWhereInput;
   user?: UserWhereInput;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
@@ -732,11 +764,241 @@ export interface VideoWhereInput {
   NOT?: VideoWhereInput[] | VideoWhereInput;
 }
 
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface VideoUpdateOneWithoutViewsInput {
+  create?: VideoCreateWithoutViewsInput;
+  update?: VideoUpdateWithoutViewsDataInput;
+  upsert?: VideoUpsertWithoutViewsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: VideoWhereUniqueInput;
+}
+
+export interface ViewUpsertWithWhereUniqueWithoutVideoInput {
+  where: ViewWhereUniqueInput;
+  update: ViewUpdateWithoutVideoDataInput;
+  create: ViewCreateWithoutVideoInput;
+}
+
+export interface VideoCreateOneWithoutViewsInput {
+  create?: VideoCreateWithoutViewsInput;
+  connect?: VideoWhereUniqueInput;
+}
+
+export interface ViewScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: ViewScalarWhereInput[] | ViewScalarWhereInput;
+  OR?: ViewScalarWhereInput[] | ViewScalarWhereInput;
+  NOT?: ViewScalarWhereInput[] | ViewScalarWhereInput;
+}
+
+export interface UserUpsertWithoutVideosInput {
+  update: UserUpdateWithoutVideosDataInput;
+  create: UserCreateWithoutVideosInput;
+}
+
+export interface VideoUpsertWithWhereUniqueWithoutUserInput {
+  where: VideoWhereUniqueInput;
+  update: VideoUpdateWithoutUserDataInput;
+  create: VideoCreateWithoutUserInput;
+}
+
+export interface UserCreateInput {
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoCreateManyWithoutUserInput;
+  role: Role;
+}
+
+export interface VideoScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  videoURL?: String;
+  videoURL_not?: String;
+  videoURL_in?: String[] | String;
+  videoURL_not_in?: String[] | String;
+  videoURL_lt?: String;
+  videoURL_lte?: String;
+  videoURL_gt?: String;
+  videoURL_gte?: String;
+  videoURL_contains?: String;
+  videoURL_not_contains?: String;
+  videoURL_starts_with?: String;
+  videoURL_not_starts_with?: String;
+  videoURL_ends_with?: String;
+  videoURL_not_ends_with?: String;
+  thumbURL?: String;
+  thumbURL_not?: String;
+  thumbURL_in?: String[] | String;
+  thumbURL_not_in?: String[] | String;
+  thumbURL_lt?: String;
+  thumbURL_lte?: String;
+  thumbURL_gt?: String;
+  thumbURL_gte?: String;
+  thumbURL_contains?: String;
+  thumbURL_not_contains?: String;
+  thumbURL_starts_with?: String;
+  thumbURL_not_starts_with?: String;
+  thumbURL_ends_with?: String;
+  thumbURL_not_ends_with?: String;
+  posterURL?: String;
+  posterURL_not?: String;
+  posterURL_in?: String[] | String;
+  posterURL_not_in?: String[] | String;
+  posterURL_lt?: String;
+  posterURL_lte?: String;
+  posterURL_gt?: String;
+  posterURL_gte?: String;
+  posterURL_contains?: String;
+  posterURL_not_contains?: String;
+  posterURL_starts_with?: String;
+  posterURL_not_starts_with?: String;
+  posterURL_ends_with?: String;
+  posterURL_not_ends_with?: String;
+  previewURL?: String;
+  previewURL_not?: String;
+  previewURL_in?: String[] | String;
+  previewURL_not_in?: String[] | String;
+  previewURL_lt?: String;
+  previewURL_lte?: String;
+  previewURL_gt?: String;
+  previewURL_gte?: String;
+  previewURL_contains?: String;
+  previewURL_not_contains?: String;
+  previewURL_starts_with?: String;
+  previewURL_not_starts_with?: String;
+  previewURL_ends_with?: String;
+  previewURL_not_ends_with?: String;
+  duration?: Int;
+  duration_not?: Int;
+  duration_in?: Int[] | Int;
+  duration_not_in?: Int[] | Int;
+  duration_lt?: Int;
+  duration_lte?: Int;
+  duration_gt?: Int;
+  duration_gte?: Int;
+  title?: String;
+  title_not?: String;
+  title_in?: String[] | String;
+  title_not_in?: String[] | String;
+  title_lt?: String;
+  title_lte?: String;
+  title_gt?: String;
+  title_gte?: String;
+  title_contains?: String;
+  title_not_contains?: String;
+  title_starts_with?: String;
+  title_not_starts_with?: String;
+  title_ends_with?: String;
+  title_not_ends_with?: String;
+  description?: String;
+  description_not?: String;
+  description_in?: String[] | String;
+  description_not_in?: String[] | String;
+  description_lt?: String;
+  description_lte?: String;
+  description_gt?: String;
+  description_gte?: String;
+  description_contains?: String;
+  description_not_contains?: String;
+  description_starts_with?: String;
+  description_not_starts_with?: String;
+  description_ends_with?: String;
+  description_not_ends_with?: String;
+  isPublished?: Boolean;
+  isPublished_not?: Boolean;
+  isPublic?: Boolean;
+  isPublic_not?: Boolean;
+  category?: Category;
+  category_not?: Category;
+  category_in?: Category[] | Category;
+  category_not_in?: Category[] | Category;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: VideoScalarWhereInput[] | VideoScalarWhereInput;
+  OR?: VideoScalarWhereInput[] | VideoScalarWhereInput;
+  NOT?: VideoScalarWhereInput[] | VideoScalarWhereInput;
+}
+
+export interface ViewSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ViewWhereInput;
+  AND?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+  OR?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+  NOT?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+}
+
+export interface UserCreateOneWithoutVideosInput {
+  create?: UserCreateWithoutVideosInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateManyMutationInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  role?: Role;
+}
+
 export interface VideoUpdateManyDataInput {
   videoURL?: String;
   thumbURL?: String;
   posterURL?: String;
   previewURL?: String;
+  duration?: Int;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
@@ -745,18 +1007,38 @@ export interface VideoUpdateManyDataInput {
   category?: Category;
 }
 
-export interface VideoUpdateInput {
-  videoURL?: String;
+export interface VideoUpdateManyWithWhereNestedInput {
+  where: VideoScalarWhereInput;
+  data: VideoUpdateManyDataInput;
+}
+
+export interface VideoUpsertWithoutViewsInput {
+  update: VideoUpdateWithoutViewsDataInput;
+  create: VideoCreateWithoutViewsInput;
+}
+
+export interface VideoCreateWithoutUserInput {
+  videoURL: String;
   thumbURL?: String;
   posterURL?: String;
   previewURL?: String;
-  title?: String;
+  duration?: Int;
+  title: String;
   description?: String;
-  tags?: VideoUpdatetagsInput;
+  tags?: VideoCreatetagsInput;
   isPublished?: Boolean;
   isPublic?: Boolean;
   category?: Category;
-  user?: UserUpdateOneWithoutVideosInput;
+  views?: ViewCreateManyWithoutVideoInput;
+}
+
+export interface UserUpdateOneWithoutVideosInput {
+  create?: UserCreateWithoutVideosInput;
+  update?: UserUpdateWithoutVideosDataInput;
+  upsert?: UserUpsertWithoutVideosInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
 }
 
 export interface VideoUpdateManyMutationInput {
@@ -764,6 +1046,7 @@ export interface VideoUpdateManyMutationInput {
   thumbURL?: String;
   posterURL?: String;
   previewURL?: String;
+  duration?: Int;
   title?: String;
   description?: String;
   tags?: VideoUpdatetagsInput;
@@ -772,11 +1055,12 @@ export interface VideoUpdateManyMutationInput {
   category?: Category;
 }
 
-export interface VideoCreateInput {
+export interface VideoCreateWithoutViewsInput {
   videoURL: String;
   thumbURL?: String;
   posterURL?: String;
   previewURL?: String;
+  duration?: Int;
   title: String;
   description?: String;
   tags?: VideoCreatetagsInput;
@@ -786,66 +1070,26 @@ export interface VideoCreateInput {
   user?: UserCreateOneWithoutVideosInput;
 }
 
-export interface UserCreateWithoutVideosInput {
-  googleID: String;
-  email: String;
-  name: String;
-  image: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  role: Role;
-}
-
 export interface NodeNode {
   id: ID_Output;
 }
 
-export interface VideoPreviousValues {
+export interface ViewPreviousValues {
   id: ID_Output;
-  videoURL: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  title: String;
-  description?: String;
-  tags: String[];
-  isPublished: Boolean;
-  isPublic: Boolean;
-  category?: Category;
   createdAt: DateTimeOutput;
 }
 
-export interface VideoPreviousValuesPromise
-  extends Promise<VideoPreviousValues>,
+export interface ViewPreviousValuesPromise
+  extends Promise<ViewPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  videoURL: () => Promise<String>;
-  thumbURL: () => Promise<String>;
-  posterURL: () => Promise<String>;
-  previewURL: () => Promise<String>;
-  title: () => Promise<String>;
-  description: () => Promise<String>;
-  tags: () => Promise<String[]>;
-  isPublished: () => Promise<Boolean>;
-  isPublic: () => Promise<Boolean>;
-  category: () => Promise<Category>;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
-export interface VideoPreviousValuesSubscription
-  extends Promise<AsyncIterator<VideoPreviousValues>>,
+export interface ViewPreviousValuesSubscription
+  extends Promise<AsyncIterator<ViewPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  videoURL: () => Promise<AsyncIterator<String>>;
-  thumbURL: () => Promise<AsyncIterator<String>>;
-  posterURL: () => Promise<AsyncIterator<String>>;
-  previewURL: () => Promise<AsyncIterator<String>>;
-  title: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
-  tags: () => Promise<AsyncIterator<String[]>>;
-  isPublished: () => Promise<AsyncIterator<Boolean>>;
-  isPublic: () => Promise<AsyncIterator<Boolean>>;
-  category: () => Promise<AsyncIterator<Category>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
@@ -865,29 +1109,74 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface UserSubscriptionPayload {
-  mutation: MutationType;
-  node: User;
-  updatedFields: String[];
-  previousValues: UserPreviousValues;
+export interface Video {
+  id: ID_Output;
+  videoURL: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title: String;
+  description?: String;
+  tags: String[];
+  isPublished: Boolean;
+  isPublic: Boolean;
+  category?: Category;
+  createdAt: DateTimeOutput;
 }
 
-export interface UserSubscriptionPayloadPromise
-  extends Promise<UserSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = UserPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserPreviousValuesPromise>() => T;
+export interface VideoPromise extends Promise<Video>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  videoURL: () => Promise<String>;
+  thumbURL: () => Promise<String>;
+  posterURL: () => Promise<String>;
+  previewURL: () => Promise<String>;
+  duration: () => Promise<Int>;
+  title: () => Promise<String>;
+  description: () => Promise<String>;
+  tags: () => Promise<String[]>;
+  isPublished: () => Promise<Boolean>;
+  isPublic: () => Promise<Boolean>;
+  category: () => Promise<Category>;
+  views: <T = FragmentableArray<View>>(args?: {
+    where?: ViewWhereInput;
+    orderBy?: ViewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  user: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
 }
 
-export interface UserSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
+export interface VideoSubscription
+  extends Promise<AsyncIterator<Video>>,
     Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserPreviousValuesSubscription>() => T;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  videoURL: () => Promise<AsyncIterator<String>>;
+  thumbURL: () => Promise<AsyncIterator<String>>;
+  posterURL: () => Promise<AsyncIterator<String>>;
+  previewURL: () => Promise<AsyncIterator<String>>;
+  duration: () => Promise<AsyncIterator<Int>>;
+  title: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  tags: () => Promise<AsyncIterator<String[]>>;
+  isPublished: () => Promise<AsyncIterator<Boolean>>;
+  isPublic: () => Promise<AsyncIterator<Boolean>>;
+  category: () => Promise<AsyncIterator<Category>>;
+  views: <T = Promise<AsyncIterator<ViewSubscription>>>(args?: {
+    where?: ViewWhereInput;
+    orderBy?: ViewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  user: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface UserEdge {
@@ -930,37 +1219,29 @@ export interface PageInfoSubscription
   endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface VideoSubscriptionPayload {
-  mutation: MutationType;
-  node: Video;
-  updatedFields: String[];
-  previousValues: VideoPreviousValues;
+export interface BatchPayload {
+  count: Long;
 }
 
-export interface VideoSubscriptionPayloadPromise
-  extends Promise<VideoSubscriptionPayload>,
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
     Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = VideoPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = VideoPreviousValuesPromise>() => T;
+  count: () => Promise<Long>;
 }
 
-export interface VideoSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<VideoSubscriptionPayload>>,
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
     Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = VideoSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = VideoPreviousValuesSubscription>() => T;
+  count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface Video {
+export interface VideoPreviousValues {
   id: ID_Output;
   videoURL: String;
   thumbURL?: String;
   posterURL?: String;
   previewURL?: String;
+  duration?: Int;
   title: String;
   description?: String;
   tags: String[];
@@ -970,38 +1251,78 @@ export interface Video {
   createdAt: DateTimeOutput;
 }
 
-export interface VideoPromise extends Promise<Video>, Fragmentable {
+export interface VideoPreviousValuesPromise
+  extends Promise<VideoPreviousValues>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
   videoURL: () => Promise<String>;
   thumbURL: () => Promise<String>;
   posterURL: () => Promise<String>;
   previewURL: () => Promise<String>;
+  duration: () => Promise<Int>;
   title: () => Promise<String>;
   description: () => Promise<String>;
   tags: () => Promise<String[]>;
   isPublished: () => Promise<Boolean>;
   isPublic: () => Promise<Boolean>;
   category: () => Promise<Category>;
-  user: <T = UserPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
-export interface VideoSubscription
-  extends Promise<AsyncIterator<Video>>,
+export interface VideoPreviousValuesSubscription
+  extends Promise<AsyncIterator<VideoPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   videoURL: () => Promise<AsyncIterator<String>>;
   thumbURL: () => Promise<AsyncIterator<String>>;
   posterURL: () => Promise<AsyncIterator<String>>;
   previewURL: () => Promise<AsyncIterator<String>>;
+  duration: () => Promise<AsyncIterator<Int>>;
   title: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
   tags: () => Promise<AsyncIterator<String[]>>;
   isPublished: () => Promise<AsyncIterator<Boolean>>;
   isPublic: () => Promise<AsyncIterator<Boolean>>;
   category: () => Promise<AsyncIterator<Category>>;
-  user: <T = UserSubscription>() => T;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface ViewEdge {
+  node: View;
+  cursor: String;
+}
+
+export interface ViewEdgePromise extends Promise<ViewEdge>, Fragmentable {
+  node: <T = ViewPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ViewEdgeSubscription
+  extends Promise<AsyncIterator<ViewEdge>>,
+    Fragmentable {
+  node: <T = ViewSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface User {
@@ -1060,25 +1381,41 @@ export interface UserSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
+export interface AggregateVideo {
+  count: Int;
 }
 
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
+export interface AggregateVideoPromise
+  extends Promise<AggregateVideo>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateVideoSubscription
+  extends Promise<AsyncIterator<AggregateVideo>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface VideoConnection {
+  pageInfo: PageInfo;
+  edges: VideoEdge[];
+}
+
+export interface VideoConnectionPromise
+  extends Promise<VideoConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
+  edges: <T = FragmentableArray<VideoEdge>>() => T;
+  aggregate: <T = AggregateVideoPromise>() => T;
 }
 
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
+export interface VideoConnectionSubscription
+  extends Promise<AsyncIterator<VideoConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<VideoEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateVideoSubscription>() => T;
 }
 
 export interface UserPreviousValues {
@@ -1121,57 +1458,100 @@ export interface UserPreviousValuesSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateVideo {
-  count: Int;
+export interface UserSubscriptionPayload {
+  mutation: MutationType;
+  node: User;
+  updatedFields: String[];
+  previousValues: UserPreviousValues;
 }
 
-export interface AggregateVideoPromise
-  extends Promise<AggregateVideo>,
+export interface UserSubscriptionPayloadPromise
+  extends Promise<UserSubscriptionPayload>,
     Fragmentable {
-  count: () => Promise<Int>;
+  mutation: () => Promise<MutationType>;
+  node: <T = UserPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserPreviousValuesPromise>() => T;
 }
 
-export interface AggregateVideoSubscription
-  extends Promise<AsyncIterator<AggregateVideo>>,
+export interface UserSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
-export interface BatchPayload {
-  count: Long;
+export interface VideoSubscriptionPayload {
+  mutation: MutationType;
+  node: Video;
+  updatedFields: String[];
+  previousValues: VideoPreviousValues;
 }
 
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
+export interface VideoSubscriptionPayloadPromise
+  extends Promise<VideoSubscriptionPayload>,
     Fragmentable {
-  count: () => Promise<Long>;
+  mutation: () => Promise<MutationType>;
+  node: <T = VideoPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = VideoPreviousValuesPromise>() => T;
 }
 
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
+export interface VideoSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<VideoSubscriptionPayload>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = VideoSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = VideoPreviousValuesSubscription>() => T;
 }
 
-export interface VideoConnection {
-  pageInfo: PageInfo;
-  edges: VideoEdge[];
+export interface View {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
 }
 
-export interface VideoConnectionPromise
-  extends Promise<VideoConnection>,
+export interface ViewPromise extends Promise<View>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  video: <T = VideoPromise>() => T;
+  user: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface ViewSubscription
+  extends Promise<AsyncIterator<View>>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<VideoEdge>>() => T;
-  aggregate: <T = AggregateVideoPromise>() => T;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  video: <T = VideoSubscription>() => T;
+  user: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface VideoConnectionSubscription
-  extends Promise<AsyncIterator<VideoConnection>>,
+export interface ViewSubscriptionPayload {
+  mutation: MutationType;
+  node: View;
+  updatedFields: String[];
+  previousValues: ViewPreviousValues;
+}
+
+export interface ViewSubscriptionPayloadPromise
+  extends Promise<ViewSubscriptionPayload>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<VideoEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateVideoSubscription>() => T;
+  mutation: () => Promise<MutationType>;
+  node: <T = ViewPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ViewPreviousValuesPromise>() => T;
+}
+
+export interface ViewSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ViewSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ViewSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ViewPreviousValuesSubscription>() => T;
 }
 
 export interface VideoEdge {
@@ -1191,6 +1571,50 @@ export interface VideoEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
+export interface ViewConnection {
+  pageInfo: PageInfo;
+  edges: ViewEdge[];
+}
+
+export interface ViewConnectionPromise
+  extends Promise<ViewConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ViewEdge>>() => T;
+  aggregate: <T = AggregateViewPromise>() => T;
+}
+
+export interface ViewConnectionSubscription
+  extends Promise<AsyncIterator<ViewConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ViewEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateViewSubscription>() => T;
+}
+
+export interface AggregateView {
+  count: Int;
+}
+
+export interface AggregateViewPromise
+  extends Promise<AggregateView>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateViewSubscription
+  extends Promise<AsyncIterator<AggregateView>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
+export type Long = string;
+
 /*
 DateTime scalar input type, allowing Date
 */
@@ -1200,13 +1624,6 @@ export type DateTimeInput = Date | string;
 DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
-
-/*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
-
-export type Long = string;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
@@ -1243,6 +1660,10 @@ export const models: Model[] = [
   },
   {
     name: "Video",
+    embedded: false
+  },
+  {
+    name: "View",
     embedded: false
   }
 ];

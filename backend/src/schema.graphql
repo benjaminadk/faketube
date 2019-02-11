@@ -34,12 +34,21 @@ type Video {
   thumbURL: String
   posterURL: String
   previewURL: String
+  duration: Int
   title: String!
   description: String
   tags: [String]
   isPublished: Boolean!
   isPublic: Boolean!
   category: Category
+  views: [View]
+  user: User
+  createdAt: DateTime!
+}
+
+type View {
+  id: ID!
+  video: Video
   user: User
   createdAt: DateTime!
 }
