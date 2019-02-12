@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import formatDuration from '../../lib/formatDuration'
+import formatDuration from '../../../lib/formatDuration'
 
 const Container = styled.div`
   display: grid;

@@ -1,15 +1,14 @@
 import styled from 'styled-components'
-import { darken } from 'polished'
 import TimeSlider from './TimeSlider'
-import PlayButton from './PlayButton'
-import SkipButton from './SkipButton'
-import VolumeButton from './VolumeButton'
+import PlayButton from './Controls/PlayButton'
+import SkipButton from './Controls/SkipButton'
+import VolumeButton from './Controls/VolumeButton'
 import VolumeSlider from './VolumeSlider'
-import TimeDisplay from './TimeDisplay'
-import SettingsButton from './SettingsButton'
-import MiniButton from './MiniButton'
-import TheaterButton from './TheaterButton'
-import FullscreenButton from './FullscreenButton'
+import TimeDisplay from './Controls/TimeDisplay'
+import SettingsButton from './Controls/SettingsButton'
+import MiniButton from './Controls/MiniButton'
+import TheaterButton from './Controls/TheaterButton'
+import FullscreenButton from './Controls/FullscreenButton'
 
 const Container = styled.div`
   width: 100%;
