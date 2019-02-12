@@ -7,6 +7,7 @@ function formatTimeString(str) {
 }
 
 export default function getTimeHHMMSS(sec) {
+  if (sec === null) return ''
   let str = new Date(sec * 1000).toISOString().substr(11, 8)
   return formatTimeString(str)
 }

@@ -28,3 +28,7 @@
   - [x] Separate permission from login
   - [x] Refresh access token logic
   - [ ] How to get video file from Google Photo to AWS
+- [ ] Video Player
+  - [ ] Refactor out Rail into custom component to capture time above hover vs play time
+  - [ ] Icon row
+  - [ ] Make more thumbnails yt does 1 per sec ridiculous - spread my three based on time
