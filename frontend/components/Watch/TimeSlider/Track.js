@@ -6,10 +6,9 @@ const TimeTrack = styled.div.attrs(({ target, source }) => ({
   position: absolute;
   left: 0;
   z-index: 1;
-  height: ${props => (props.hovered ? '.6rem' : '.35rem')};
+  height: ${props => (props.hovered ? '.5rem' : '.4rem')};
   background: ${props => props.theme.primary};
   cursor: pointer;
-  transition: height 0.2s;
 `
 
 class Track extends React.Component {

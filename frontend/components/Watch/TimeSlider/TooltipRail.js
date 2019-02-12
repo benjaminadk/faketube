@@ -12,12 +12,11 @@ function formatLeft(x) {
 const TimeRail = styled.div`
   position: absolute;
   width: 100%;
-  height: ${props => (props.hovered ? '.6rem' : '.35rem')};
+  height: ${props => (props.hovered ? '.5rem' : '.4rem')};
   left: 0;
   cursor: pointer;
   background: ${props => props.theme.grey[10]};
   opacity: 0.5;
-  transition: height 0.2s;
 `
 
 const Tooltip = styled.div.attrs(props => ({

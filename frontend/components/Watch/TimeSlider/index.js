@@ -18,7 +18,7 @@ class TimeSlider extends React.Component {
 
   render() {
     const {
-      props: { duration, time, onTimeChange, onSlideStart, onSlideEnd },
+      props: { duration, time, onTimeChange, onTimeSlideStart, onTimeSlideEnd },
       state: { hovered }
     } = this
     return (
@@ -29,8 +29,8 @@ class TimeSlider extends React.Component {
         values={[time]}
         rootStyle={rootStyle}
         onChange={onTimeChange}
-        onSlideStart={onSlideStart}
-        onSlideEnd={onSlideEnd}
+        onSlideStart={onTimeSlideStart}
+        onSlideEnd={onTimeSlideEnd}
       >
         <Rail>
           {railProps => (
