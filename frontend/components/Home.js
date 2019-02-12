@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-import VideoThumb from './Home/VideoThumbVideoThumb'
+import VideoThumb from './Home/VideoThumb'
 
 const VIDEOS_QUERY = gql`
   query VIDEOS_QUERY(

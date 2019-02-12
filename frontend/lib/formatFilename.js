@@ -2,6 +2,7 @@ function clean(str) {
   return str
     .toLowerCase()
     .trim()
+    .replace(/\s-\s/g, '-')
     .replace(/\s/g, '-')
 }
 

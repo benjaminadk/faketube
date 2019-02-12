@@ -89,9 +89,14 @@ export default class Page extends React.Component {
       NProgress.start()
     }
 
-    Router.onRouteChangeComplete = () => {
+    Router.onRouteChangeComplete = route => {
       NProgress.done()
-      this.setState({ backdrop: false })
+      const re = /watch/
+      if (re.test(route) && this.state.drawer) {
+        this.setState({ backdrop: true })
+      } else {
+        this.setState({ backdrop: false })
+      }
     }
 
     Router.onRouteChangeError = () => {

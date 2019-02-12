@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { MoreVert } from 'styled-icons/material/MoreVert'
 import { WatchLater } from 'styled-icons/material/WatchLater'
+import Router from 'next/router'
 import formatDistance from '../../lib/formatDistance'
 import formatDuration from '../../lib/formatDuration'
 
@@ -19,14 +20,30 @@ const Container = styled.div`
       display: none;
       top: 5px;
       right: 5px;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0, 0, 0, 0.75);
       border-radius: 2px;
       svg {
         width: 2rem;
         height: 2rem;
         color: ${props => props.theme.white};
+        opacity: 0.8;
         margin: 0.4rem;
       }
+      &:hover + .later {
+        opacity: 0.75;
+      }
+    }
+    .later {
+      position: absolute;
+      top: 5px;
+      left: 50px;
+      background: rgba(0, 0, 0, 0.75);
+      color: ${props => props.theme.white};
+      opacity: 0;
+      border-radius: 2px;
+      font-size: 1.3rem;
+      padding: 0.75rem;
+      transition: opacity 0.5s;
     }
     .duration {
       position: absolute;
@@ -44,12 +61,13 @@ const Container = styled.div`
     .title {
       display: grid;
       grid-template-columns: 18.5rem 2.5rem;
+      min-height: 2.5rem;
       margin-bottom: 1rem;
       & > :first-child {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         width: 18rem;
-        height: 3.2rem;
+        max-height: 3.2rem;
         -webkit-line-clamp: 2;
         font-family: 'Roboto Bold';
         font-size: 1.4rem;
@@ -87,8 +105,8 @@ const Container = styled.div`
 
 const Popup = styled.div`
   position: absolute;
-  top: ${props => props.x + 45}px;
-  left: ${props => props.y - 150}px;
+  top: ${props => props.y + 22.5}px;
+  left: ${props => props.x - 120}px;
   display: ${props => (props.show ? 'block' : 'none')};
   background: ${props => props.theme.white};
   box-shadow: ${props => props.theme.shadows[2]};
@@ -147,6 +165,8 @@ class VideoThumb extends React.Component {
     document.body.removeEventListener('click', this.onMenuClose)
   }
 
+  onVideoClick = id => Router.push({ pathname: '/watch', query: { id } })
+
   render() {
     const {
       props: { video },
@@ -154,16 +174,19 @@ class VideoThumb extends React.Component {
     } = this
     return (
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-        <div className="top">
+        <div className="top" onClick={() => this.onVideoClick(video.id)}>
           <img className="thumb" src={preview ? video.previewURL : video.thumbURL} />
           <div className="watch">
             <WatchLater />
           </div>
+          <div className="later">Watch later</div>
           <div className="duration">{formatDuration(video.duration)}</div>
         </div>
         <div className="bottom">
           <div className="title">
-            <div title={video.title}>{video.title}</div>
+            <div title={video.title} onClick={() => this.onVideoClick(video.id)}>
+              {video.title}
+            </div>
             <div ref={el => (this.anchor = el)} onClick={this.onMenuOpen}>
               <MoreVert className="more-vert" />
             </div>

@@ -187,7 +187,10 @@ class Upload extends React.Component {
     if (!success1) {
       return // error requesting upload url
     }
-    const title = file.name.replace(/\.\w+$/, '').replace(/[-_]/g, ' ')
+    const title = file.name
+      .replace(/\.\w+$/, '')
+      .replace(/[-_]/g, ' ')
+      .replace(/\s\s+/g, ' ')
     await this.setState({ title, videoURL: fileURL })
     await axios({
       method: 'PUT',

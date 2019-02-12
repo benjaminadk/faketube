@@ -2,6 +2,7 @@
 
 type Query {
   me: User
+  video(id: ID!): Video
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, first: Int): [Video]
 }
 

@@ -34,6 +34,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-apollo": "^2.4.1",
+    "react-compound-slider": "^0.20.1",
     "react-dom": "^16.7.0",
     "react-google-login": "^5.0.2",
     "react-share": "^2.4.0",
