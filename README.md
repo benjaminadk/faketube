@@ -29,10 +29,8 @@
   - [x] Refresh access token logic
   - [ ] How to get video file from Google Photo to AWS
 - [ ] Video Player
-
   - [x] Refactor out Rail into custom component to capture time above hover vs play time
   - [x] Icon row
   - [ ] Make more thumbnails yt does 1 per sec ridiculous - spread my three based on time
-
-- [ ] Refetch videos query on video upload
-- [ ] Update links on upload page /watch
+- [x] Refetch videos query on video upload
+- [x] Update links on upload page /watch

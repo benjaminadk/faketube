@@ -153,12 +153,16 @@ class VideoThumb extends React.Component {
   }
 
   componentDidMount() {
-    const { offsetLeft: x, offsetTop: y } = this.anchor
-    this.setState({ x, y })
+    this.setPopupCoordinates()
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('click', this.onMenuClose)
+  }
+
+  setPopupCoordinates = () => {
+    const { offsetLeft: x, offsetTop: y } = this.anchor
+    this.setState({ x, y })
   }
 
   onMouseEnter = () => {
@@ -174,6 +178,7 @@ class VideoThumb extends React.Component {
   }
 
   onMenuOpen = () => {
+    this.setPopupCoordinates()
     this.setState({ popup: true })
     document.body.addEventListener('click', this.onMenuClose)
   }

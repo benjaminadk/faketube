@@ -18,7 +18,7 @@ class TimeSlider extends React.Component {
 
   render() {
     const {
-      props: { duration, time, onTimeChange, onTimeSlideStart, onTimeSlideEnd },
+      props: { src, duration, time, onTimeChange, onTimeSlideStart, onTimeSlideEnd },
       state: { hovered }
     } = this
     return (
@@ -34,7 +34,7 @@ class TimeSlider extends React.Component {
       >
         <Rail>
           {railProps => (
-            <TooltipRail {...railProps} hovered={hovered} setHovered={this.setHovered} />
+            <TooltipRail {...railProps} src={src} hovered={hovered} setHovered={this.setHovered} />
           )}
         </Rail>
         <Handles>

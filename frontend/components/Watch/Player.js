@@ -179,6 +179,7 @@ class Player extends React.Component {
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Video ref={this.video} src={video.videoURL} onTimeUpdate={this.onTimeUpdate} />
         <Controls
+          src={video.videoURL}
           controls={controls}
           playing={playing}
           time={time}

@@ -43,6 +43,7 @@ const VolumeWrapper = styled.div`
 `
 
 const Controls = ({
+  src,
   controls,
   playing,
   time,
@@ -62,6 +63,7 @@ const Controls = ({
   <Container controls={controls}>
     <div className="controls-top">
       <TimeSlider
+        src={src}
         duration={duration}
         time={time}
         onTimeChange={onTimeChange}

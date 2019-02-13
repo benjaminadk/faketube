@@ -9,6 +9,11 @@ function formatLeft(x) {
   }
 }
 
+function setThumbnail(src, percent) {
+  const x = percent < 33 ? 1 : percent < 66 ? 2 : 3
+  return src.replace(/\.\w+$/, `-${x}.jpg`).replace('/videos/', '/thumbnails/')
+}
+
 const TimeRail = styled.div`
   position: absolute;
   width: 100%;
@@ -21,7 +26,8 @@ const TimeRail = styled.div`
 
 const Tooltip = styled.div.attrs(props => ({
   style: {
-    left: formatLeft(props.percent) + '%'
+    left: formatLeft(props.percent) + '%',
+    backgroundImage: `url("${setThumbnail(props.src, props.percent)}")`
   }
 }))`
   position: absolute;
@@ -31,7 +37,10 @@ const Tooltip = styled.div.attrs(props => ({
   display: ${props => (props.hovered ? 'flex' : 'none')};
   justify-content: center;
   align-items: flex-end;
-  background: white;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background: ${props => props.theme.black[0]};
+  outline: 1px solid ${props => props.theme.black[0]};
   & > :first-child {
     font-family: 'Roboto Bold';
     font-size: 1.3rem;
@@ -75,7 +84,7 @@ class TooltipRail extends React.Component {
 
   render() {
     const { value, percent } = this.state
-    const { activeHandleID, getRailProps, hovered } = this.props
+    const { activeHandleID, getRailProps, hovered, src } = this.props
     return (
       <React.Fragment>
         <TimeRail
@@ -86,7 +95,7 @@ class TooltipRail extends React.Component {
           })}
         />
         {!activeHandleID && value ? (
-          <Tooltip hovered={hovered} percent={percent}>
+          <Tooltip src={src} hovered={hovered} percent={percent}>
             <div>{formatDuration(value)}</div>
           </Tooltip>
         ) : null}
