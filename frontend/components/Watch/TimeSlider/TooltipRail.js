@@ -48,6 +48,10 @@ class TooltipRail extends React.Component {
     percent: null
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this.onMouseMove)
+  }
+
   onMouseEnter = () => {
     this.props.setHovered(true)
     document.body.addEventListener('mousemove', this.onMouseMove)

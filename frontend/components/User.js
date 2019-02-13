@@ -1,26 +1,5 @@
 import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
-
-export const ME_QUERY = gql`
-  query ME_QUERY {
-    me {
-      id
-      name
-      email
-      image
-      googlePhotoAT
-      googlePhotoRT
-      role
-      createdAt
-      views {
-        id
-        video {
-          id
-        }
-      }
-    }
-  }
-`
+import { ME_QUERY } from '../apollo/me'
 
 const User = props => (
   <Query {...props} query={ME_QUERY}>

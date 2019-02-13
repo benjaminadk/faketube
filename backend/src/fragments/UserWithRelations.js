@@ -10,6 +10,8 @@ module.exports = `
     createdAt
     views {
       id
+      complete
+      progress
       video {
         id
       }

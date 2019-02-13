@@ -97,11 +97,24 @@ module.exports = {
 
   createView: async (_, args, ctx, info) => {
     try {
-      await ctx.prisma.createView({
+      const view = await ctx.prisma.createView({
         video: { connect: { id: args.id } },
         user: { connect: { id: ctx.userId } }
       })
-      return { success: true }
+      return { success: true, view }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
+  updateView: async (_, args, ctx, info) => {
+    try {
+      const view = await ctx.prisma.updateView({
+        where: { id: args.id },
+        data: { ...args.data }
+      })
+      return { success: true, view }
     } catch (error) {
       console.log(error)
       return { success: false }

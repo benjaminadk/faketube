@@ -1,0 +1,24 @@
+import gql from 'graphql-tag'
+
+export const ME_QUERY = gql`
+  query ME_QUERY {
+    me {
+      id
+      name
+      email
+      image
+      googlePhotoAT
+      googlePhotoRT
+      role
+      createdAt
+      views {
+        id
+        complete
+        progress
+        video {
+          id
+        }
+      }
+    }
+  }
+`

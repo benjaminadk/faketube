@@ -1,6 +1,33 @@
 import styled from 'styled-components'
 import { withApollo } from 'react-apollo'
+import gql from 'graphql-tag'
 import Controls from './Controls'
+import { VIDEO_QUERY } from '../../apollo/video'
+import { ME_QUERY } from '../../apollo/me'
+
+const CREATE_VIEW_MUTATION = gql`
+  mutation CREATE_VIEW_MUTATION($id: ID!) {
+    createView(id: $id) {
+      success
+      view {
+        complete
+        progress
+      }
+    }
+  }
+`
+
+const UPDATE_VIEW_MUTATION = gql`
+  mutation UPDATE_VIEW_MUTATION($id: ID!, $data: ViewCreateInput) {
+    updateView(id: $id, data: $data) {
+      success
+      view {
+        complete
+        progress
+      }
+    }
+  }
+`
 
 const Container = styled.div`
   max-width: calc(calc(100vh - 216px) * 16 / 9);
@@ -22,12 +49,55 @@ class Player extends React.Component {
     playing: true,
     showVolume: false,
     volume: 0.75,
-    muted: false
+    muted: false,
+    view: null
   }
 
   video = React.createRef()
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.createVideoView()
+    this.video.current.addEventListener('ended', () => this.onUpdateView(true))
+  }
+
+  async componentWillUnmount() {
+    await this.onUpdateView(false)
+  }
+
+  createVideoView = async () => {
+    const {
+      user: { views },
+      query,
+      client
+    } = this.props
+    const view = views.find(v => v.video.id === query.id)
+    if (view) {
+      const time = view.complete || view.progress === 0 ? 0 : view.progress
+      this.video.current.currentTime = time
+      await this.setState({ view, time })
+      return
+    } else {
+      const res = await client.mutate({
+        mutation: CREATE_VIEW_MUTATION,
+        variables: { id: query.id },
+        refetchQueries: [{ query: VIDEO_QUERY, variables: { id: query.id } }, { query: ME_QUERY }]
+      })
+      this.setState({ view: res.data.createView.view })
+    }
+  }
+
+  onUpdateView = async complete => {
+    this.video.current.removeEventListener('ended', () => this.onUpdateView(true))
+    const {
+      state: { view, time },
+      props: { client, query }
+    } = this
+    await client.mutate({
+      mutation: UPDATE_VIEW_MUTATION,
+      variables: { id: view.id, data: { complete, progress: time } },
+      refetchQueries: [{ query: VIDEO_QUERY, variables: { id: query.id } }, { query: ME_QUERY }]
+    })
+  }
 
   onMouseEnter = () => this.setState({ controls: true })
 

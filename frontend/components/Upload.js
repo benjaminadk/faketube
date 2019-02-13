@@ -15,7 +15,7 @@ import BasicForm from './Upload/BasicForm'
 import AdvancedForm from './Upload/AdvancedForm'
 import Thumbnails from './Upload/Thumbnails'
 import ImportModal from './Upload/ImportModal'
-import { ME_QUERY } from './User'
+import { ME_QUERY } from '../apollo/me'
 import { SIGN_S3_MUTATION } from '../apollo/signS3'
 
 const CREATE_VIDEO_MUTATION = gql`

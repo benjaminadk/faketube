@@ -1,7 +1,7 @@
 import { GoogleLogin } from 'react-google-login'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import { ME_QUERY } from './User'
+import { ME_QUERY } from '../apollo/me'
 
 const SIGNIN_MUTATION = gql`
   mutation SIGNIN_MUTATION($data: UserCreateInput) {

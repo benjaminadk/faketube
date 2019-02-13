@@ -32,6 +32,8 @@ type Video {
 
 type View {
   id: ID! @unique
+  complete: Boolean @default(value: "false")
+  progress: Int @default(value: "0")
   video: Video
   user: User
   createdAt: DateTime!

@@ -1,31 +1,7 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 import Player from './Watch/Player'
-
-const VIDEO_QUERY = gql`
-  query VIDEO_QUERY($id: ID!) {
-    video(id: $id) {
-      id
-      videoURL
-      thumbURL
-      previewURL
-      duration
-      title
-      description
-      tags
-      category
-      createdAt
-      views {
-        id
-      }
-      user {
-        id
-        name
-      }
-    }
-  }
-`
+import { VIDEO_QUERY } from '../apollo/video'
 
 const Container = styled.div`
   display: grid;
@@ -37,14 +13,17 @@ const Container = styled.div`
 
 class Watch extends React.Component {
   render() {
+    const {
+      props: { user, query }
+    } = this
     return (
       <Container>
-        <Query query={VIDEO_QUERY} variables={{ id: this.props.query.id }}>
+        <Query query={VIDEO_QUERY} variables={{ id: query.id }}>
           {({ data, loading, error }) => {
             if (loading) return null
             return (
               <div className="left">
-                <Player video={data.video} />
+                <Player video={data.video} user={user} query={query} />
               </div>
             )
           }}

@@ -13,7 +13,8 @@ type Mutation {
   createVideo(data: VideoCreateInput): VideoPayload
   updateVideo(id: ID!, data: VideoCreateInput): VideoPayload
   emailVideo(data: EmailVideoInput): Payload
-  createView(id: ID!): Payload
+  createView(id: ID!): ViewPayload
+  updateView(id: ID!, data: ViewCreateInput): ViewPayload
   refreshGooglePhotoToken: TokenPayload
 }
 
@@ -51,6 +52,8 @@ type Video {
 
 type View {
   id: ID!
+  complete: Boolean
+  progress: Int
   video: Video
   user: User
   createdAt: DateTime!
@@ -69,6 +72,11 @@ type S3Payload {
 type VideoPayload {
   success: Boolean
   video: Video
+}
+
+type ViewPayload {
+  success: Boolean
+  view: View
 }
 
 type TokenPayload {

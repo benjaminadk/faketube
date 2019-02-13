@@ -52,6 +52,7 @@ type Mutation {
   deleteManyVideos(where: VideoWhereInput): BatchPayload!
   createView(data: ViewCreateInput!): View!
   updateView(data: ViewUpdateInput!, where: ViewWhereUniqueInput!): View
+  updateManyViews(data: ViewUpdateManyMutationInput!, where: ViewWhereInput): BatchPayload!
   upsertView(where: ViewWhereUniqueInput!, create: ViewCreateInput!, update: ViewUpdateInput!): View!
   deleteView(where: ViewWhereUniqueInput!): View
   deleteManyViews(where: ViewWhereInput): BatchPayload!
@@ -957,6 +958,8 @@ input VideoWhereUniqueInput {
 
 type View {
   id: ID!
+  complete: Boolean
+  progress: Int
   video: Video
   user: User
   createdAt: DateTime!
@@ -969,6 +972,8 @@ type ViewConnection {
 }
 
 input ViewCreateInput {
+  complete: Boolean
+  progress: Int
   video: VideoCreateOneWithoutViewsInput
   user: UserCreateOneWithoutViewsInput
 }
@@ -984,10 +989,14 @@ input ViewCreateManyWithoutVideoInput {
 }
 
 input ViewCreateWithoutUserInput {
+  complete: Boolean
+  progress: Int
   video: VideoCreateOneWithoutViewsInput
 }
 
 input ViewCreateWithoutVideoInput {
+  complete: Boolean
+  progress: Int
   user: UserCreateOneWithoutViewsInput
 }
 
@@ -999,6 +1008,10 @@ type ViewEdge {
 enum ViewOrderByInput {
   id_ASC
   id_DESC
+  complete_ASC
+  complete_DESC
+  progress_ASC
+  progress_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -1007,6 +1020,8 @@ enum ViewOrderByInput {
 
 type ViewPreviousValues {
   id: ID!
+  complete: Boolean
+  progress: Int
   createdAt: DateTime!
 }
 
@@ -1025,6 +1040,16 @@ input ViewScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  complete: Boolean
+  complete_not: Boolean
+  progress: Int
+  progress_not: Int
+  progress_in: [Int!]
+  progress_not_in: [Int!]
+  progress_lt: Int
+  progress_lte: Int
+  progress_gt: Int
+  progress_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1057,8 +1082,20 @@ input ViewSubscriptionWhereInput {
 }
 
 input ViewUpdateInput {
+  complete: Boolean
+  progress: Int
   video: VideoUpdateOneWithoutViewsInput
   user: UserUpdateOneWithoutViewsInput
+}
+
+input ViewUpdateManyDataInput {
+  complete: Boolean
+  progress: Int
+}
+
+input ViewUpdateManyMutationInput {
+  complete: Boolean
+  progress: Int
 }
 
 input ViewUpdateManyWithoutUserInput {
@@ -1069,6 +1106,7 @@ input ViewUpdateManyWithoutUserInput {
   update: [ViewUpdateWithWhereUniqueWithoutUserInput!]
   upsert: [ViewUpsertWithWhereUniqueWithoutUserInput!]
   deleteMany: [ViewScalarWhereInput!]
+  updateMany: [ViewUpdateManyWithWhereNestedInput!]
 }
 
 input ViewUpdateManyWithoutVideoInput {
@@ -1079,13 +1117,23 @@ input ViewUpdateManyWithoutVideoInput {
   update: [ViewUpdateWithWhereUniqueWithoutVideoInput!]
   upsert: [ViewUpsertWithWhereUniqueWithoutVideoInput!]
   deleteMany: [ViewScalarWhereInput!]
+  updateMany: [ViewUpdateManyWithWhereNestedInput!]
+}
+
+input ViewUpdateManyWithWhereNestedInput {
+  where: ViewScalarWhereInput!
+  data: ViewUpdateManyDataInput!
 }
 
 input ViewUpdateWithoutUserDataInput {
+  complete: Boolean
+  progress: Int
   video: VideoUpdateOneWithoutViewsInput
 }
 
 input ViewUpdateWithoutVideoDataInput {
+  complete: Boolean
+  progress: Int
   user: UserUpdateOneWithoutViewsInput
 }
 
@@ -1126,6 +1174,16 @@ input ViewWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  complete: Boolean
+  complete_not: Boolean
+  progress: Int
+  progress_not: Int
+  progress_in: [Int!]
+  progress_not_in: [Int!]
+  progress_lt: Int
+  progress_lte: Int
+  progress_gt: Int
+  progress_gte: Int
   video: VideoWhereInput
   user: UserWhereInput
   createdAt: DateTime
