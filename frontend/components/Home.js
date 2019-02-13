@@ -1,36 +1,7 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 import VideoThumb from './Home/VideoThumb'
-
-const VIDEOS_QUERY = gql`
-  query VIDEOS_QUERY(
-    $where: VideoWhereInput
-    $orderBy: VideoOrderByInput
-    $skip: Int
-    $first: Int
-  ) {
-    videos(where: $where, orderBy: $orderBy, skip: $skip, first: $first) {
-      id
-      videoURL
-      thumbURL
-      previewURL
-      duration
-      title
-      description
-      tags
-      category
-      createdAt
-      views {
-        id
-      }
-      user {
-        id
-        name
-      }
-    }
-  }
-`
+import { VIDEOS_QUERY } from '../apollo/videos'
 
 const Container = styled.div`
   width: 100%;
@@ -51,7 +22,7 @@ const Videos = styled.div`
 class Home extends React.Component {
   render() {
     const {
-      props: { drawer }
+      props: { drawer, user }
     } = this
     return (
       <Query query={VIDEOS_QUERY} variables={{ where: { isPublished: true, isPublic: true } }}>
@@ -65,9 +36,10 @@ class Home extends React.Component {
                 <div>
                   <div>Recommended</div>
                   <Videos>
-                    {videos.map((v, i) => (
-                      <VideoThumb key={v.id} video={v} />
-                    ))}
+                    {videos.map((v, i) => {
+                      const view = user.views.find(vi => vi.video.id === v.id)
+                      return <VideoThumb key={v.id} video={v} view={view} />
+                    })}
                   </Videos>
                 </div>
               </div>

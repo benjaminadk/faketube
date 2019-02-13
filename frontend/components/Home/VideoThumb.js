@@ -108,7 +108,6 @@ const ViewProgress = styled.div`
   position: absolute;
   bottom: 0.35rem;
   left: 0;
-  display: ${props => (props.show ? 'block' : 'none')};
   width: 100%;
   height: 0.45rem;
   background: ${props => props.theme.grey[10]};
@@ -188,7 +187,7 @@ class VideoThumb extends React.Component {
 
   render() {
     const {
-      props: { video },
+      props: { video, view },
       state: { preview, x, y, popup }
     } = this
     return (
@@ -200,9 +199,11 @@ class VideoThumb extends React.Component {
           </div>
           <div className="later">Watch later</div>
           <div className="duration">{formatDuration(video.duration)}</div>
-          <ViewProgress show={false} progress={77}>
-            <div className="view-progress" />
-          </ViewProgress>
+          {view && !view.complete && (
+            <ViewProgress progress={Math.round((view.progress / video.duration) * 100)}>
+              <div className="view-progress" />
+            </ViewProgress>
+          )}
         </div>
         <div className="bottom">
           <div className="title">

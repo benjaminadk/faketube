@@ -17,6 +17,7 @@ import Thumbnails from './Upload/Thumbnails'
 import ImportModal from './Upload/ImportModal'
 import { ME_QUERY } from '../apollo/me'
 import { SIGN_S3_MUTATION } from '../apollo/signS3'
+import { VIDEOS_QUERY } from '../apollo/videos'
 
 const CREATE_VIDEO_MUTATION = gql`
   mutation CREATE_VIDEO_MUTATION($data: VideoCreateInput) {
@@ -222,7 +223,8 @@ class Upload extends React.Component {
           previewURL: this.getPreviewSrc(),
           isPublic: this.state.isPublic
         }
-      }
+      },
+      refetchQueries: [{ query: VIDEOS_QUERY }]
     })
     const { success: success2, video } = res2.data.createVideo
     if (!success2) {
@@ -268,7 +270,8 @@ class Upload extends React.Component {
           isPublished,
           category
         }
-      }
+      },
+      refetchQueries: [{ query: VIDEOS_QUERY }]
     })
     const { success } = res.data.updateVideo
     if (!success) {

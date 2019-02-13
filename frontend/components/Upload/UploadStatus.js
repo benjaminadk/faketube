@@ -40,8 +40,8 @@ const UploadStatus = ({ progress, showThumbnails, canceled, videoID }) => (
     {videoID ? (
       <React.Fragment>
         <span>Your video will be live at:</span>
-        <Link href={{ pathname: '/videos', query: { id: videoID } }}>
-          <a>{`${frontend}/videos?id=${videoID}`}</a>
+        <Link href={{ pathname: '/watch', query: { id: videoID } }}>
+          <a>{`${frontend}/watch?id=${videoID}`}</a>
         </Link>
       </React.Fragment>
     ) : null}

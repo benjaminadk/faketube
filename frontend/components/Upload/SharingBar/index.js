@@ -46,7 +46,7 @@ class SharingBar extends React.Component {
   }
 
   onTitleClick = () => {
-    Router.push({ pathname: '/videos', query: { id: this.props.videoID } })
+    Router.push({ pathname: '/watch', query: { id: this.props.videoID } })
   }
 
   onTabClick = tab => this.setState({ tab })
@@ -79,7 +79,7 @@ class SharingBar extends React.Component {
       state: { title, tab, to, message, emailError, emailSent },
       props: { videoID, thumbnailURL, user }
     } = this
-    const url = `http://localhost:8889/videos?id=${videoID}`
+    const url = `http://localhost:8889/watch?id=${videoID}`
     return (
       <React.Fragment>
         <Title onClick={this.onTitleClick}>{title}</Title>
