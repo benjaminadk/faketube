@@ -13,6 +13,7 @@ type Mutation {
   createVideo(data: VideoCreateInput): VideoPayload
   updateVideo(id: ID!, data: VideoCreateInput): VideoPayload
   emailVideo(data: EmailVideoInput): Payload
+  createView(id: ID!): Payload
   refreshGooglePhotoToken: TokenPayload
 }
 
@@ -25,6 +26,7 @@ type User {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: [Video]
+  views: [View]
   role: Role!
   createdAt: DateTime
 }

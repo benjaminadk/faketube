@@ -107,6 +107,7 @@ type User {
   googlePhotoAT: String
   googlePhotoRT: String
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
+  views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
   role: Role!
   createdAt: DateTime!
 }
@@ -125,16 +126,17 @@ input UserCreateInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
+  views: ViewCreateManyWithoutUserInput
   role: Role!
-}
-
-input UserCreateOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutVideosInput {
   create: UserCreateWithoutVideosInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutViewsInput {
+  create: UserCreateWithoutViewsInput
   connect: UserWhereUniqueInput
 }
 
@@ -145,6 +147,18 @@ input UserCreateWithoutVideosInput {
   image: String!
   googlePhotoAT: String
   googlePhotoRT: String
+  views: ViewCreateManyWithoutUserInput
+  role: Role!
+}
+
+input UserCreateWithoutViewsInput {
+  googleID: String!
+  email: String!
+  name: String!
+  image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoCreateManyWithoutUserInput
   role: Role!
 }
 
@@ -206,17 +220,6 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  googleID: String
-  email: String
-  name: String
-  image: String
-  googlePhotoAT: String
-  googlePhotoRT: String
-  videos: VideoUpdateManyWithoutUserInput
-  role: Role
-}
-
 input UserUpdateInput {
   googleID: String
   email: String
@@ -225,6 +228,7 @@ input UserUpdateInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
+  views: ViewUpdateManyWithoutUserInput
   role: Role
 }
 
@@ -238,19 +242,19 @@ input UserUpdateManyMutationInput {
   role: Role
 }
 
-input UserUpdateOneInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
+input UserUpdateOneWithoutVideosInput {
+  create: UserCreateWithoutVideosInput
+  update: UserUpdateWithoutVideosDataInput
+  upsert: UserUpsertWithoutVideosInput
   delete: Boolean
   disconnect: Boolean
   connect: UserWhereUniqueInput
 }
 
-input UserUpdateOneWithoutVideosInput {
-  create: UserCreateWithoutVideosInput
-  update: UserUpdateWithoutVideosDataInput
-  upsert: UserUpsertWithoutVideosInput
+input UserUpdateOneWithoutViewsInput {
+  create: UserCreateWithoutViewsInput
+  update: UserUpdateWithoutViewsDataInput
+  upsert: UserUpsertWithoutViewsInput
   delete: Boolean
   disconnect: Boolean
   connect: UserWhereUniqueInput
@@ -263,17 +267,29 @@ input UserUpdateWithoutVideosDataInput {
   image: String
   googlePhotoAT: String
   googlePhotoRT: String
+  views: ViewUpdateManyWithoutUserInput
   role: Role
 }
 
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
+input UserUpdateWithoutViewsDataInput {
+  googleID: String
+  email: String
+  name: String
+  image: String
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoUpdateManyWithoutUserInput
+  role: Role
 }
 
 input UserUpsertWithoutVideosInput {
   update: UserUpdateWithoutVideosDataInput!
   create: UserCreateWithoutVideosInput!
+}
+
+input UserUpsertWithoutViewsInput {
+  update: UserUpdateWithoutViewsDataInput!
+  create: UserCreateWithoutViewsInput!
 }
 
 input UserWhereInput {
@@ -378,6 +394,9 @@ input UserWhereInput {
   videos_every: VideoWhereInput
   videos_some: VideoWhereInput
   videos_none: VideoWhereInput
+  views_every: ViewWhereInput
+  views_some: ViewWhereInput
+  views_none: ViewWhereInput
   role: Role
   role_not: Role
   role_in: [Role!]
@@ -951,7 +970,12 @@ type ViewConnection {
 
 input ViewCreateInput {
   video: VideoCreateOneWithoutViewsInput
-  user: UserCreateOneInput
+  user: UserCreateOneWithoutViewsInput
+}
+
+input ViewCreateManyWithoutUserInput {
+  create: [ViewCreateWithoutUserInput!]
+  connect: [ViewWhereUniqueInput!]
 }
 
 input ViewCreateManyWithoutVideoInput {
@@ -959,8 +983,12 @@ input ViewCreateManyWithoutVideoInput {
   connect: [ViewWhereUniqueInput!]
 }
 
+input ViewCreateWithoutUserInput {
+  video: VideoCreateOneWithoutViewsInput
+}
+
 input ViewCreateWithoutVideoInput {
-  user: UserCreateOneInput
+  user: UserCreateOneWithoutViewsInput
 }
 
 type ViewEdge {
@@ -1030,7 +1058,17 @@ input ViewSubscriptionWhereInput {
 
 input ViewUpdateInput {
   video: VideoUpdateOneWithoutViewsInput
-  user: UserUpdateOneInput
+  user: UserUpdateOneWithoutViewsInput
+}
+
+input ViewUpdateManyWithoutUserInput {
+  create: [ViewCreateWithoutUserInput!]
+  delete: [ViewWhereUniqueInput!]
+  connect: [ViewWhereUniqueInput!]
+  disconnect: [ViewWhereUniqueInput!]
+  update: [ViewUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [ViewUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [ViewScalarWhereInput!]
 }
 
 input ViewUpdateManyWithoutVideoInput {
@@ -1043,13 +1081,28 @@ input ViewUpdateManyWithoutVideoInput {
   deleteMany: [ViewScalarWhereInput!]
 }
 
+input ViewUpdateWithoutUserDataInput {
+  video: VideoUpdateOneWithoutViewsInput
+}
+
 input ViewUpdateWithoutVideoDataInput {
-  user: UserUpdateOneInput
+  user: UserUpdateOneWithoutViewsInput
+}
+
+input ViewUpdateWithWhereUniqueWithoutUserInput {
+  where: ViewWhereUniqueInput!
+  data: ViewUpdateWithoutUserDataInput!
 }
 
 input ViewUpdateWithWhereUniqueWithoutVideoInput {
   where: ViewWhereUniqueInput!
   data: ViewUpdateWithoutVideoDataInput!
+}
+
+input ViewUpsertWithWhereUniqueWithoutUserInput {
+  where: ViewWhereUniqueInput!
+  update: ViewUpdateWithoutUserDataInput!
+  create: ViewCreateWithoutUserInput!
 }
 
 input ViewUpsertWithWhereUniqueWithoutVideoInput {

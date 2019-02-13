@@ -12,6 +12,12 @@ export const ME_QUERY = gql`
       googlePhotoRT
       role
       createdAt
+      views {
+        id
+        video {
+          id
+        }
+      }
     }
   }
 `

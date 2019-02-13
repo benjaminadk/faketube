@@ -7,6 +7,7 @@ type User {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: [Video]
+  views: [View]
   role: Role!
   createdAt: DateTime!
 }

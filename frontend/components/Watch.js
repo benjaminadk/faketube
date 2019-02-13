@@ -30,7 +30,7 @@ const VIDEO_QUERY = gql`
 const Container = styled.div`
   display: grid;
   grid-template-columns: 60% 40%;
-  .right {
+  .left {
     padding: 2rem;
   }
 `
@@ -43,7 +43,7 @@ class Watch extends React.Component {
           {({ data, loading, error }) => {
             if (loading) return null
             return (
-              <div className="right">
+              <div className="left">
                 <Player video={data.video} />
               </div>
             )

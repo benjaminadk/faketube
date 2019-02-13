@@ -95,6 +95,19 @@ module.exports = {
     }
   },
 
+  createView: async (_, args, ctx, info) => {
+    try {
+      await ctx.prisma.createView({
+        video: { connect: { id: args.id } },
+        user: { connect: { id: ctx.userId } }
+      })
+      return { success: true }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
   refreshGooglePhotoToken: async (_, args, ctx, info) => {
     try {
       const { id, googlePhotoRT } = ctx.user

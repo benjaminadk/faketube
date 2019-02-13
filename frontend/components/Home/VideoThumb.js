@@ -49,6 +49,7 @@ const Container = styled.div`
       position: absolute;
       bottom: 7px;
       right: 5px;
+      z-index: 2;
       font-family: 'Roboto Bold';
       font-size: 1.2rem;
       background: rgba(0, 0, 0, 0.8);
@@ -100,6 +101,24 @@ const Container = styled.div`
   }
   &:hover .duration {
     display: none !important;
+  }
+`
+
+const ViewProgress = styled.div`
+  position: absolute;
+  bottom: 0.35rem;
+  left: 0;
+  display: ${props => (props.show ? 'block' : 'none')};
+  width: 100%;
+  height: 0.45rem;
+  background: ${props => props.theme.grey[10]};
+  .view-progress {
+    position: absolute;
+    bottom: 0rem;
+    left: 0;
+    width: ${props => props.progress}%;
+    height: 0.45rem;
+    background: ${props => props.theme.primary};
   }
 `
 
@@ -181,6 +200,9 @@ class VideoThumb extends React.Component {
           </div>
           <div className="later">Watch later</div>
           <div className="duration">{formatDuration(video.duration)}</div>
+          <ViewProgress show={false} progress={77}>
+            <div className="view-progress" />
+          </ViewProgress>
         </div>
         <div className="bottom">
           <div className="title">
