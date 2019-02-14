@@ -19,6 +19,7 @@ module.exports = `
     user {
       id
       name
+      image
     }
   }
 `
