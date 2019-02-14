@@ -1,8 +1,8 @@
 import { Fullscreen } from 'styled-icons/material/Fullscreen'
 import { IconButton } from './VolumeButton'
 
-const FullscreenButton = () => (
-  <IconButton width={4} size={3}>
+const FullscreenButton = ({ onClick }) => (
+  <IconButton width={4} size={3} onClick={onClick}>
     <Fullscreen />
   </IconButton>
 )

@@ -5,7 +5,7 @@ const TimeTrack = styled.div.attrs(({ target, source }) => ({
 }))`
   position: absolute;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   height: ${props => (props.hovered ? '.5rem' : '.4rem')};
   background: ${props => props.theme.primary};
   cursor: pointer;

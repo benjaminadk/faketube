@@ -8,6 +8,7 @@ const TimeHandle = styled.div.attrs(props => ({
   display: ${props => (props.hovered ? 'block' : 'none')};
   position: absolute;
   top: -4px;
+  z-index: 2;
   width: 1.35rem;
   height: 1.35rem;
   background: ${props => props.theme.primary};

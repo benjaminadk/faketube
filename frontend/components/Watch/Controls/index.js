@@ -41,6 +41,7 @@ const Controls = ({
   playing,
   time,
   duration,
+  buffered,
   muted,
   volume,
   showVolume,
@@ -56,7 +57,8 @@ const Controls = ({
   onPlayPauseClick,
   onHideSettings,
   onShowSettings,
-  onSpeedChange
+  onSpeedChange,
+  onFullscreenClick
 }) => (
   <Container controls={controls}>
     <div className="controls-top">
@@ -64,6 +66,7 @@ const Controls = ({
         src={src}
         duration={duration}
         time={time}
+        buffered={buffered}
         onTimeChange={onTimeChange}
         onTimeSlideStart={onTimeSlideStart}
         onTimeSlideEnd={onTimeSlideEnd}
@@ -90,7 +93,7 @@ const Controls = ({
         />
         <MiniButton />
         <TheaterButton />
-        <FullscreenButton />
+        <FullscreenButton onClick={onFullscreenClick} />
       </div>
     </div>
     <SettingsMenu show={showSettings} speed={speed} onSpeedChange={onSpeedChange} />

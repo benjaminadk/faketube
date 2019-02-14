@@ -50,6 +50,7 @@ class Player extends React.Component {
     showVolume: false,
     playing: true,
     time: 0,
+    buffered: 0,
     volume: 0.75,
     muted: false,
     speed: 1,
@@ -91,6 +92,8 @@ class Player extends React.Component {
 
   onUpdateView = async complete => {
     if (complete) {
+      this.video.current.pause()
+      this.setState({ playing: false })
       this.video.current.removeEventListener('ended', () => this.onUpdateView(true))
     }
     const {
@@ -116,7 +119,12 @@ class Player extends React.Component {
     }
   }
 
-  onTimeUpdate = () => this.setState({ time: Math.ceil(this.video.current.currentTime) })
+  onTimeUpdate = () => {
+    this.setState({
+      time: Math.ceil(this.video.current.currentTime),
+      buffered: Math.ceil((this.video.current.buffered.end(0) / this.props.video.duration) * 100)
+    })
+  }
 
   onTimeChange = values => {
     const time = values[0]
@@ -188,10 +196,14 @@ class Player extends React.Component {
     this.setState({ speed })
   }
 
+  onFullscreenClick = () => {
+    this.video.current.webkitRequestFullscreen()
+  }
+
   render() {
     const {
       props: { video },
-      state: { controls, time, playing, showVolume, volume, muted, showSettings, speed }
+      state: { controls, time, buffered, playing, showVolume, volume, muted, showSettings, speed }
     } = this
     return (
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
@@ -202,6 +214,7 @@ class Player extends React.Component {
           playing={playing}
           time={time}
           duration={video.duration}
+          buffered={buffered}
           muted={muted}
           volume={volume}
           showVolume={showVolume}
@@ -218,6 +231,7 @@ class Player extends React.Component {
           onHideSettings={this.onHideSettings}
           onShowSettings={this.onShowSettings}
           onSpeedChange={this.onSpeedChange}
+          onFullscreenClick={this.onFullscreenClick}
         />
       </Container>
     )

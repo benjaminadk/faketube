@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Check } from 'styled-icons/material/Check'
 import { KeyboardArrowLeft } from 'styled-icons/material/KeyboardArrowLeft'
+import { KeyboardArrowRight } from 'styled-icons/material/KeyboardArrowRight'
 
 const Container = styled.div`
   position: absolute;
@@ -27,6 +28,25 @@ const Container = styled.div`
     & > :first-child {
       font-family: 'Roboto Bold';
       font-size: 1.3rem;
+      color: ${props => props.theme.white};
+    }
+    .settings-speed {
+      display: flex;
+      align-items: center;
+      & > :first-child {
+        font-family: 'Roboto';
+        font-size: 1.2rem;
+        color: ${props => props.theme.white};
+      }
+      svg {
+        width: 2rem;
+        height: 2rem;
+        color: ${props => props.theme.white};
+      }
+    }
+    .settings-quality {
+      font-family: 'Roboto';
+      font-size: 1.2rem;
       color: ${props => props.theme.white};
     }
   }
@@ -113,11 +133,14 @@ class SettingsMenu extends React.Component {
             </div>
             <div className="settings-row" onClick={this.onShowSpeed}>
               <div>Speed</div>
-              <div>normal</div>
+              <div className="settings-speed">
+                <div>{speed == 1 ? 'Normal' : speed}</div>
+                <KeyboardArrowRight />
+              </div>
             </div>
             <div className="settings-row">
               <div>Quality</div>
-              <div>480</div>
+              <div className="settings-quality">480p</div>
             </div>
           </React.Fragment>
         )}

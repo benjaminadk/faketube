@@ -2,6 +2,7 @@ import { Slider, Rail, Handles, Tracks } from 'react-compound-slider'
 import TooltipRail from './TooltipRail'
 import Track from './Track'
 import Handle from './Handle'
+import Buffered from './Buffered'
 
 const rootStyle = {
   position: 'relative',
@@ -18,7 +19,7 @@ class TimeSlider extends React.Component {
 
   render() {
     const {
-      props: { src, duration, time, onTimeChange, onTimeSlideStart, onTimeSlideEnd },
+      props: { src, duration, time, buffered, onTimeChange, onTimeSlideStart, onTimeSlideEnd },
       state: { hovered }
     } = this
     return (
@@ -66,6 +67,12 @@ class TimeSlider extends React.Component {
                   setHovered={this.setHovered}
                 />
               ))}
+              <Buffered
+                buffered={buffered}
+                hovered={hovered}
+                getTrackProps={getTrackProps}
+                setHovered={this.setHovered}
+              />
             </div>
           )}
         </Tracks>
