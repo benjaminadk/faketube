@@ -10,6 +10,7 @@ const CREATE_VIEW_MUTATION = gql`
     createView(id: $id) {
       success
       view {
+        id
         complete
         progress
       }
@@ -22,6 +23,7 @@ const UPDATE_VIEW_MUTATION = gql`
     updateView(id: $id, data: $data) {
       success
       view {
+        id
         complete
         progress
       }
@@ -30,8 +32,7 @@ const UPDATE_VIEW_MUTATION = gql`
 `
 
 const Container = styled.div`
-  max-width: calc(calc(100vh - 216px) * 16 / 9);
-  min-width: calc(480px * 16 / 9);
+  width: 100%;
   position: relative;
 `
 
@@ -50,7 +51,8 @@ class Player extends React.Component {
     showVolume: false,
     volume: 0.75,
     muted: false,
-    view: null
+    view: null,
+    showSettings: false
   }
 
   video = React.createRef()
@@ -87,11 +89,17 @@ class Player extends React.Component {
   }
 
   onUpdateView = async complete => {
-    this.video.current.removeEventListener('ended', () => this.onUpdateView(true))
+    if (complete) {
+      this.video.current.removeEventListener('ended', () => this.onUpdateView(true))
+    }
     const {
       state: { view, time },
       props: { client, query }
     } = this
+
+    if (view.complete) {
+      return
+    }
     await client.mutate({
       mutation: UPDATE_VIEW_MUTATION,
       variables: { id: view.id, data: { complete, progress: time } },
@@ -170,10 +178,14 @@ class Player extends React.Component {
 
   onHideVolume = () => this.setState({ showVolume: false })
 
+  onShowSettings = () => this.setState({ showSettings: true })
+
+  onHideSettings = () => this.setState({ showSettings: false })
+
   render() {
     const {
       props: { video },
-      state: { controls, time, playing, showVolume, volume, muted }
+      state: { controls, time, playing, showVolume, volume, muted, showSettings }
     } = this
     return (
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
@@ -187,6 +199,7 @@ class Player extends React.Component {
           muted={muted}
           volume={volume}
           showVolume={showVolume}
+          showSettings={showSettings}
           onTimeChange={this.onTimeChange}
           onTimeSlideStart={this.onTimeSlideStart}
           onTimeSlideEnd={this.onTimeSlideEnd}
@@ -195,6 +208,8 @@ class Player extends React.Component {
           onVolumeChange={this.onVolumeChange}
           onHideVolume={this.onHideVolume}
           onShowVolume={this.onShowVolume}
+          onHideSettings={this.onHideSettings}
+          onShowSettings={this.onShowSettings}
         />
       </Container>
     )

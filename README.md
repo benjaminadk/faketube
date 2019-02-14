@@ -32,5 +32,6 @@
   - [x] Refactor out Rail into custom component to capture time above hover vs play time
   - [x] Icon row
   - [ ] Make more thumbnails yt does 1 per sec ridiculous - spread my three based on time
+  - [ ] When video ends update view model
 - [x] Refetch videos query on video upload
 - [x] Update links on upload page /watch

@@ -34,12 +34,33 @@ const Container = styled.div`
   }
 `
 
-const VolumeWrapper = styled.div`
-  width: ${props => (props.show ? '6rem' : 0)};
-  display: grid;
-  justify-items: center;
-  align-items: center;
-  transition: 0.25s;
+const SettingsMenu = styled.div`
+  position: absolute;
+  top: -13rem;
+  right: 5rem;
+  display: ${props => (props.show ? 'block' : 'none')};
+  width: 20rem;
+  background: rgba(0, 0, 0, 0.85);
+  & > :first-child {
+    margin-top: 0.5rem;
+  }
+  & > :last-child {
+    margin-bottom: 0.5rem;
+  }
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    cursor: pointer;
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+    & > :first-child {
+      font-family: 'Roboto Bold';
+      font-size: 1.3rem;
+      color: ${props => props.theme.white};
+    }
+  }
 `
 
 const Controls = ({
@@ -51,6 +72,7 @@ const Controls = ({
   muted,
   volume,
   showVolume,
+  showSettings,
   onTimeChange,
   onTimeSlideStart,
   onTimeSlideEnd,
@@ -58,7 +80,9 @@ const Controls = ({
   onShowVolume,
   onVolumeClick,
   onVolumeChange,
-  onPlayPauseClick
+  onPlayPauseClick,
+  onHideSettings,
+  onShowSettings
 }) => (
   <Container controls={controls}>
     <div className="controls-top">
@@ -81,18 +105,34 @@ const Controls = ({
           onClick={onVolumeClick}
           onMouseEnter={onShowVolume}
         />
-        <VolumeWrapper show={showVolume}>
-          <VolumeSlider volume={volume} show={showVolume} onVolumeChange={onVolumeChange} />
-        </VolumeWrapper>
+        <VolumeSlider volume={volume} show={showVolume} onVolumeChange={onVolumeChange} />
         <TimeDisplay time={time} duration={duration} />
       </div>
       <div>
-        <SettingsButton />
+        <SettingsButton
+          show={showSettings}
+          onShowSettings={onShowSettings}
+          onHideSettings={onHideSettings}
+        />
         <MiniButton />
         <TheaterButton />
         <FullscreenButton />
       </div>
     </div>
+    <SettingsMenu show={showSettings}>
+      <div className="settings-row">
+        <div>Autoplay</div>
+        <div>switch</div>
+      </div>
+      <div className="settings-row">
+        <div>Speed</div>
+        <div>normal</div>
+      </div>
+      <div className="settings-row">
+        <div>Quality</div>
+        <div>480</div>
+      </div>
+    </SettingsMenu>
   </Container>
 )
 

@@ -2,6 +2,14 @@ import { Slider, Rail, Handles, Tracks } from 'react-compound-slider'
 import styled from 'styled-components'
 import VolumeHandle from './Handle'
 
+const VolumeWrapper = styled.div`
+  width: ${props => (props.show ? '6rem' : 0)};
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  transition: 0.25s;
+`
+
 const VolumeRail = styled.div`
   height: 0.3rem;
   background: ${props => props.theme.grey[5]};
@@ -34,39 +42,41 @@ class VolumeSlider extends React.Component {
       props: { volume, show, onVolumeChange }
     } = this
     return (
-      <Slider
-        mode={1}
-        step={0.01}
-        domain={[0, 1]}
-        values={[volume]}
-        rootStyle={rootStyle}
-        onChange={onVolumeChange}
-      >
-        <Rail>{({ getRailProps }) => <VolumeRail {...getRailProps()} />}</Rail>
-        <Handles>
-          {({ handles, getHandleProps }) => (
-            <div>
-              {handles.map(handle => (
-                <VolumeHandle
-                  key={handle.id}
-                  show={show}
-                  handle={handle}
-                  getHandleProps={getHandleProps}
-                />
-              ))}
-            </div>
-          )}
-        </Handles>
-        <Tracks right={false}>
-          {({ tracks, getTrackProps }) => (
-            <div>
-              {tracks.map(({ id, source, target }) => (
-                <VolumeTrack key={id} source={source} target={target} {...getTrackProps()} />
-              ))}
-            </div>
-          )}
-        </Tracks>
-      </Slider>
+      <VolumeWrapper show={show}>
+        <Slider
+          mode={1}
+          step={0.01}
+          domain={[0, 1]}
+          values={[volume]}
+          rootStyle={rootStyle}
+          onChange={onVolumeChange}
+        >
+          <Rail>{({ getRailProps }) => <VolumeRail {...getRailProps()} />}</Rail>
+          <Handles>
+            {({ handles, getHandleProps }) => (
+              <div>
+                {handles.map(handle => (
+                  <VolumeHandle
+                    key={handle.id}
+                    show={show}
+                    handle={handle}
+                    getHandleProps={getHandleProps}
+                  />
+                ))}
+              </div>
+            )}
+          </Handles>
+          <Tracks right={false}>
+            {({ tracks, getTrackProps }) => (
+              <div>
+                {tracks.map(({ id, source, target }) => (
+                  <VolumeTrack key={id} source={source} target={target} {...getTrackProps()} />
+                ))}
+              </div>
+            )}
+          </Tracks>
+        </Slider>
+      </VolumeWrapper>
     )
   }
 }
