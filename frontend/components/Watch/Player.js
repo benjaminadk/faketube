@@ -34,13 +34,17 @@ const UPDATE_VIEW_MUTATION = gql`
 const Container = styled.div`
   width: 100%;
   position: relative;
+  margin-bottom: 2rem;
 `
 
 const Video = styled.video.attrs(props => ({
   autoPlay: true,
   muted: true
 }))`
-  width: 100%;
+  max-width: 100%;
+  min-width: 875px;
+  max-height: 492px;
+  background: black;
 `
 
 class Player extends React.Component {

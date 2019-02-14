@@ -1,13 +1,16 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
 import Player from './Watch/Player'
+import Details from './Watch/Details'
 import { VIDEO_QUERY } from '../apollo/video'
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 60% 40%;
+  grid-template-columns: 75% 25%;
+  padding-top: 3rem;
   .left {
-    padding: 2rem;
+    justify-self: center;
+    max-width: 875px;
   }
 `
 
@@ -24,6 +27,7 @@ class Watch extends React.Component {
             return (
               <div className="left">
                 <Player video={data.video} user={user} query={query} />
+                <Details video={data.video} />
               </div>
             )
           }}

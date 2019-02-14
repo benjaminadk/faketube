@@ -12,16 +12,15 @@ const BufferedTrack = styled.div.attrs(props => ({
   cursor: pointer;
 `
 
-const Buffered = ({ buffered, hovered, setHovered, getTrackProps }) =>
-  console.log(buffered) || (
-    <BufferedTrack
-      buffered={buffered}
-      hovered={hovered}
-      {...getTrackProps({
-        onMouseEnter: () => setHovered(true),
-        onMouseLeave: () => setHovered(false)
-      })}
-    />
-  )
+const Buffered = ({ buffered, hovered, setHovered, getTrackProps }) => (
+  <BufferedTrack
+    buffered={buffered}
+    hovered={hovered}
+    {...getTrackProps({
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false)
+    })}
+  />
+)
 
 export default Buffered

@@ -19,6 +19,7 @@ export const VIDEO_QUERY = gql`
       user {
         id
         name
+        image
       }
     }
   }

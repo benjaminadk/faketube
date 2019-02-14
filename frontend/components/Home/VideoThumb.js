@@ -204,11 +204,11 @@ class VideoThumb extends React.Component {
           </div>
           <div className="later">Watch later</div>
           <div className="duration">{formatDuration(video.duration)}</div>
-          {view && !view.complete && (
+          {view && !view.complete ? (
             <ViewProgress progress={Math.round((view.progress / video.duration) * 100)}>
               <div className="view-progress" />
             </ViewProgress>
-          )}
+          ) : null}
         </div>
         <div className="bottom">
           <div className="title">
