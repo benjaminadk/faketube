@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import formatDuration from '../../../lib/formatDuration'
+import formatDuration from '../../../../lib/formatDuration'
 
 function formatLeft(x) {
   if (x - 10 < 0) return 0

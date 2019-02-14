@@ -1,14 +1,15 @@
 import styled from 'styled-components'
-import TimeSlider from '../TimeSlider'
+import TimeSlider from './TimeSlider'
 import PlayButton from './PlayButton'
 import SkipButton from './SkipButton'
 import VolumeButton from './VolumeButton'
-import VolumeSlider from '../VolumeSlider'
+import VolumeSlider from './VolumeSlider'
 import TimeDisplay from './TimeDisplay'
 import SettingsButton from './SettingsButton'
 import MiniButton from './MiniButton'
 import TheaterButton from './TheaterButton'
 import FullscreenButton from './FullscreenButton'
+import SettingsMenu from './SettingsMenu'
 
 const Container = styled.div`
   position: absolute;
@@ -34,35 +35,6 @@ const Container = styled.div`
   }
 `
 
-const SettingsMenu = styled.div`
-  position: absolute;
-  top: -13rem;
-  right: 5rem;
-  display: ${props => (props.show ? 'block' : 'none')};
-  width: 20rem;
-  background: rgba(0, 0, 0, 0.85);
-  & > :first-child {
-    margin-top: 0.5rem;
-  }
-  & > :last-child {
-    margin-bottom: 0.5rem;
-  }
-  .settings-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    cursor: pointer;
-    &:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-    & > :first-child {
-      font-family: 'Roboto Bold';
-      font-size: 1.3rem;
-      color: ${props => props.theme.white};
-    }
-  }
-`
-
 const Controls = ({
   src,
   controls,
@@ -73,6 +45,7 @@ const Controls = ({
   volume,
   showVolume,
   showSettings,
+  speed,
   onTimeChange,
   onTimeSlideStart,
   onTimeSlideEnd,
@@ -82,7 +55,8 @@ const Controls = ({
   onVolumeChange,
   onPlayPauseClick,
   onHideSettings,
-  onShowSettings
+  onShowSettings,
+  onSpeedChange
 }) => (
   <Container controls={controls}>
     <div className="controls-top">
@@ -119,20 +93,7 @@ const Controls = ({
         <FullscreenButton />
       </div>
     </div>
-    <SettingsMenu show={showSettings}>
-      <div className="settings-row">
-        <div>Autoplay</div>
-        <div>switch</div>
-      </div>
-      <div className="settings-row">
-        <div>Speed</div>
-        <div>normal</div>
-      </div>
-      <div className="settings-row">
-        <div>Quality</div>
-        <div>480</div>
-      </div>
-    </SettingsMenu>
+    <SettingsMenu show={showSettings} speed={speed} onSpeedChange={onSpeedChange} />
   </Container>
 )
 

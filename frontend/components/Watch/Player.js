@@ -46,13 +46,14 @@ const Video = styled.video.attrs(props => ({
 class Player extends React.Component {
   state = {
     controls: true,
-    time: 0,
-    playing: true,
+    showSettings: false,
     showVolume: false,
+    playing: true,
+    time: 0,
     volume: 0.75,
     muted: false,
-    view: null,
-    showSettings: false
+    speed: 1,
+    view: null
   }
 
   video = React.createRef()
@@ -110,7 +111,7 @@ class Player extends React.Component {
   onMouseEnter = () => this.setState({ controls: true })
 
   onMouseLeave = () => {
-    if (this.state.playing) {
+    if (this.state.playing && !this.state.showSettings) {
       this.setState({ controls: false })
     }
   }
@@ -182,10 +183,15 @@ class Player extends React.Component {
 
   onHideSettings = () => this.setState({ showSettings: false })
 
+  onSpeedChange = speed => {
+    this.video.current.playbackRate = speed
+    this.setState({ speed })
+  }
+
   render() {
     const {
       props: { video },
-      state: { controls, time, playing, showVolume, volume, muted, showSettings }
+      state: { controls, time, playing, showVolume, volume, muted, showSettings, speed }
     } = this
     return (
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
@@ -200,6 +206,7 @@ class Player extends React.Component {
           volume={volume}
           showVolume={showVolume}
           showSettings={showSettings}
+          speed={speed}
           onTimeChange={this.onTimeChange}
           onTimeSlideStart={this.onTimeSlideStart}
           onTimeSlideEnd={this.onTimeSlideEnd}
@@ -210,6 +217,7 @@ class Player extends React.Component {
           onShowVolume={this.onShowVolume}
           onHideSettings={this.onHideSettings}
           onShowSettings={this.onShowSettings}
+          onSpeedChange={this.onSpeedChange}
         />
       </Container>
     )
