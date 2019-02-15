@@ -1,5 +1,34 @@
 import styled from 'styled-components'
 import { format } from 'date-fns'
+import { withApollo } from 'react-apollo'
+import gql from 'graphql-tag'
+import Thumbs from './Details/Thumbs'
+import { VIDEO_QUERY } from '../../apollo/video'
+import { ME_QUERY } from '../../apollo/me'
+
+const CREATE_REVIEW_MUTATION = gql`
+  mutation CREATE_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
+    createReview(id: $id, status: $status) {
+      success
+      review {
+        id
+        status
+      }
+    }
+  }
+`
+
+const UPDATE_REVIEW_MUTATION = gql`
+  mutation UPDATE_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
+    updateReview(id: $id, status: $status) {
+      success
+      review {
+        id
+        status
+      }
+    }
+  }
+`
 
 const Container = styled.div`
   .title-row {
@@ -11,7 +40,6 @@ const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     color: ${props => props.theme.grey[10]};
-    padding-bottom: 2rem;
     margin-bottom: 2rem;
     border-bottom: 1px solid ${props => props.theme.grey[5]};
     .views {
@@ -61,7 +89,52 @@ const Container = styled.div`
 `
 
 class Details extends React.Component {
-  state = {}
+  state = {
+    review: null
+  }
+
+  componentDidMount() {
+    this.setReview()
+  }
+
+  setReview = () => {
+    const {
+      props: { video, user }
+    } = this
+    const review = user.reviews.find(r => r.video.id === video.id)
+    this.setState({ review })
+  }
+
+  onReviewClick = async status => {
+    const {
+      props: { video, client },
+      state: { review }
+    } = this
+    if (!review) {
+      let res = await client.mutate({
+        mutation: CREATE_REVIEW_MUTATION,
+        variables: { id: video.id, status },
+        refetchQueries: [{ query: VIDEO_QUERY, variables: { id: video.id } }, { query: ME_QUERY }]
+      })
+      let { success, review: newReview } = res.data.createReview
+      if (!success) {
+        return // error creating review
+      }
+      this.setState({ review: newReview })
+    } else {
+      const newStatus = review.status === status ? 'NONE' : status
+      let res = await client.mutate({
+        mutation: UPDATE_REVIEW_MUTATION,
+        variables: { id: review.id, status: newStatus },
+        refetchQueries: [{ query: VIDEO_QUERY, variables: { id: video.id } }, { query: ME_QUERY }]
+      })
+      let { success, review: updatedReview } = res.data.updateReview
+      if (!success) {
+        return // error updating review
+      }
+      this.setState({ review: updatedReview })
+    }
+  }
 
   render() {
     const {
@@ -75,7 +148,7 @@ class Details extends React.Component {
             {video.views.length} view{video.views.length === 1 ? '' : 's'}
           </div>
           <div className="actions">
-            <div>like/dislike</div>
+            <Thumbs video={video} onClick={this.onReviewClick} />
             <div>share</div>
             <div>save</div>
             <div>more</div>
@@ -99,4 +172,4 @@ class Details extends React.Component {
   }
 }
 
-export default Details
+export default withApollo(Details)

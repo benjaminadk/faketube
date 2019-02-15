@@ -16,6 +16,10 @@ module.exports = `
     views {
       id
     }
+    reviews {
+      id
+      status
+    }
     user {
       id
       name

@@ -16,5 +16,12 @@ module.exports = `
         id
       }
     }
+    reviews {
+      id
+      status
+      video {
+        id
+      }
+    }
   }
 `

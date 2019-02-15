@@ -6,8 +6,9 @@ type User {
   image: String!
   googlePhotoAT: String
   googlePhotoRT: String
-  videos: [Video]
+  videos: [Video] @relation(name: "UserOwnedVideos")
   views: [View]
+  reviews: [Review]
   role: Role!
   createdAt: DateTime!
 }
@@ -26,7 +27,8 @@ type Video {
   isPublic: Boolean! @default(value: "true")
   category: Category @default(value: "ENTERTAINMENT")
   views: [View]
-  user: User
+  reviews: [Review]
+  user: User @relation(name: "UserOwnedVideos")
   createdAt: DateTime!
 }
 
@@ -34,6 +36,14 @@ type View {
   id: ID! @unique
   complete: Boolean @default(value: "false")
   progress: Int @default(value: "0")
+  video: Video
+  user: User
+  createdAt: DateTime!
+}
+
+type Review {
+  id: ID! @unique
+  status: ReviewStatus
   video: Video
   user: User
   createdAt: DateTime!
@@ -60,4 +70,10 @@ enum Category {
   EDUCATION
   SCIENCE_TECHNOLOGY
   NONPROFITS_ACTIVISM
+}
+
+enum ReviewStatus {
+  LIKE
+  DISLIKE
+  NONE
 }

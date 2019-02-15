@@ -19,6 +19,13 @@ export const ME_QUERY = gql`
           id
         }
       }
+      reviews {
+        id
+        status
+        video {
+          id
+        }
+      }
     }
   }
 `

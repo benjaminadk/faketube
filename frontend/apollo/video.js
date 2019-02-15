@@ -16,6 +16,10 @@ export const VIDEO_QUERY = gql`
       views {
         id
       }
+      reviews {
+        id
+        status
+      }
       user {
         id
         name
