@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
-import VideoThumb from './Home/VideoThumb'
-import { VIDEOS_QUERY } from '../apollo/videos'
+import VideoThumb from './VideoThumb'
+import { VIDEOS_QUERY } from '../../apollo/videos'
 
 const Container = styled.div`
   width: 100%;

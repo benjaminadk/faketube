@@ -24,7 +24,9 @@ import { Code } from 'styled-icons/material/Code'
 import { KeyboardArrowRight } from 'styled-icons/material/KeyboardArrowRight'
 import { KeyboardArrowLeft } from 'styled-icons/material/KeyboardArrowLeft'
 import Modal from '../../Modal'
+import Toast from '../../Toast'
 import copyToClipboard from '../../../lib/copyToClipboard'
+import { frontend } from '../../../config'
 
 const Container = styled.div`
   position: relative;
@@ -120,10 +122,21 @@ const Container = styled.div`
 
 class ShareModal extends React.Component {
   state = {
-    shift: false
+    shift: false,
+    text: '',
+    toast: false
   }
 
   onShiftChange = shift => this.setState({ shift })
+
+  onCopyLink = () => {
+    const { id } = this.props.video
+    copyToClipboard(`${frontend}/${id}`)
+    this.setState({ toast: true })
+    setTimeout(() => {
+      this.setState({ toast: false })
+    }, 6000)
+  }
 
   render() {
     const {
@@ -132,87 +145,90 @@ class ShareModal extends React.Component {
         video: { id, videoURL, title, thumbURL },
         onClose
       },
-      state: { shift }
+      state: { shift, toast }
     } = this
-    const url = `http://localhost:8889/watch/${id}`
+    const url = `${frontend}/${id}`
     return (
-      <Modal show={true} color="dark" onClose={onClose}>
-        <Container shift={shift}>
-          <div className="shift right" onClick={() => this.onShiftChange(true)}>
-            <KeyboardArrowRight />
-          </div>
-          <div className="shift left" onClick={() => this.onShiftChange(false)}>
-            <KeyboardArrowLeft />
-          </div>
-          <div className="heading">Share a link</div>
-          <div className="icon-row">
-            <div className="icon">
-              <div className="embed">
-                <Code />
+      <React.Fragment>
+        <Toast text="Link copied to clipboard" show={toast} />
+        <Modal show={show} color="dark" onClose={onClose}>
+          <Container shift={shift}>
+            <div className="shift right" onClick={() => this.onShiftChange(true)}>
+              <KeyboardArrowRight />
+            </div>
+            <div className="shift left" onClick={() => this.onShiftChange(false)}>
+              <KeyboardArrowLeft />
+            </div>
+            <div className="heading">Share a link</div>
+            <div className="icon-row">
+              <div className="icon">
+                <div className="embed">
+                  <Code />
+                </div>
+                <div>Embed</div>
               </div>
-              <div>Embed</div>
+              <div className="icon">
+                <TwitterShareButton url={videoURL} title={title}>
+                  <TwitterIcon size={60} round={true} />
+                </TwitterShareButton>
+                <div>Twitter</div>
+              </div>
+              <div className="icon">
+                <FacebookShareButton url={videoURL} quote={title}>
+                  <FacebookIcon size={60} round={true} />
+                </FacebookShareButton>
+                <div>Facebook</div>
+              </div>
+              <div className="icon">
+                <GooglePlusShareButton url={videoURL}>
+                  <GooglePlusIcon size={60} round={true} />
+                </GooglePlusShareButton>
+                <div>Google+</div>
+              </div>
+              <div className="icon">
+                <RedditShareButton url={videoURL} title={title}>
+                  <RedditIcon size={60} round={true} iconBgStyle={{ fill: 'orangered' }} />
+                </RedditShareButton>
+                <div>Reddit</div>
+              </div>
+              <div className="icon">
+                <TumblrShareButton url={videoURL} title={title}>
+                  <TumblrIcon size={60} round={true} />
+                </TumblrShareButton>
+                <div>Tumblr</div>
+              </div>
+              <div className="icon">
+                <PinterestShareButton url={videoURL} media={thumbURL} description={title}>
+                  <PinterestIcon size={60} round={true} />
+                </PinterestShareButton>
+                <div>Pinterest</div>
+              </div>
+              <div className="icon">
+                <VKShareButton url={videoURL} title={title} image={thumbURL}>
+                  <VKIcon size={60} round={true} />
+                </VKShareButton>
+                <div>ВКонтакте</div>
+              </div>
+              <div className="icon">
+                <LinkedinShareButton url={videoURL} title={title}>
+                  <LinkedinIcon size={60} round={true} />
+                </LinkedinShareButton>
+                <div>Linkedin</div>
+              </div>
+              <div className="icon">
+                <EmailShareButton url={videoURL} subject={title} body={videoURL}>
+                  <EmailIcon size={60} round={true} />
+                </EmailShareButton>
+                <div>Email</div>
+              </div>
             </div>
-            <div className="icon">
-              <TwitterShareButton url={videoURL} title={title}>
-                <TwitterIcon size={60} round={true} />
-              </TwitterShareButton>
-              <div>Twitter</div>
+            <div className="url-input">
+              <input type="text" value={url} onChange={() => {}} readOnly />
+              <div onClick={this.onCopyLink}>copy</div>
             </div>
-            <div className="icon">
-              <FacebookShareButton url={videoURL} quote={title}>
-                <FacebookIcon size={60} round={true} />
-              </FacebookShareButton>
-              <div>Facebook</div>
-            </div>
-            <div className="icon">
-              <GooglePlusShareButton url={videoURL}>
-                <GooglePlusIcon size={60} round={true} />
-              </GooglePlusShareButton>
-              <div>Google+</div>
-            </div>
-            <div className="icon">
-              <RedditShareButton url={videoURL} title={title}>
-                <RedditIcon size={60} round={true} iconBgStyle={{ fill: 'orangered' }} />
-              </RedditShareButton>
-              <div>Reddit</div>
-            </div>
-            <div className="icon">
-              <TumblrShareButton url={videoURL} title={title}>
-                <TumblrIcon size={60} round={true} />
-              </TumblrShareButton>
-              <div>Tumblr</div>
-            </div>
-            <div className="icon">
-              <PinterestShareButton url={videoURL} media={thumbURL} description={title}>
-                <PinterestIcon size={60} round={true} />
-              </PinterestShareButton>
-              <div>Pinterest</div>
-            </div>
-            <div className="icon">
-              <VKShareButton url={videoURL} title={title} image={thumbURL}>
-                <VKIcon size={60} round={true} />
-              </VKShareButton>
-              <div>ВКонтакте</div>
-            </div>
-            <div className="icon">
-              <LinkedinShareButton url={videoURL} title={title}>
-                <LinkedinIcon size={60} round={true} />
-              </LinkedinShareButton>
-              <div>Linkedin</div>
-            </div>
-            <div className="icon">
-              <EmailShareButton url={videoURL} subject={title} body={videoURL}>
-                <EmailIcon size={60} round={true} />
-              </EmailShareButton>
-              <div>Email</div>
-            </div>
-          </div>
-          <div className="url-input">
-            <input type="text" value={url} onChange={() => {}} readOnly />
-            <div onClick={() => copyToClipboard(url)}>copy</div>
-          </div>
-        </Container>
-      </Modal>
+          </Container>
+        </Modal>
+      </React.Fragment>
     )
   }
 }
