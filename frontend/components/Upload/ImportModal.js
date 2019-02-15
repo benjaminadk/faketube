@@ -144,7 +144,7 @@ class ImportModal extends React.Component {
       state: { selected }
     } = this
     return (
-      <Modal show={show}>
+      <Modal show={show} color="light">
         <Container>
           <div className="import-top">
             <div>All Videos</div>

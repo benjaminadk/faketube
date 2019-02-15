@@ -17,7 +17,8 @@ const ModalWindow = styled.div`
   z-index: 100;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.5);
+  background: ${props =>
+    props.color === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'};
 `
 
 const ModalMain = styled.div`
@@ -52,10 +53,10 @@ export default class Modal extends React.Component {
 
   render() {
     const {
-      props: { children, show }
+      props: { children, show, color }
     } = this
     return (
-      <ModalWindow ref={this.modal} show={show}>
+      <ModalWindow ref={this.modal} show={show} color={color}>
         <ModalMain>{children}</ModalMain>
       </ModalWindow>
     )

@@ -3,6 +3,8 @@ import { format } from 'date-fns'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import Thumbs from './Details/Thumbs'
+import ShareButton from './Details/ShareButton'
+import ShareModal from './Details/ShareModal'
 import { VIDEO_QUERY } from '../../apollo/video'
 import { ME_QUERY } from '../../apollo/me'
 
@@ -90,7 +92,8 @@ const Container = styled.div`
 
 class Details extends React.Component {
   state = {
-    review: null
+    review: null,
+    shareModal: false
   }
 
   componentDidMount() {
@@ -136,9 +139,14 @@ class Details extends React.Component {
     }
   }
 
+  onShowShareModal = () => this.setState({ shareModal: true })
+
+  onHideShareModal = () => this.setState({ shareModal: false })
+
   render() {
     const {
-      props: { video }
+      props: { video },
+      state: { shareModal }
     } = this
     return (
       <Container>
@@ -149,7 +157,7 @@ class Details extends React.Component {
           </div>
           <div className="actions">
             <Thumbs video={video} onClick={this.onReviewClick} />
-            <div>share</div>
+            <ShareButton onClick={this.onShowShareModal} />
             <div>save</div>
             <div>more</div>
           </div>
@@ -167,6 +175,7 @@ class Details extends React.Component {
           </div>
           <div className="subscribe">Subscribe 50K</div>
         </div>
+        <ShareModal show={shareModal} video={video} onClose={this.onHideShareModal} />
       </Container>
     )
   }
