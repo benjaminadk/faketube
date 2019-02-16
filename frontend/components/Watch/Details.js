@@ -145,7 +145,7 @@ class Details extends React.Component {
 
   render() {
     const {
-      props: { video },
+      props: { video, time },
       state: { shareModal }
     } = this
     return (
@@ -175,7 +175,7 @@ class Details extends React.Component {
           </div>
           <div className="subscribe">Subscribe 50K</div>
         </div>
-        <ShareModal show={shareModal} video={video} onClose={this.onHideShareModal} />
+        <ShareModal show={shareModal} video={video} time={time} onClose={this.onHideShareModal} />
       </Container>
     )
   }

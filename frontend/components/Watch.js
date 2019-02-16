@@ -15,9 +15,16 @@ const Container = styled.div`
 `
 
 class Watch extends React.Component {
+  state = {
+    time: 0
+  }
+
+  updateTime = time => this.setState({ time })
+
   render() {
     const {
-      props: { user, query }
+      props: { user, query },
+      state: { time }
     } = this
     return (
       <Container>
@@ -26,8 +33,8 @@ class Watch extends React.Component {
             if (loading) return null
             return (
               <div className="left">
-                <Player video={data.video} user={user} query={query} />
-                <Details video={data.video} user={user} />
+                <Player video={data.video} user={user} query={query} updateTime={this.updateTime} />
+                <Details video={data.video} user={user} time={time} />
               </div>
             )
           }}

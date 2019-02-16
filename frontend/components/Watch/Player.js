@@ -68,6 +68,12 @@ class Player extends React.Component {
     this.video.current.addEventListener('ended', () => this.onUpdateView(true))
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.time !== this.state.time) {
+      this.props.updateTime(this.state.time)
+    }
+  }
+
   async componentWillUnmount() {
     await this.onUpdateView(false)
   }
