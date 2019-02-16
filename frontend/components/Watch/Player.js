@@ -43,7 +43,7 @@ const Video = styled.video.attrs(props => ({
 }))`
   max-width: 100%;
   min-width: 875px;
-  max-height: 492px;
+  max-height: 490px;
   background: black;
 `
 

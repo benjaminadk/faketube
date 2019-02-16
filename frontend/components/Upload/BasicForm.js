@@ -52,7 +52,7 @@ const Form = styled.div`
         font-size: 1.3rem;
         margin-bottom: 2rem;
         img {
-          width: 4.5rem;
+          width: 4.5rem !important;
           height: 4.5rem;
           margin-right: 2rem;
         }

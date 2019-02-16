@@ -39,13 +39,13 @@ const Container = styled.div`
 const LikesRatio = styled.div`
   position: relative;
   width: 100%;
-  height: 0.2rem;
-  background: ${props => props.theme.grey[3]};
+  height: 0.3rem;
+  background: ${props => props.theme.grey[4]};
   .bar {
     position: absolute;
     width: ${props => props.percent}%;
-    height: 0.2rem;
-    background: ${props => props.theme.grey[5]};
+    height: 0.3rem;
+    background: ${props => props.theme.grey[6]};
   }
 `
 

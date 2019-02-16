@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import Thumbs from './Details/Thumbs'
 import ShareButton from './Details/ShareButton'
 import ShareModal from './Details/ShareModal'
+import Description from './Details/Description'
 import { VIDEO_QUERY } from '../../apollo/video'
 import { ME_QUERY } from '../../apollo/me'
 
@@ -43,7 +44,7 @@ const Container = styled.div`
     align-items: center;
     color: ${props => props.theme.grey[10]};
     margin-bottom: 2rem;
-    border-bottom: 1px solid ${props => props.theme.grey[5]};
+    border-bottom: 1px solid ${props => props.theme.grey[2]};
     .views {
       font-size: 1.6rem;
     }
@@ -175,6 +176,7 @@ class Details extends React.Component {
           </div>
           <div className="subscribe">Subscribe 50K</div>
         </div>
+        <Description video={video} />
         <ShareModal show={shareModal} video={video} time={time} onClose={this.onHideShareModal} />
       </Container>
     )
