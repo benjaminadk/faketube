@@ -9,6 +9,7 @@ type User {
   videos: [Video] @relation(name: "UserOwnedVideos")
   views: [View]
   reviews: [Review]
+  comments: [Comment]
   role: Role!
   createdAt: DateTime!
 }
@@ -28,6 +29,7 @@ type Video {
   category: Category @default(value: "ENTERTAINMENT")
   views: [View]
   reviews: [Review]
+  comments: [Comment]
   user: User @relation(name: "UserOwnedVideos")
   createdAt: DateTime!
 }
@@ -46,6 +48,16 @@ type Review {
   status: ReviewStatus
   video: Video
   user: User
+  createdAt: DateTime!
+}
+
+type Comment {
+  id: ID! @unique
+  text: String!
+  reply: Boolean!
+  video: Video
+  user: User
+  replies: [Comment]
   createdAt: DateTime!
 }
 

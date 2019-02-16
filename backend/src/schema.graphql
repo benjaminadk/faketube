@@ -31,6 +31,7 @@ type User {
   videos: [Video]
   views: [View]
   reviews: [Review]
+  comments: [Comment]
   role: Role!
   createdAt: DateTime
 }
@@ -50,6 +51,7 @@ type Video {
   category: Category
   views: [View]
   reviews: [Review]
+  comments: [Comment]
   user: User
   createdAt: DateTime!
 }
@@ -68,6 +70,16 @@ type Review {
   status: ReviewStatus
   video: Video
   user: User
+  createdAt: DateTime!
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  reply: Boolean!
+  video: Video
+  user: User
+  replies: [Comment]
   createdAt: DateTime!
 }
 

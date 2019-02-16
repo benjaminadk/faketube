@@ -1,5 +1,9 @@
 module.exports = {
-        typeDefs: /* GraphQL */ `type AggregateReview {
+        typeDefs: /* GraphQL */ `type AggregateComment {
+  count: Int!
+}
+
+type AggregateReview {
   count: Int!
 }
 
@@ -37,11 +41,321 @@ enum Category {
   NONPROFITS_ACTIVISM
 }
 
+type Comment {
+  id: ID!
+  text: String!
+  reply: Boolean!
+  video: Video
+  user: User
+  replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  createdAt: DateTime!
+}
+
+type CommentConnection {
+  pageInfo: PageInfo!
+  edges: [CommentEdge]!
+  aggregate: AggregateComment!
+}
+
+input CommentCreateInput {
+  text: String!
+  reply: Boolean!
+  video: VideoCreateOneWithoutCommentsInput
+  user: UserCreateOneWithoutCommentsInput
+  replies: CommentCreateManyInput
+}
+
+input CommentCreateManyInput {
+  create: [CommentCreateInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateManyWithoutUserInput {
+  create: [CommentCreateWithoutUserInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateManyWithoutVideoInput {
+  create: [CommentCreateWithoutVideoInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateWithoutUserInput {
+  text: String!
+  reply: Boolean!
+  video: VideoCreateOneWithoutCommentsInput
+  replies: CommentCreateManyInput
+}
+
+input CommentCreateWithoutVideoInput {
+  text: String!
+  reply: Boolean!
+  user: UserCreateOneWithoutCommentsInput
+  replies: CommentCreateManyInput
+}
+
+type CommentEdge {
+  node: Comment!
+  cursor: String!
+}
+
+enum CommentOrderByInput {
+  id_ASC
+  id_DESC
+  text_ASC
+  text_DESC
+  reply_ASC
+  reply_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type CommentPreviousValues {
+  id: ID!
+  text: String!
+  reply: Boolean!
+  createdAt: DateTime!
+}
+
+input CommentScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  text: String
+  text_not: String
+  text_in: [String!]
+  text_not_in: [String!]
+  text_lt: String
+  text_lte: String
+  text_gt: String
+  text_gte: String
+  text_contains: String
+  text_not_contains: String
+  text_starts_with: String
+  text_not_starts_with: String
+  text_ends_with: String
+  text_not_ends_with: String
+  reply: Boolean
+  reply_not: Boolean
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [CommentScalarWhereInput!]
+  OR: [CommentScalarWhereInput!]
+  NOT: [CommentScalarWhereInput!]
+}
+
+type CommentSubscriptionPayload {
+  mutation: MutationType!
+  node: Comment
+  updatedFields: [String!]
+  previousValues: CommentPreviousValues
+}
+
+input CommentSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CommentWhereInput
+  AND: [CommentSubscriptionWhereInput!]
+  OR: [CommentSubscriptionWhereInput!]
+  NOT: [CommentSubscriptionWhereInput!]
+}
+
+input CommentUpdateDataInput {
+  text: String
+  reply: Boolean
+  video: VideoUpdateOneWithoutCommentsInput
+  user: UserUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyInput
+}
+
+input CommentUpdateInput {
+  text: String
+  reply: Boolean
+  video: VideoUpdateOneWithoutCommentsInput
+  user: UserUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyInput
+}
+
+input CommentUpdateManyDataInput {
+  text: String
+  reply: Boolean
+}
+
+input CommentUpdateManyInput {
+  create: [CommentCreateInput!]
+  update: [CommentUpdateWithWhereUniqueNestedInput!]
+  upsert: [CommentUpsertWithWhereUniqueNestedInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyMutationInput {
+  text: String
+  reply: Boolean
+}
+
+input CommentUpdateManyWithoutUserInput {
+  create: [CommentCreateWithoutUserInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyWithoutVideoInput {
+  create: [CommentCreateWithoutVideoInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutVideoInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutVideoInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyWithWhereNestedInput {
+  where: CommentScalarWhereInput!
+  data: CommentUpdateManyDataInput!
+}
+
+input CommentUpdateWithoutUserDataInput {
+  text: String
+  reply: Boolean
+  video: VideoUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyInput
+}
+
+input CommentUpdateWithoutVideoDataInput {
+  text: String
+  reply: Boolean
+  user: UserUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyInput
+}
+
+input CommentUpdateWithWhereUniqueNestedInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateDataInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutUserInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutUserDataInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutVideoInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutVideoDataInput!
+}
+
+input CommentUpsertWithWhereUniqueNestedInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateDataInput!
+  create: CommentCreateInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutUserInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutUserDataInput!
+  create: CommentCreateWithoutUserInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutVideoInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutVideoDataInput!
+  create: CommentCreateWithoutVideoInput!
+}
+
+input CommentWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  text: String
+  text_not: String
+  text_in: [String!]
+  text_not_in: [String!]
+  text_lt: String
+  text_lte: String
+  text_gt: String
+  text_gte: String
+  text_contains: String
+  text_not_contains: String
+  text_starts_with: String
+  text_not_starts_with: String
+  text_ends_with: String
+  text_not_ends_with: String
+  reply: Boolean
+  reply_not: Boolean
+  video: VideoWhereInput
+  user: UserWhereInput
+  replies_every: CommentWhereInput
+  replies_some: CommentWhereInput
+  replies_none: CommentWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+}
+
+input CommentWhereUniqueInput {
+  id: ID
+}
+
 scalar DateTime
 
 scalar Long
 
 type Mutation {
+  createComment(data: CommentCreateInput!): Comment!
+  updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
+  updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
+  upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
+  deleteComment(where: CommentWhereUniqueInput!): Comment
+  deleteManyComments(where: CommentWhereInput): BatchPayload!
   createReview(data: ReviewCreateInput!): Review!
   updateReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
   updateManyReviews(data: ReviewUpdateManyMutationInput!, where: ReviewWhereInput): BatchPayload!
@@ -86,6 +400,9 @@ type PageInfo {
 }
 
 type Query {
+  comment(where: CommentWhereUniqueInput!): Comment
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
+  commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
   review(where: ReviewWhereUniqueInput!): Review
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review]!
   reviewsConnection(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewConnection!
@@ -336,6 +653,7 @@ enum Role {
 }
 
 type Subscription {
+  comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   review(where: ReviewSubscriptionWhereInput): ReviewSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   video(where: VideoSubscriptionWhereInput): VideoSubscriptionPayload
@@ -353,6 +671,7 @@ type User {
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
   views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   role: Role!
   createdAt: DateTime!
 }
@@ -373,7 +692,13 @@ input UserCreateInput {
   videos: VideoCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
+  comments: CommentCreateManyWithoutUserInput
   role: Role!
+}
+
+input UserCreateOneWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutReviewsInput {
@@ -391,6 +716,19 @@ input UserCreateOneWithoutViewsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutCommentsInput {
+  googleID: String!
+  email: String!
+  name: String!
+  image: String!
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoCreateManyWithoutUserInput
+  views: ViewCreateManyWithoutUserInput
+  reviews: ReviewCreateManyWithoutUserInput
+  role: Role!
+}
+
 input UserCreateWithoutReviewsInput {
   googleID: String!
   email: String!
@@ -400,6 +738,7 @@ input UserCreateWithoutReviewsInput {
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
+  comments: CommentCreateManyWithoutUserInput
   role: Role!
 }
 
@@ -412,6 +751,7 @@ input UserCreateWithoutVideosInput {
   googlePhotoRT: String
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
+  comments: CommentCreateManyWithoutUserInput
   role: Role!
 }
 
@@ -424,6 +764,7 @@ input UserCreateWithoutViewsInput {
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
+  comments: CommentCreateManyWithoutUserInput
   role: Role!
 }
 
@@ -495,6 +836,7 @@ input UserUpdateInput {
   videos: VideoUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
+  comments: CommentUpdateManyWithoutUserInput
   role: Role
 }
 
@@ -506,6 +848,15 @@ input UserUpdateManyMutationInput {
   googlePhotoAT: String
   googlePhotoRT: String
   role: Role
+}
+
+input UserUpdateOneWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput
+  update: UserUpdateWithoutCommentsDataInput
+  upsert: UserUpsertWithoutCommentsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneWithoutReviewsInput {
@@ -535,6 +886,19 @@ input UserUpdateOneWithoutViewsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutCommentsDataInput {
+  googleID: String
+  email: String
+  name: String
+  image: String
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoUpdateManyWithoutUserInput
+  views: ViewUpdateManyWithoutUserInput
+  reviews: ReviewUpdateManyWithoutUserInput
+  role: Role
+}
+
 input UserUpdateWithoutReviewsDataInput {
   googleID: String
   email: String
@@ -544,6 +908,7 @@ input UserUpdateWithoutReviewsDataInput {
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
+  comments: CommentUpdateManyWithoutUserInput
   role: Role
 }
 
@@ -556,6 +921,7 @@ input UserUpdateWithoutVideosDataInput {
   googlePhotoRT: String
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
+  comments: CommentUpdateManyWithoutUserInput
   role: Role
 }
 
@@ -568,7 +934,13 @@ input UserUpdateWithoutViewsDataInput {
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
+  comments: CommentUpdateManyWithoutUserInput
   role: Role
+}
+
+input UserUpsertWithoutCommentsInput {
+  update: UserUpdateWithoutCommentsDataInput!
+  create: UserCreateWithoutCommentsInput!
 }
 
 input UserUpsertWithoutReviewsInput {
@@ -694,6 +1066,9 @@ input UserWhereInput {
   reviews_every: ReviewWhereInput
   reviews_some: ReviewWhereInput
   reviews_none: ReviewWhereInput
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
   role: Role
   role_not: Role
   role_in: [Role!]
@@ -732,6 +1107,7 @@ type Video {
   category: Category
   views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   user: User
   createdAt: DateTime!
 }
@@ -756,12 +1132,18 @@ input VideoCreateInput {
   category: Category
   views: ViewCreateManyWithoutVideoInput
   reviews: ReviewCreateManyWithoutVideoInput
+  comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
 
 input VideoCreateManyWithoutUserInput {
   create: [VideoCreateWithoutUserInput!]
   connect: [VideoWhereUniqueInput!]
+}
+
+input VideoCreateOneWithoutCommentsInput {
+  create: VideoCreateWithoutCommentsInput
+  connect: VideoWhereUniqueInput
 }
 
 input VideoCreateOneWithoutReviewsInput {
@@ -778,6 +1160,23 @@ input VideoCreatetagsInput {
   set: [String!]
 }
 
+input VideoCreateWithoutCommentsInput {
+  videoURL: String!
+  thumbURL: String
+  posterURL: String
+  previewURL: String
+  duration: Int
+  title: String!
+  description: String
+  tags: VideoCreatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  category: Category
+  views: ViewCreateManyWithoutVideoInput
+  reviews: ReviewCreateManyWithoutVideoInput
+  user: UserCreateOneWithoutVideosInput
+}
+
 input VideoCreateWithoutReviewsInput {
   videoURL: String!
   thumbURL: String
@@ -791,6 +1190,7 @@ input VideoCreateWithoutReviewsInput {
   isPublic: Boolean
   category: Category
   views: ViewCreateManyWithoutVideoInput
+  comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
 
@@ -808,6 +1208,7 @@ input VideoCreateWithoutUserInput {
   category: Category
   views: ViewCreateManyWithoutVideoInput
   reviews: ReviewCreateManyWithoutVideoInput
+  comments: CommentCreateManyWithoutVideoInput
 }
 
 input VideoCreateWithoutViewsInput {
@@ -823,6 +1224,7 @@ input VideoCreateWithoutViewsInput {
   isPublic: Boolean
   category: Category
   reviews: ReviewCreateManyWithoutVideoInput
+  comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
 
@@ -1036,6 +1438,7 @@ input VideoUpdateInput {
   category: Category
   views: ViewUpdateManyWithoutVideoInput
   reviews: ReviewUpdateManyWithoutVideoInput
+  comments: CommentUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
 
@@ -1083,6 +1486,15 @@ input VideoUpdateManyWithWhereNestedInput {
   data: VideoUpdateManyDataInput!
 }
 
+input VideoUpdateOneWithoutCommentsInput {
+  create: VideoCreateWithoutCommentsInput
+  update: VideoUpdateWithoutCommentsDataInput
+  upsert: VideoUpsertWithoutCommentsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: VideoWhereUniqueInput
+}
+
 input VideoUpdateOneWithoutReviewsInput {
   create: VideoCreateWithoutReviewsInput
   update: VideoUpdateWithoutReviewsDataInput
@@ -1105,6 +1517,23 @@ input VideoUpdatetagsInput {
   set: [String!]
 }
 
+input VideoUpdateWithoutCommentsDataInput {
+  videoURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
+  duration: Int
+  title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  category: Category
+  views: ViewUpdateManyWithoutVideoInput
+  reviews: ReviewUpdateManyWithoutVideoInput
+  user: UserUpdateOneWithoutVideosInput
+}
+
 input VideoUpdateWithoutReviewsDataInput {
   videoURL: String
   thumbURL: String
@@ -1118,6 +1547,7 @@ input VideoUpdateWithoutReviewsDataInput {
   isPublic: Boolean
   category: Category
   views: ViewUpdateManyWithoutVideoInput
+  comments: CommentUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
 
@@ -1135,6 +1565,7 @@ input VideoUpdateWithoutUserDataInput {
   category: Category
   views: ViewUpdateManyWithoutVideoInput
   reviews: ReviewUpdateManyWithoutVideoInput
+  comments: CommentUpdateManyWithoutVideoInput
 }
 
 input VideoUpdateWithoutViewsDataInput {
@@ -1150,12 +1581,18 @@ input VideoUpdateWithoutViewsDataInput {
   isPublic: Boolean
   category: Category
   reviews: ReviewUpdateManyWithoutVideoInput
+  comments: CommentUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
 
 input VideoUpdateWithWhereUniqueWithoutUserInput {
   where: VideoWhereUniqueInput!
   data: VideoUpdateWithoutUserDataInput!
+}
+
+input VideoUpsertWithoutCommentsInput {
+  update: VideoUpdateWithoutCommentsDataInput!
+  create: VideoCreateWithoutCommentsInput!
 }
 
 input VideoUpsertWithoutReviewsInput {
@@ -1295,6 +1732,9 @@ input VideoWhereInput {
   reviews_every: ReviewWhereInput
   reviews_some: ReviewWhereInput
   reviews_none: ReviewWhereInput
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
   user: UserWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
