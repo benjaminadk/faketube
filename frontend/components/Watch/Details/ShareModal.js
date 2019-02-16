@@ -207,9 +207,13 @@ class ShareModal extends React.Component {
   }
 
   onChange = e => {
-    const { value } = e.target
+    var { value } = e.target
+    const { duration } = this.props.video
     const re = /[^0-9]/g
     if (re.test(value)) return
+    if (parseInt(value, 10) > duration) {
+      value = duration
+    }
     this.setState({ time: value, timeValue: removeLeadingZeros(value) })
   }
 

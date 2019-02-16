@@ -65,6 +65,7 @@ class Player extends React.Component {
 
   componentDidMount() {
     this.createVideoView()
+    this.setInitialTime()
     this.video.current.addEventListener('ended', () => this.onUpdateView(true))
   }
 
@@ -76,6 +77,14 @@ class Player extends React.Component {
 
   async componentWillUnmount() {
     await this.onUpdateView(false)
+  }
+
+  setInitialTime = () => {
+    const { query } = this.props
+    if (query.hasOwnProperty('t')) {
+      this.video.current.currentTime = query.t
+      this.setState({ time: query.t })
+    }
   }
 
   createVideoView = async () => {
