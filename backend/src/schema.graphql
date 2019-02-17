@@ -34,6 +34,7 @@ type User {
   views: [View]
   reviews: [Review]
   comments: [Comment]
+  commentReviews: [CommentReview]
   role: Role!
   createdAt: DateTime
 }
@@ -79,9 +80,19 @@ type Comment {
   id: ID!
   text: String!
   reply: Boolean!
+  edited: Boolean
   video: Video
   user: User
   replies: [Comment]
+  reviews: [CommentReview]
+  createdAt: DateTime!
+}
+
+type CommentReview {
+  id: ID!
+  status: ReviewStatus
+  comment: [Comment]
+  user: User
   createdAt: DateTime!
 }
 

@@ -15,6 +15,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 
 export interface Exists {
   comment: (where?: CommentWhereInput) => Promise<boolean>;
+  commentReview: (where?: CommentReviewWhereInput) => Promise<boolean>;
   review: (where?: ReviewWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
   video: (where?: VideoWhereInput) => Promise<boolean>;
@@ -59,6 +60,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => CommentConnectionPromise;
+  commentReview: (where: CommentReviewWhereUniqueInput) => CommentReviewPromise;
+  commentReviews: (args?: {
+    where?: CommentReviewWhereInput;
+    orderBy?: CommentReviewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<CommentReview>;
+  commentReviewsConnection: (args?: {
+    where?: CommentReviewWhereInput;
+    orderBy?: CommentReviewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => CommentReviewConnectionPromise;
   review: (where: ReviewWhereUniqueInput) => ReviewPromise;
   reviews: (args?: {
     where?: ReviewWhereInput;
@@ -157,6 +177,26 @@ export interface Prisma {
   }) => CommentPromise;
   deleteComment: (where: CommentWhereUniqueInput) => CommentPromise;
   deleteManyComments: (where?: CommentWhereInput) => BatchPayloadPromise;
+  createCommentReview: (data: CommentReviewCreateInput) => CommentReviewPromise;
+  updateCommentReview: (args: {
+    data: CommentReviewUpdateInput;
+    where: CommentReviewWhereUniqueInput;
+  }) => CommentReviewPromise;
+  updateManyCommentReviews: (args: {
+    data: CommentReviewUpdateManyMutationInput;
+    where?: CommentReviewWhereInput;
+  }) => BatchPayloadPromise;
+  upsertCommentReview: (args: {
+    where: CommentReviewWhereUniqueInput;
+    create: CommentReviewCreateInput;
+    update: CommentReviewUpdateInput;
+  }) => CommentReviewPromise;
+  deleteCommentReview: (
+    where: CommentReviewWhereUniqueInput
+  ) => CommentReviewPromise;
+  deleteManyCommentReviews: (
+    where?: CommentReviewWhereInput
+  ) => BatchPayloadPromise;
   createReview: (data: ReviewCreateInput) => ReviewPromise;
   updateReview: (args: {
     data: ReviewUpdateInput;
@@ -233,6 +273,9 @@ export interface Subscription {
   comment: (
     where?: CommentSubscriptionWhereInput
   ) => CommentSubscriptionPayloadSubscription;
+  commentReview: (
+    where?: CommentReviewSubscriptionWhereInput
+  ) => CommentReviewSubscriptionPayloadSubscription;
   review: (
     where?: ReviewSubscriptionWhereInput
   ) => ReviewSubscriptionPayloadSubscription;
@@ -255,6 +298,16 @@ export interface ClientConstructor<T> {
  * Types
  */
 
+export type ReviewOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "status_ASC"
+  | "status_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type ReviewStatus = "LIKE" | "DISLIKE" | "NONE";
 
 export type Role = "USER" | "ADMIN";
@@ -270,23 +323,6 @@ export type ViewOrderByInput =
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC";
-
-export type Category =
-  | "FILM_ANIMATION"
-  | "AUTOS_VEHICLES"
-  | "MUSIC"
-  | "PETS_ANIMALS"
-  | "SPORTS"
-  | "TRAVEL_EVENTS"
-  | "GAMING"
-  | "PEOPLE_BLOGS"
-  | "COMEDY"
-  | "ENTERTAINMENT"
-  | "NEWS_POLITICS"
-  | "HOWTO_STYLE"
-  | "EDUCATION"
-  | "SCIENCE_TECHNOLOGY"
-  | "NONPROFITS_ACTIVISM";
 
 export type VideoOrderByInput =
   | "id_ASC"
@@ -316,15 +352,24 @@ export type VideoOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type ReviewOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "status_ASC"
-  | "status_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
+export type Category =
+  | "FILM_ANIMATION"
+  | "AUTOS_VEHICLES"
+  | "MUSIC"
+  | "PETS_ANIMALS"
+  | "SPORTS"
+  | "TRAVEL_EVENTS"
+  | "GAMING"
+  | "PEOPLE_BLOGS"
+  | "COMEDY"
+  | "ENTERTAINMENT"
+  | "NEWS_POLITICS"
+  | "HOWTO_STYLE"
+  | "EDUCATION"
+  | "SCIENCE_TECHNOLOGY"
+  | "NONPROFITS_ACTIVISM";
+
+export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type CommentOrderByInput =
   | "id_ASC"
@@ -333,6 +378,18 @@ export type CommentOrderByInput =
   | "text_DESC"
   | "reply_ASC"
   | "reply_DESC"
+  | "edited_ASC"
+  | "edited_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type CommentReviewOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "status_ASC"
+  | "status_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -360,9 +417,20 @@ export type UserOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
+export interface UserUpdateOneWithoutReviewsInput {
+  create?: UserCreateWithoutReviewsInput;
+  update?: UserUpdateWithoutReviewsDataInput;
+  upsert?: UserUpsertWithoutReviewsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
+}
 
-export interface VideoUpdateWithoutUserDataInput {
+export type CommentWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface VideoUpdateWithoutViewsDataInput {
   videoURL?: String;
   thumbURL?: String;
   posterURL?: String;
@@ -374,26 +442,198 @@ export interface VideoUpdateWithoutUserDataInput {
   isPublished?: Boolean;
   isPublic?: Boolean;
   category?: Category;
-  views?: ViewUpdateManyWithoutVideoInput;
   reviews?: ReviewUpdateManyWithoutVideoInput;
   comments?: CommentUpdateManyWithoutVideoInput;
+  user?: UserUpdateOneWithoutVideosInput;
 }
 
-export type CommentWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface UserUpdateWithoutReviewsDataInput {
+export interface UserWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
   googleID?: String;
+  googleID_not?: String;
+  googleID_in?: String[] | String;
+  googleID_not_in?: String[] | String;
+  googleID_lt?: String;
+  googleID_lte?: String;
+  googleID_gt?: String;
+  googleID_gte?: String;
+  googleID_contains?: String;
+  googleID_not_contains?: String;
+  googleID_starts_with?: String;
+  googleID_not_starts_with?: String;
+  googleID_ends_with?: String;
+  googleID_not_ends_with?: String;
   email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
   name?: String;
+  name_not?: String;
+  name_in?: String[] | String;
+  name_not_in?: String[] | String;
+  name_lt?: String;
+  name_lte?: String;
+  name_gt?: String;
+  name_gte?: String;
+  name_contains?: String;
+  name_not_contains?: String;
+  name_starts_with?: String;
+  name_not_starts_with?: String;
+  name_ends_with?: String;
+  name_not_ends_with?: String;
   image?: String;
+  image_not?: String;
+  image_in?: String[] | String;
+  image_not_in?: String[] | String;
+  image_lt?: String;
+  image_lte?: String;
+  image_gt?: String;
+  image_gte?: String;
+  image_contains?: String;
+  image_not_contains?: String;
+  image_starts_with?: String;
+  image_not_starts_with?: String;
+  image_ends_with?: String;
+  image_not_ends_with?: String;
   googlePhotoAT?: String;
+  googlePhotoAT_not?: String;
+  googlePhotoAT_in?: String[] | String;
+  googlePhotoAT_not_in?: String[] | String;
+  googlePhotoAT_lt?: String;
+  googlePhotoAT_lte?: String;
+  googlePhotoAT_gt?: String;
+  googlePhotoAT_gte?: String;
+  googlePhotoAT_contains?: String;
+  googlePhotoAT_not_contains?: String;
+  googlePhotoAT_starts_with?: String;
+  googlePhotoAT_not_starts_with?: String;
+  googlePhotoAT_ends_with?: String;
+  googlePhotoAT_not_ends_with?: String;
   googlePhotoRT?: String;
-  videos?: VideoUpdateManyWithoutUserInput;
-  views?: ViewUpdateManyWithoutUserInput;
-  comments?: CommentUpdateManyWithoutUserInput;
+  googlePhotoRT_not?: String;
+  googlePhotoRT_in?: String[] | String;
+  googlePhotoRT_not_in?: String[] | String;
+  googlePhotoRT_lt?: String;
+  googlePhotoRT_lte?: String;
+  googlePhotoRT_gt?: String;
+  googlePhotoRT_gte?: String;
+  googlePhotoRT_contains?: String;
+  googlePhotoRT_not_contains?: String;
+  googlePhotoRT_starts_with?: String;
+  googlePhotoRT_not_starts_with?: String;
+  googlePhotoRT_ends_with?: String;
+  googlePhotoRT_not_ends_with?: String;
+  videos_every?: VideoWhereInput;
+  videos_some?: VideoWhereInput;
+  videos_none?: VideoWhereInput;
+  views_every?: ViewWhereInput;
+  views_some?: ViewWhereInput;
+  views_none?: ViewWhereInput;
+  reviews_every?: ReviewWhereInput;
+  reviews_some?: ReviewWhereInput;
+  reviews_none?: ReviewWhereInput;
+  comments_every?: CommentWhereInput;
+  comments_some?: CommentWhereInput;
+  comments_none?: CommentWhereInput;
+  commentReviews_every?: CommentReviewWhereInput;
+  commentReviews_some?: CommentReviewWhereInput;
+  commentReviews_none?: CommentReviewWhereInput;
   role?: Role;
+  role_not?: Role;
+  role_in?: Role[] | Role;
+  role_not_in?: Role[] | Role;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: UserWhereInput[] | UserWhereInput;
+  OR?: UserWhereInput[] | UserWhereInput;
+  NOT?: UserWhereInput[] | UserWhereInput;
+}
+
+export interface CommentUpdateManyWithoutVideoInput {
+  create?: CommentCreateWithoutVideoInput[] | CommentCreateWithoutVideoInput;
+  delete?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+  disconnect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+  update?:
+    | CommentUpdateWithWhereUniqueWithoutVideoInput[]
+    | CommentUpdateWithWhereUniqueWithoutVideoInput;
+  upsert?:
+    | CommentUpsertWithWhereUniqueWithoutVideoInput[]
+    | CommentUpsertWithWhereUniqueWithoutVideoInput;
+  deleteMany?: CommentScalarWhereInput[] | CommentScalarWhereInput;
+  updateMany?:
+    | CommentUpdateManyWithWhereNestedInput[]
+    | CommentUpdateManyWithWhereNestedInput;
+}
+
+export interface CommentReviewWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  status?: ReviewStatus;
+  status_not?: ReviewStatus;
+  status_in?: ReviewStatus[] | ReviewStatus;
+  status_not_in?: ReviewStatus[] | ReviewStatus;
+  comment_every?: CommentWhereInput;
+  comment_some?: CommentWhereInput;
+  comment_none?: CommentWhereInput;
+  user?: UserWhereInput;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: CommentReviewWhereInput[] | CommentReviewWhereInput;
+  OR?: CommentReviewWhereInput[] | CommentReviewWhereInput;
+  NOT?: CommentReviewWhereInput[] | CommentReviewWhereInput;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutVideoInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutVideoDataInput;
 }
 
 export interface ReviewWhereInput {
@@ -430,6 +670,292 @@ export interface ReviewWhereInput {
   NOT?: ReviewWhereInput[] | ReviewWhereInput;
 }
 
+export interface VideoUpdatetagsInput {
+  set?: String[] | String;
+}
+
+export interface VideoUpsertWithWhereUniqueWithoutUserInput {
+  where: VideoWhereUniqueInput;
+  update: VideoUpdateWithoutUserDataInput;
+  create: VideoCreateWithoutUserInput;
+}
+
+export interface ViewUpdateManyWithoutVideoInput {
+  create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
+  delete?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+  disconnect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+  update?:
+    | ViewUpdateWithWhereUniqueWithoutVideoInput[]
+    | ViewUpdateWithWhereUniqueWithoutVideoInput;
+  upsert?:
+    | ViewUpsertWithWhereUniqueWithoutVideoInput[]
+    | ViewUpsertWithWhereUniqueWithoutVideoInput;
+  deleteMany?: ViewScalarWhereInput[] | ViewScalarWhereInput;
+  updateMany?:
+    | ViewUpdateManyWithWhereNestedInput[]
+    | ViewUpdateManyWithWhereNestedInput;
+}
+
+export interface CommentUpdateWithoutVideoDataInput {
+  text?: String;
+  reply?: Boolean;
+  edited?: Boolean;
+  user?: UserUpdateOneWithoutCommentsInput;
+  replies?: CommentUpdateManyInput;
+  reviews?: CommentReviewUpdateManyWithoutCommentInput;
+}
+
+export interface ViewUpdateWithWhereUniqueWithoutVideoInput {
+  where: ViewWhereUniqueInput;
+  data: ViewUpdateWithoutVideoDataInput;
+}
+
+export interface ViewSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ViewWhereInput;
+  AND?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+  OR?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+  NOT?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+}
+
+export interface ViewUpdateWithoutVideoDataInput {
+  complete?: Boolean;
+  progress?: Int;
+  user?: UserUpdateOneWithoutViewsInput;
+}
+
+export interface UserSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserWhereInput;
+  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+}
+
+export interface UserUpdateOneWithoutViewsInput {
+  create?: UserCreateWithoutViewsInput;
+  update?: UserUpdateWithoutViewsDataInput;
+  upsert?: UserUpsertWithoutViewsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface CommentReviewSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CommentReviewWhereInput;
+  AND?:
+    | CommentReviewSubscriptionWhereInput[]
+    | CommentReviewSubscriptionWhereInput;
+  OR?:
+    | CommentReviewSubscriptionWhereInput[]
+    | CommentReviewSubscriptionWhereInput;
+  NOT?:
+    | CommentReviewSubscriptionWhereInput[]
+    | CommentReviewSubscriptionWhereInput;
+}
+
+export interface UserUpdateWithoutViewsDataInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoUpdateManyWithoutUserInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
+  comments?: CommentUpdateManyWithoutUserInput;
+  commentReviews?: CommentReviewUpdateManyWithoutUserInput;
+  role?: Role;
+}
+
+export interface ViewUpdateManyMutationInput {
+  complete?: Boolean;
+  progress?: Int;
+}
+
+export interface VideoUpdateManyWithoutUserInput {
+  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
+  delete?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+  disconnect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+  update?:
+    | VideoUpdateWithWhereUniqueWithoutUserInput[]
+    | VideoUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | VideoUpsertWithWhereUniqueWithoutUserInput[]
+    | VideoUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: VideoScalarWhereInput[] | VideoScalarWhereInput;
+  updateMany?:
+    | VideoUpdateManyWithWhereNestedInput[]
+    | VideoUpdateManyWithWhereNestedInput;
+}
+
+export interface ViewCreateInput {
+  complete?: Boolean;
+  progress?: Int;
+  video?: VideoCreateOneWithoutViewsInput;
+  user?: UserCreateOneWithoutViewsInput;
+}
+
+export interface VideoUpdateWithWhereUniqueWithoutUserInput {
+  where: VideoWhereUniqueInput;
+  data: VideoUpdateWithoutUserDataInput;
+}
+
+export interface VideoUpdateManyMutationInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+}
+
+export interface VideoUpdateWithoutUserDataInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewUpdateManyWithoutVideoInput;
+  reviews?: ReviewUpdateManyWithoutVideoInput;
+  comments?: CommentUpdateManyWithoutVideoInput;
+}
+
+export interface VideoCreateInput {
+  videoURL: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title: String;
+  description?: String;
+  tags?: VideoCreatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewCreateManyWithoutVideoInput;
+  reviews?: ReviewCreateManyWithoutVideoInput;
+  comments?: CommentCreateManyWithoutVideoInput;
+  user?: UserCreateOneWithoutVideosInput;
+}
+
+export interface ReviewUpdateManyWithoutVideoInput {
+  create?: ReviewCreateWithoutVideoInput[] | ReviewCreateWithoutVideoInput;
+  delete?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  disconnect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  update?:
+    | ReviewUpdateWithWhereUniqueWithoutVideoInput[]
+    | ReviewUpdateWithWhereUniqueWithoutVideoInput;
+  upsert?:
+    | ReviewUpsertWithWhereUniqueWithoutVideoInput[]
+    | ReviewUpsertWithWhereUniqueWithoutVideoInput;
+  deleteMany?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  updateMany?:
+    | ReviewUpdateManyWithWhereNestedInput[]
+    | ReviewUpdateManyWithWhereNestedInput;
+}
+
+export interface UserUpdateManyMutationInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  role?: Role;
+}
+
+export interface ReviewUpdateWithWhereUniqueWithoutVideoInput {
+  where: ReviewWhereUniqueInput;
+  data: ReviewUpdateWithoutVideoDataInput;
+}
+
+export interface UserCreateInput {
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoCreateManyWithoutUserInput;
+  views?: ViewCreateManyWithoutUserInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
+  comments?: CommentCreateManyWithoutUserInput;
+  commentReviews?: CommentReviewCreateManyWithoutUserInput;
+  role: Role;
+}
+
+export interface ReviewUpdateWithoutVideoDataInput {
+  status?: ReviewStatus;
+  user?: UserUpdateOneWithoutReviewsInput;
+}
+
+export interface ReviewUpdateManyMutationInput {
+  status?: ReviewStatus;
+}
+
+export interface VideoUpdateManyDataInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+}
+
+export interface ReviewCreateInput {
+  status?: ReviewStatus;
+  video?: VideoCreateOneWithoutReviewsInput;
+  user?: UserCreateOneWithoutReviewsInput;
+}
+
+export interface UserUpdateWithoutReviewsDataInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoUpdateManyWithoutUserInput;
+  views?: ViewUpdateManyWithoutUserInput;
+  comments?: CommentUpdateManyWithoutUserInput;
+  commentReviews?: CommentReviewUpdateManyWithoutUserInput;
+  role?: Role;
+}
+
+export type VideoWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
 export interface ViewUpdateManyWithoutUserInput {
   create?: ViewCreateWithoutUserInput[] | ViewCreateWithoutUserInput;
   delete?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
@@ -445,6 +971,47 @@ export interface ViewUpdateManyWithoutUserInput {
   updateMany?:
     | ViewUpdateManyWithWhereNestedInput[]
     | ViewUpdateManyWithWhereNestedInput;
+}
+
+export interface CommentReviewCreateInput {
+  status?: ReviewStatus;
+  comment?: CommentCreateManyWithoutReviewsInput;
+  user?: UserCreateOneWithoutCommentReviewsInput;
+}
+
+export interface ViewUpdateWithWhereUniqueWithoutUserInput {
+  where: ViewWhereUniqueInput;
+  data: ViewUpdateWithoutUserDataInput;
+}
+
+export type ViewWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface ViewUpdateWithoutUserDataInput {
+  complete?: Boolean;
+  progress?: Int;
+  video?: VideoUpdateOneWithoutViewsInput;
+}
+
+export interface ViewUpsertWithWhereUniqueWithoutVideoInput {
+  where: ViewWhereUniqueInput;
+  update: ViewUpdateWithoutVideoDataInput;
+  create: ViewCreateWithoutVideoInput;
+}
+
+export interface VideoUpdateOneWithoutViewsInput {
+  create?: VideoCreateWithoutViewsInput;
+  update?: VideoUpdateWithoutViewsDataInput;
+  upsert?: VideoUpsertWithoutViewsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: VideoWhereUniqueInput;
+}
+
+export interface VideoCreateOneWithoutCommentsInput {
+  create?: VideoCreateWithoutCommentsInput;
+  connect?: VideoWhereUniqueInput;
 }
 
 export interface CommentWhereInput {
@@ -478,11 +1045,16 @@ export interface CommentWhereInput {
   text_not_ends_with?: String;
   reply?: Boolean;
   reply_not?: Boolean;
+  edited?: Boolean;
+  edited_not?: Boolean;
   video?: VideoWhereInput;
   user?: UserWhereInput;
   replies_every?: CommentWhereInput;
   replies_some?: CommentWhereInput;
   replies_none?: CommentWhereInput;
+  reviews_every?: CommentReviewWhereInput;
+  reviews_some?: CommentReviewWhereInput;
+  reviews_none?: CommentReviewWhereInput;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
   createdAt_in?: DateTimeInput[] | DateTimeInput;
@@ -496,9 +1068,19 @@ export interface CommentWhereInput {
   NOT?: CommentWhereInput[] | CommentWhereInput;
 }
 
-export interface ViewUpdateWithWhereUniqueWithoutUserInput {
-  where: ViewWhereUniqueInput;
-  data: ViewUpdateWithoutUserDataInput;
+export interface VideoCreatetagsInput {
+  set?: String[] | String;
+}
+
+export interface VideoUpdateManyWithWhereNestedInput {
+  where: VideoScalarWhereInput;
+  data: VideoUpdateManyDataInput;
+}
+
+export interface ViewCreateWithoutVideoInput {
+  complete?: Boolean;
+  progress?: Int;
+  user?: UserCreateOneWithoutViewsInput;
 }
 
 export interface VideoWhereInput {
@@ -639,468 +1221,6 @@ export interface VideoWhereInput {
   NOT?: VideoWhereInput[] | VideoWhereInput;
 }
 
-export interface VideoUpdateOneWithoutCommentsInput {
-  create?: VideoCreateWithoutCommentsInput;
-  update?: VideoUpdateWithoutCommentsDataInput;
-  upsert?: VideoUpsertWithoutCommentsInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: VideoWhereUniqueInput;
-}
-
-export interface VideoUpsertWithWhereUniqueWithoutUserInput {
-  where: VideoWhereUniqueInput;
-  update: VideoUpdateWithoutUserDataInput;
-  create: VideoCreateWithoutUserInput;
-}
-
-export interface VideoUpdateWithoutCommentsDataInput {
-  videoURL?: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title?: String;
-  description?: String;
-  tags?: VideoUpdatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-  views?: ViewUpdateManyWithoutVideoInput;
-  reviews?: ReviewUpdateManyWithoutVideoInput;
-  user?: UserUpdateOneWithoutVideosInput;
-}
-
-export interface ViewUpdateWithoutUserDataInput {
-  complete?: Boolean;
-  progress?: Int;
-  video?: VideoUpdateOneWithoutViewsInput;
-}
-
-export interface VideoUpdatetagsInput {
-  set?: String[] | String;
-}
-
-export interface VideoSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: VideoWhereInput;
-  AND?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
-  OR?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
-  NOT?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
-}
-
-export interface ViewUpdateManyWithoutVideoInput {
-  create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
-  delete?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
-  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
-  disconnect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
-  update?:
-    | ViewUpdateWithWhereUniqueWithoutVideoInput[]
-    | ViewUpdateWithWhereUniqueWithoutVideoInput;
-  upsert?:
-    | ViewUpsertWithWhereUniqueWithoutVideoInput[]
-    | ViewUpsertWithWhereUniqueWithoutVideoInput;
-  deleteMany?: ViewScalarWhereInput[] | ViewScalarWhereInput;
-  updateMany?:
-    | ViewUpdateManyWithWhereNestedInput[]
-    | ViewUpdateManyWithWhereNestedInput;
-}
-
-export interface ReviewSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: ReviewWhereInput;
-  AND?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
-  OR?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
-  NOT?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
-}
-
-export interface ViewUpdateWithWhereUniqueWithoutVideoInput {
-  where: ViewWhereUniqueInput;
-  data: ViewUpdateWithoutVideoDataInput;
-}
-
-export interface ViewUpdateManyMutationInput {
-  complete?: Boolean;
-  progress?: Int;
-}
-
-export interface ViewUpdateWithoutVideoDataInput {
-  complete?: Boolean;
-  progress?: Int;
-  user?: UserUpdateOneWithoutViewsInput;
-}
-
-export interface ViewCreateInput {
-  complete?: Boolean;
-  progress?: Int;
-  video?: VideoCreateOneWithoutViewsInput;
-  user?: UserCreateOneWithoutViewsInput;
-}
-
-export interface UserUpdateOneWithoutViewsInput {
-  create?: UserCreateWithoutViewsInput;
-  update?: UserUpdateWithoutViewsDataInput;
-  upsert?: UserUpsertWithoutViewsInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface VideoUpdateManyMutationInput {
-  videoURL?: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title?: String;
-  description?: String;
-  tags?: VideoUpdatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-}
-
-export interface UserUpdateWithoutViewsDataInput {
-  googleID?: String;
-  email?: String;
-  name?: String;
-  image?: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  videos?: VideoUpdateManyWithoutUserInput;
-  reviews?: ReviewUpdateManyWithoutUserInput;
-  comments?: CommentUpdateManyWithoutUserInput;
-  role?: Role;
-}
-
-export interface VideoCreateInput {
-  videoURL: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title: String;
-  description?: String;
-  tags?: VideoCreatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-  views?: ViewCreateManyWithoutVideoInput;
-  reviews?: ReviewCreateManyWithoutVideoInput;
-  comments?: CommentCreateManyWithoutVideoInput;
-  user?: UserCreateOneWithoutVideosInput;
-}
-
-export interface VideoUpdateManyWithoutUserInput {
-  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
-  delete?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-  disconnect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-  update?:
-    | VideoUpdateWithWhereUniqueWithoutUserInput[]
-    | VideoUpdateWithWhereUniqueWithoutUserInput;
-  upsert?:
-    | VideoUpsertWithWhereUniqueWithoutUserInput[]
-    | VideoUpsertWithWhereUniqueWithoutUserInput;
-  deleteMany?: VideoScalarWhereInput[] | VideoScalarWhereInput;
-  updateMany?:
-    | VideoUpdateManyWithWhereNestedInput[]
-    | VideoUpdateManyWithWhereNestedInput;
-}
-
-export interface UserUpdateManyMutationInput {
-  googleID?: String;
-  email?: String;
-  name?: String;
-  image?: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  role?: Role;
-}
-
-export interface VideoUpdateWithWhereUniqueWithoutUserInput {
-  where: VideoWhereUniqueInput;
-  data: VideoUpdateWithoutUserDataInput;
-}
-
-export interface UserCreateInput {
-  googleID: String;
-  email: String;
-  name: String;
-  image: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  videos?: VideoCreateManyWithoutUserInput;
-  views?: ViewCreateManyWithoutUserInput;
-  reviews?: ReviewCreateManyWithoutUserInput;
-  comments?: CommentCreateManyWithoutUserInput;
-  role: Role;
-}
-
-export interface VideoUpdateManyDataInput {
-  videoURL?: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title?: String;
-  description?: String;
-  tags?: VideoUpdatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-}
-
-export type VideoWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface ReviewUpdateManyWithoutVideoInput {
-  create?: ReviewCreateWithoutVideoInput[] | ReviewCreateWithoutVideoInput;
-  delete?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  disconnect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  update?:
-    | ReviewUpdateWithWhereUniqueWithoutVideoInput[]
-    | ReviewUpdateWithWhereUniqueWithoutVideoInput;
-  upsert?:
-    | ReviewUpsertWithWhereUniqueWithoutVideoInput[]
-    | ReviewUpsertWithWhereUniqueWithoutVideoInput;
-  deleteMany?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
-  updateMany?:
-    | ReviewUpdateManyWithWhereNestedInput[]
-    | ReviewUpdateManyWithWhereNestedInput;
-}
-
-export interface ReviewCreateInput {
-  status?: ReviewStatus;
-  video?: VideoCreateOneWithoutReviewsInput;
-  user?: UserCreateOneWithoutReviewsInput;
-}
-
-export interface ReviewUpdateWithWhereUniqueWithoutVideoInput {
-  where: ReviewWhereUniqueInput;
-  data: ReviewUpdateWithoutVideoDataInput;
-}
-
-export type ViewWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface ReviewUpdateWithoutVideoDataInput {
-  status?: ReviewStatus;
-  user?: UserUpdateOneWithoutReviewsInput;
-}
-
-export interface ViewUpsertWithWhereUniqueWithoutVideoInput {
-  where: ViewWhereUniqueInput;
-  update: ViewUpdateWithoutVideoDataInput;
-  create: ViewCreateWithoutVideoInput;
-}
-
-export interface UserUpdateOneWithoutReviewsInput {
-  create?: UserCreateWithoutReviewsInput;
-  update?: UserUpdateWithoutReviewsDataInput;
-  upsert?: UserUpsertWithoutReviewsInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface VideoCreateOneWithoutCommentsInput {
-  create?: VideoCreateWithoutCommentsInput;
-  connect?: VideoWhereUniqueInput;
-}
-
-export interface UserWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  googleID?: String;
-  googleID_not?: String;
-  googleID_in?: String[] | String;
-  googleID_not_in?: String[] | String;
-  googleID_lt?: String;
-  googleID_lte?: String;
-  googleID_gt?: String;
-  googleID_gte?: String;
-  googleID_contains?: String;
-  googleID_not_contains?: String;
-  googleID_starts_with?: String;
-  googleID_not_starts_with?: String;
-  googleID_ends_with?: String;
-  googleID_not_ends_with?: String;
-  email?: String;
-  email_not?: String;
-  email_in?: String[] | String;
-  email_not_in?: String[] | String;
-  email_lt?: String;
-  email_lte?: String;
-  email_gt?: String;
-  email_gte?: String;
-  email_contains?: String;
-  email_not_contains?: String;
-  email_starts_with?: String;
-  email_not_starts_with?: String;
-  email_ends_with?: String;
-  email_not_ends_with?: String;
-  name?: String;
-  name_not?: String;
-  name_in?: String[] | String;
-  name_not_in?: String[] | String;
-  name_lt?: String;
-  name_lte?: String;
-  name_gt?: String;
-  name_gte?: String;
-  name_contains?: String;
-  name_not_contains?: String;
-  name_starts_with?: String;
-  name_not_starts_with?: String;
-  name_ends_with?: String;
-  name_not_ends_with?: String;
-  image?: String;
-  image_not?: String;
-  image_in?: String[] | String;
-  image_not_in?: String[] | String;
-  image_lt?: String;
-  image_lte?: String;
-  image_gt?: String;
-  image_gte?: String;
-  image_contains?: String;
-  image_not_contains?: String;
-  image_starts_with?: String;
-  image_not_starts_with?: String;
-  image_ends_with?: String;
-  image_not_ends_with?: String;
-  googlePhotoAT?: String;
-  googlePhotoAT_not?: String;
-  googlePhotoAT_in?: String[] | String;
-  googlePhotoAT_not_in?: String[] | String;
-  googlePhotoAT_lt?: String;
-  googlePhotoAT_lte?: String;
-  googlePhotoAT_gt?: String;
-  googlePhotoAT_gte?: String;
-  googlePhotoAT_contains?: String;
-  googlePhotoAT_not_contains?: String;
-  googlePhotoAT_starts_with?: String;
-  googlePhotoAT_not_starts_with?: String;
-  googlePhotoAT_ends_with?: String;
-  googlePhotoAT_not_ends_with?: String;
-  googlePhotoRT?: String;
-  googlePhotoRT_not?: String;
-  googlePhotoRT_in?: String[] | String;
-  googlePhotoRT_not_in?: String[] | String;
-  googlePhotoRT_lt?: String;
-  googlePhotoRT_lte?: String;
-  googlePhotoRT_gt?: String;
-  googlePhotoRT_gte?: String;
-  googlePhotoRT_contains?: String;
-  googlePhotoRT_not_contains?: String;
-  googlePhotoRT_starts_with?: String;
-  googlePhotoRT_not_starts_with?: String;
-  googlePhotoRT_ends_with?: String;
-  googlePhotoRT_not_ends_with?: String;
-  videos_every?: VideoWhereInput;
-  videos_some?: VideoWhereInput;
-  videos_none?: VideoWhereInput;
-  views_every?: ViewWhereInput;
-  views_some?: ViewWhereInput;
-  views_none?: ViewWhereInput;
-  reviews_every?: ReviewWhereInput;
-  reviews_some?: ReviewWhereInput;
-  reviews_none?: ReviewWhereInput;
-  comments_every?: CommentWhereInput;
-  comments_some?: CommentWhereInput;
-  comments_none?: CommentWhereInput;
-  role?: Role;
-  role_not?: Role;
-  role_in?: Role[] | Role;
-  role_not_in?: Role[] | Role;
-  createdAt?: DateTimeInput;
-  createdAt_not?: DateTimeInput;
-  createdAt_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_lt?: DateTimeInput;
-  createdAt_lte?: DateTimeInput;
-  createdAt_gt?: DateTimeInput;
-  createdAt_gte?: DateTimeInput;
-  AND?: UserWhereInput[] | UserWhereInput;
-  OR?: UserWhereInput[] | UserWhereInput;
-  NOT?: UserWhereInput[] | UserWhereInput;
-}
-
-export interface VideoCreatetagsInput {
-  set?: String[] | String;
-}
-
-export interface VideoUpdateManyWithWhereNestedInput {
-  where: VideoScalarWhereInput;
-  data: VideoUpdateManyDataInput;
-}
-
-export interface ViewCreateWithoutVideoInput {
-  complete?: Boolean;
-  progress?: Int;
-  user?: UserCreateOneWithoutViewsInput;
-}
-
-export interface ViewWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  complete?: Boolean;
-  complete_not?: Boolean;
-  progress?: Int;
-  progress_not?: Int;
-  progress_in?: Int[] | Int;
-  progress_not_in?: Int[] | Int;
-  progress_lt?: Int;
-  progress_lte?: Int;
-  progress_gt?: Int;
-  progress_gte?: Int;
-  video?: VideoWhereInput;
-  user?: UserWhereInput;
-  createdAt?: DateTimeInput;
-  createdAt_not?: DateTimeInput;
-  createdAt_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_lt?: DateTimeInput;
-  createdAt_lte?: DateTimeInput;
-  createdAt_gt?: DateTimeInput;
-  createdAt_gte?: DateTimeInput;
-  AND?: ViewWhereInput[] | ViewWhereInput;
-  OR?: ViewWhereInput[] | ViewWhereInput;
-  NOT?: ViewWhereInput[] | ViewWhereInput;
-}
-
 export interface UserCreateWithoutViewsInput {
   googleID: String;
   email: String;
@@ -1111,6 +1231,7 @@ export interface UserCreateWithoutViewsInput {
   videos?: VideoCreateManyWithoutUserInput;
   reviews?: ReviewCreateManyWithoutUserInput;
   comments?: CommentCreateManyWithoutUserInput;
+  commentReviews?: CommentReviewCreateManyWithoutUserInput;
   role: Role;
 }
 
@@ -1259,109 +1380,6 @@ export interface VideoCreateWithoutUserInput {
   comments?: CommentCreateManyWithoutVideoInput;
 }
 
-export interface VideoUpdateOneWithoutViewsInput {
-  create?: VideoCreateWithoutViewsInput;
-  update?: VideoUpdateWithoutViewsDataInput;
-  upsert?: VideoUpsertWithoutViewsInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: VideoWhereUniqueInput;
-}
-
-export interface ReviewCreateWithoutVideoInput {
-  status?: ReviewStatus;
-  user?: UserCreateOneWithoutReviewsInput;
-}
-
-export interface VideoUpdateWithoutViewsDataInput {
-  videoURL?: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title?: String;
-  description?: String;
-  tags?: VideoUpdatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-  reviews?: ReviewUpdateManyWithoutVideoInput;
-  comments?: CommentUpdateManyWithoutVideoInput;
-  user?: UserUpdateOneWithoutVideosInput;
-}
-
-export interface UserCreateWithoutReviewsInput {
-  googleID: String;
-  email: String;
-  name: String;
-  image: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  videos?: VideoCreateManyWithoutUserInput;
-  views?: ViewCreateManyWithoutUserInput;
-  comments?: CommentCreateManyWithoutUserInput;
-  role: Role;
-}
-
-export interface CommentUpdateManyWithoutVideoInput {
-  create?: CommentCreateWithoutVideoInput[] | CommentCreateWithoutVideoInput;
-  delete?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
-  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
-  disconnect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
-  update?:
-    | CommentUpdateWithWhereUniqueWithoutVideoInput[]
-    | CommentUpdateWithWhereUniqueWithoutVideoInput;
-  upsert?:
-    | CommentUpsertWithWhereUniqueWithoutVideoInput[]
-    | CommentUpsertWithWhereUniqueWithoutVideoInput;
-  deleteMany?: CommentScalarWhereInput[] | CommentScalarWhereInput;
-  updateMany?:
-    | CommentUpdateManyWithWhereNestedInput[]
-    | CommentUpdateManyWithWhereNestedInput;
-}
-
-export interface ViewCreateWithoutUserInput {
-  complete?: Boolean;
-  progress?: Int;
-  video?: VideoCreateOneWithoutViewsInput;
-}
-
-export interface CommentUpdateWithWhereUniqueWithoutVideoInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutVideoDataInput;
-}
-
-export interface VideoCreateWithoutViewsInput {
-  videoURL: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title: String;
-  description?: String;
-  tags?: VideoCreatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-  reviews?: ReviewCreateManyWithoutVideoInput;
-  comments?: CommentCreateManyWithoutVideoInput;
-  user?: UserCreateOneWithoutVideosInput;
-}
-
-export interface CommentUpdateWithoutVideoDataInput {
-  text?: String;
-  reply?: Boolean;
-  user?: UserUpdateOneWithoutCommentsInput;
-  replies?: CommentUpdateManyInput;
-}
-
-export interface CommentCreateWithoutVideoInput {
-  text: String;
-  reply: Boolean;
-  user?: UserCreateOneWithoutCommentsInput;
-  replies?: CommentCreateManyInput;
-}
-
 export interface UserUpdateOneWithoutCommentsInput {
   create?: UserCreateWithoutCommentsInput;
   update?: UserUpdateWithoutCommentsDataInput;
@@ -1371,17 +1389,9 @@ export interface UserUpdateOneWithoutCommentsInput {
   connect?: UserWhereUniqueInput;
 }
 
-export interface UserCreateWithoutCommentsInput {
-  googleID: String;
-  email: String;
-  name: String;
-  image: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  videos?: VideoCreateManyWithoutUserInput;
-  views?: ViewCreateManyWithoutUserInput;
-  reviews?: ReviewCreateManyWithoutUserInput;
-  role: Role;
+export interface ReviewCreateWithoutVideoInput {
+  status?: ReviewStatus;
+  user?: UserCreateOneWithoutReviewsInput;
 }
 
 export interface UserUpdateWithoutCommentsDataInput {
@@ -1394,12 +1404,22 @@ export interface UserUpdateWithoutCommentsDataInput {
   videos?: VideoUpdateManyWithoutUserInput;
   views?: ViewUpdateManyWithoutUserInput;
   reviews?: ReviewUpdateManyWithoutUserInput;
+  commentReviews?: CommentReviewUpdateManyWithoutUserInput;
   role?: Role;
 }
 
-export interface ReviewCreateWithoutUserInput {
-  status?: ReviewStatus;
-  video?: VideoCreateOneWithoutReviewsInput;
+export interface UserCreateWithoutReviewsInput {
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoCreateManyWithoutUserInput;
+  views?: ViewCreateManyWithoutUserInput;
+  comments?: CommentCreateManyWithoutUserInput;
+  commentReviews?: CommentReviewCreateManyWithoutUserInput;
+  role: Role;
 }
 
 export interface ReviewUpdateManyWithoutUserInput {
@@ -1419,7 +1439,18 @@ export interface ReviewUpdateManyWithoutUserInput {
     | ReviewUpdateManyWithWhereNestedInput;
 }
 
-export interface VideoCreateWithoutReviewsInput {
+export interface ViewCreateWithoutUserInput {
+  complete?: Boolean;
+  progress?: Int;
+  video?: VideoCreateOneWithoutViewsInput;
+}
+
+export interface ReviewUpdateWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput;
+  data: ReviewUpdateWithoutUserDataInput;
+}
+
+export interface VideoCreateWithoutViewsInput {
   videoURL: String;
   thumbURL?: String;
   posterURL?: String;
@@ -1431,27 +1462,9 @@ export interface VideoCreateWithoutReviewsInput {
   isPublished?: Boolean;
   isPublic?: Boolean;
   category?: Category;
-  views?: ViewCreateManyWithoutVideoInput;
+  reviews?: ReviewCreateManyWithoutVideoInput;
   comments?: CommentCreateManyWithoutVideoInput;
   user?: UserCreateOneWithoutVideosInput;
-}
-
-export interface ReviewUpdateWithWhereUniqueWithoutUserInput {
-  where: ReviewWhereUniqueInput;
-  data: ReviewUpdateWithoutUserDataInput;
-}
-
-export interface UserCreateWithoutVideosInput {
-  googleID: String;
-  email: String;
-  name: String;
-  image: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  views?: ViewCreateManyWithoutUserInput;
-  reviews?: ReviewCreateManyWithoutUserInput;
-  comments?: CommentCreateManyWithoutUserInput;
-  role: Role;
 }
 
 export interface ReviewUpdateWithoutUserDataInput {
@@ -1459,11 +1472,13 @@ export interface ReviewUpdateWithoutUserDataInput {
   video?: VideoUpdateOneWithoutReviewsInput;
 }
 
-export interface CommentCreateWithoutUserInput {
+export interface CommentCreateWithoutVideoInput {
   text: String;
   reply: Boolean;
-  video?: VideoCreateOneWithoutCommentsInput;
+  edited?: Boolean;
+  user?: UserCreateOneWithoutCommentsInput;
   replies?: CommentCreateManyInput;
+  reviews?: CommentReviewCreateManyWithoutCommentInput;
 }
 
 export interface VideoUpdateOneWithoutReviewsInput {
@@ -1475,12 +1490,18 @@ export interface VideoUpdateOneWithoutReviewsInput {
   connect?: VideoWhereUniqueInput;
 }
 
-export interface CommentUpdateInput {
-  text?: String;
-  reply?: Boolean;
-  video?: VideoUpdateOneWithoutCommentsInput;
-  user?: UserUpdateOneWithoutCommentsInput;
-  replies?: CommentUpdateManyInput;
+export interface UserCreateWithoutCommentsInput {
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoCreateManyWithoutUserInput;
+  views?: ViewCreateManyWithoutUserInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
+  commentReviews?: CommentReviewCreateManyWithoutUserInput;
+  role: Role;
 }
 
 export interface VideoUpdateWithoutReviewsDataInput {
@@ -1500,15 +1521,9 @@ export interface VideoUpdateWithoutReviewsDataInput {
   user?: UserUpdateOneWithoutVideosInput;
 }
 
-export interface UserSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: UserWhereInput;
-  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+export interface ReviewCreateWithoutUserInput {
+  status?: ReviewStatus;
+  video?: VideoCreateOneWithoutReviewsInput;
 }
 
 export interface UserUpdateOneWithoutVideosInput {
@@ -1520,11 +1535,21 @@ export interface UserUpdateOneWithoutVideosInput {
   connect?: UserWhereUniqueInput;
 }
 
-export interface ViewUpdateInput {
-  complete?: Boolean;
-  progress?: Int;
-  video?: VideoUpdateOneWithoutViewsInput;
-  user?: UserUpdateOneWithoutViewsInput;
+export interface VideoCreateWithoutReviewsInput {
+  videoURL: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title: String;
+  description?: String;
+  tags?: VideoCreatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewCreateManyWithoutVideoInput;
+  comments?: CommentCreateManyWithoutVideoInput;
+  user?: UserCreateOneWithoutVideosInput;
 }
 
 export interface UserUpdateWithoutVideosDataInput {
@@ -1537,25 +1562,22 @@ export interface UserUpdateWithoutVideosDataInput {
   views?: ViewUpdateManyWithoutUserInput;
   reviews?: ReviewUpdateManyWithoutUserInput;
   comments?: CommentUpdateManyWithoutUserInput;
+  commentReviews?: CommentReviewUpdateManyWithoutUserInput;
   role?: Role;
 }
 
-export interface VideoUpdateInput {
-  videoURL?: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title?: String;
-  description?: String;
-  tags?: VideoUpdatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-  views?: ViewUpdateManyWithoutVideoInput;
-  reviews?: ReviewUpdateManyWithoutVideoInput;
-  comments?: CommentUpdateManyWithoutVideoInput;
-  user?: UserUpdateOneWithoutVideosInput;
+export interface UserCreateWithoutVideosInput {
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  views?: ViewCreateManyWithoutUserInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
+  comments?: CommentCreateManyWithoutUserInput;
+  commentReviews?: CommentReviewCreateManyWithoutUserInput;
+  role: Role;
 }
 
 export interface CommentUpdateManyWithoutUserInput {
@@ -1575,18 +1597,13 @@ export interface CommentUpdateManyWithoutUserInput {
     | CommentUpdateManyWithWhereNestedInput;
 }
 
-export interface UserUpdateInput {
-  googleID?: String;
-  email?: String;
-  name?: String;
-  image?: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  videos?: VideoUpdateManyWithoutUserInput;
-  views?: ViewUpdateManyWithoutUserInput;
-  reviews?: ReviewUpdateManyWithoutUserInput;
-  comments?: CommentUpdateManyWithoutUserInput;
-  role?: Role;
+export interface CommentCreateWithoutUserInput {
+  text: String;
+  reply: Boolean;
+  edited?: Boolean;
+  video?: VideoCreateOneWithoutCommentsInput;
+  replies?: CommentCreateManyInput;
+  reviews?: CommentReviewCreateManyWithoutCommentInput;
 }
 
 export interface CommentUpdateWithWhereUniqueWithoutUserInput {
@@ -1594,22 +1611,25 @@ export interface CommentUpdateWithWhereUniqueWithoutUserInput {
   data: CommentUpdateWithoutUserDataInput;
 }
 
-export interface ReviewUpdateInput {
-  status?: ReviewStatus;
-  video?: VideoUpdateOneWithoutReviewsInput;
-  user?: UserUpdateOneWithoutReviewsInput;
+export interface CommentReviewCreateManyWithoutCommentInput {
+  create?:
+    | CommentReviewCreateWithoutCommentInput[]
+    | CommentReviewCreateWithoutCommentInput;
+  connect?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
 }
 
 export interface CommentUpdateWithoutUserDataInput {
   text?: String;
   reply?: Boolean;
+  edited?: Boolean;
   video?: VideoUpdateOneWithoutCommentsInput;
   replies?: CommentUpdateManyInput;
+  reviews?: CommentReviewUpdateManyWithoutCommentInput;
 }
 
-export interface VideoUpsertWithoutCommentsInput {
-  update: VideoUpdateWithoutCommentsDataInput;
-  create: VideoCreateWithoutCommentsInput;
+export interface UserCreateOneWithoutCommentReviewsInput {
+  create?: UserCreateWithoutCommentReviewsInput;
+  connect?: UserWhereUniqueInput;
 }
 
 export interface CommentUpdateManyInput {
@@ -1629,12 +1649,11 @@ export interface CommentUpdateManyInput {
     | CommentUpdateManyWithWhereNestedInput;
 }
 
-export interface CommentCreateInput {
-  text: String;
-  reply: Boolean;
-  video?: VideoCreateOneWithoutCommentsInput;
-  user?: UserCreateOneWithoutCommentsInput;
-  replies?: CommentCreateManyInput;
+export interface CommentReviewCreateManyWithoutUserInput {
+  create?:
+    | CommentReviewCreateWithoutUserInput[]
+    | CommentReviewCreateWithoutUserInput;
+  connect?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
 }
 
 export interface CommentUpdateWithWhereUniqueNestedInput {
@@ -1642,22 +1661,220 @@ export interface CommentUpdateWithWhereUniqueNestedInput {
   data: CommentUpdateDataInput;
 }
 
-export interface ViewCreateManyWithoutVideoInput {
-  create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
-  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+export interface CommentCreateManyWithoutReviewsInput {
+  create?:
+    | CommentCreateWithoutReviewsInput[]
+    | CommentCreateWithoutReviewsInput;
+  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
 }
 
 export interface CommentUpdateDataInput {
   text?: String;
   reply?: Boolean;
+  edited?: Boolean;
   video?: VideoUpdateOneWithoutCommentsInput;
   user?: UserUpdateOneWithoutCommentsInput;
   replies?: CommentUpdateManyInput;
+  reviews?: CommentReviewUpdateManyWithoutCommentInput;
 }
 
-export interface VideoCreateManyWithoutUserInput {
-  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
-  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+export interface CommentUpdateInput {
+  text?: String;
+  reply?: Boolean;
+  edited?: Boolean;
+  video?: VideoUpdateOneWithoutCommentsInput;
+  user?: UserUpdateOneWithoutCommentsInput;
+  replies?: CommentUpdateManyInput;
+  reviews?: CommentReviewUpdateManyWithoutCommentInput;
+}
+
+export interface CommentReviewUpdateManyWithoutCommentInput {
+  create?:
+    | CommentReviewCreateWithoutCommentInput[]
+    | CommentReviewCreateWithoutCommentInput;
+  delete?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
+  connect?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
+  disconnect?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
+  update?:
+    | CommentReviewUpdateWithWhereUniqueWithoutCommentInput[]
+    | CommentReviewUpdateWithWhereUniqueWithoutCommentInput;
+  upsert?:
+    | CommentReviewUpsertWithWhereUniqueWithoutCommentInput[]
+    | CommentReviewUpsertWithWhereUniqueWithoutCommentInput;
+  deleteMany?: CommentReviewScalarWhereInput[] | CommentReviewScalarWhereInput;
+  updateMany?:
+    | CommentReviewUpdateManyWithWhereNestedInput[]
+    | CommentReviewUpdateManyWithWhereNestedInput;
+}
+
+export interface VideoUpdateWithoutCommentsDataInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewUpdateManyWithoutVideoInput;
+  reviews?: ReviewUpdateManyWithoutVideoInput;
+  user?: UserUpdateOneWithoutVideosInput;
+}
+
+export interface CommentReviewUpdateWithWhereUniqueWithoutCommentInput {
+  where: CommentReviewWhereUniqueInput;
+  data: CommentReviewUpdateWithoutCommentDataInput;
+}
+
+export interface VideoSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: VideoWhereInput;
+  AND?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
+  OR?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
+  NOT?: VideoSubscriptionWhereInput[] | VideoSubscriptionWhereInput;
+}
+
+export interface CommentReviewUpdateWithoutCommentDataInput {
+  status?: ReviewStatus;
+  user?: UserUpdateOneWithoutCommentReviewsInput;
+}
+
+export interface CommentSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CommentWhereInput;
+  AND?: CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput;
+  OR?: CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput;
+  NOT?: CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput;
+}
+
+export interface UserUpdateOneWithoutCommentReviewsInput {
+  create?: UserCreateWithoutCommentReviewsInput;
+  update?: UserUpdateWithoutCommentReviewsDataInput;
+  upsert?: UserUpsertWithoutCommentReviewsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
+}
+
+export type CommentReviewWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface UserUpdateWithoutCommentReviewsDataInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoUpdateManyWithoutUserInput;
+  views?: ViewUpdateManyWithoutUserInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
+  comments?: CommentUpdateManyWithoutUserInput;
+  role?: Role;
+}
+
+export type ReviewWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface UserUpsertWithoutCommentReviewsInput {
+  update: UserUpdateWithoutCommentReviewsDataInput;
+  create: UserCreateWithoutCommentReviewsInput;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  googleID?: String;
+  email?: String;
+}>;
+
+export interface CommentReviewUpsertWithWhereUniqueWithoutCommentInput {
+  where: CommentReviewWhereUniqueInput;
+  update: CommentReviewUpdateWithoutCommentDataInput;
+  create: CommentReviewCreateWithoutCommentInput;
+}
+
+export interface CommentReviewUpdateManyMutationInput {
+  status?: ReviewStatus;
+}
+
+export interface CommentReviewScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  status?: ReviewStatus;
+  status_not?: ReviewStatus;
+  status_in?: ReviewStatus[] | ReviewStatus;
+  status_not_in?: ReviewStatus[] | ReviewStatus;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: CommentReviewScalarWhereInput[] | CommentReviewScalarWhereInput;
+  OR?: CommentReviewScalarWhereInput[] | CommentReviewScalarWhereInput;
+  NOT?: CommentReviewScalarWhereInput[] | CommentReviewScalarWhereInput;
+}
+
+export interface CommentUpdateManyMutationInput {
+  text?: String;
+  reply?: Boolean;
+  edited?: Boolean;
+}
+
+export interface CommentReviewUpdateManyWithWhereNestedInput {
+  where: CommentReviewScalarWhereInput;
+  data: CommentReviewUpdateManyDataInput;
+}
+
+export interface UserUpsertWithoutViewsInput {
+  update: UserUpdateWithoutViewsDataInput;
+  create: UserCreateWithoutViewsInput;
+}
+
+export interface CommentReviewUpdateManyDataInput {
+  status?: ReviewStatus;
+}
+
+export interface VideoCreateWithoutCommentsInput {
+  videoURL: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title: String;
+  description?: String;
+  tags?: VideoCreatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewCreateManyWithoutVideoInput;
+  reviews?: ReviewCreateManyWithoutVideoInput;
+  user?: UserCreateOneWithoutVideosInput;
 }
 
 export interface CommentUpsertWithWhereUniqueNestedInput {
@@ -1666,8 +1883,8 @@ export interface CommentUpsertWithWhereUniqueNestedInput {
   create: CommentCreateInput;
 }
 
-export interface UserCreateOneWithoutReviewsInput {
-  create?: UserCreateWithoutReviewsInput;
+export interface UserCreateOneWithoutViewsInput {
+  create?: UserCreateWithoutViewsInput;
   connect?: UserWhereUniqueInput;
 }
 
@@ -1702,6 +1919,8 @@ export interface CommentScalarWhereInput {
   text_not_ends_with?: String;
   reply?: Boolean;
   reply_not?: Boolean;
+  edited?: Boolean;
+  edited_not?: Boolean;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
   createdAt_in?: DateTimeInput[] | DateTimeInput;
@@ -1715,9 +1934,9 @@ export interface CommentScalarWhereInput {
   NOT?: CommentScalarWhereInput[] | CommentScalarWhereInput;
 }
 
-export interface VideoCreateOneWithoutViewsInput {
-  create?: VideoCreateWithoutViewsInput;
-  connect?: VideoWhereUniqueInput;
+export interface ReviewCreateManyWithoutVideoInput {
+  create?: ReviewCreateWithoutVideoInput[] | ReviewCreateWithoutVideoInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
 }
 
 export interface CommentUpdateManyWithWhereNestedInput {
@@ -1725,19 +1944,20 @@ export interface CommentUpdateManyWithWhereNestedInput {
   data: CommentUpdateManyDataInput;
 }
 
-export interface UserCreateOneWithoutCommentsInput {
-  create?: UserCreateWithoutCommentsInput;
-  connect?: UserWhereUniqueInput;
+export interface ViewCreateManyWithoutUserInput {
+  create?: ViewCreateWithoutUserInput[] | ViewCreateWithoutUserInput;
+  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
 }
 
 export interface CommentUpdateManyDataInput {
   text?: String;
   reply?: Boolean;
+  edited?: Boolean;
 }
 
-export interface VideoCreateOneWithoutReviewsInput {
-  create?: VideoCreateWithoutReviewsInput;
-  connect?: VideoWhereUniqueInput;
+export interface CommentCreateManyWithoutVideoInput {
+  create?: CommentCreateWithoutVideoInput[] | CommentCreateWithoutVideoInput;
+  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
 }
 
 export interface CommentUpsertWithWhereUniqueWithoutUserInput {
@@ -1746,9 +1966,184 @@ export interface CommentUpsertWithWhereUniqueWithoutUserInput {
   create: CommentCreateWithoutUserInput;
 }
 
-export interface CommentCreateManyWithoutUserInput {
-  create?: CommentCreateWithoutUserInput[] | CommentCreateWithoutUserInput;
+export interface ReviewCreateManyWithoutUserInput {
+  create?: ReviewCreateWithoutUserInput[] | ReviewCreateWithoutUserInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+}
+
+export interface CommentReviewUpdateManyWithoutUserInput {
+  create?:
+    | CommentReviewCreateWithoutUserInput[]
+    | CommentReviewCreateWithoutUserInput;
+  delete?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
+  connect?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
+  disconnect?: CommentReviewWhereUniqueInput[] | CommentReviewWhereUniqueInput;
+  update?:
+    | CommentReviewUpdateWithWhereUniqueWithoutUserInput[]
+    | CommentReviewUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | CommentReviewUpsertWithWhereUniqueWithoutUserInput[]
+    | CommentReviewUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: CommentReviewScalarWhereInput[] | CommentReviewScalarWhereInput;
+  updateMany?:
+    | CommentReviewUpdateManyWithWhereNestedInput[]
+    | CommentReviewUpdateManyWithWhereNestedInput;
+}
+
+export interface UserCreateOneWithoutVideosInput {
+  create?: UserCreateWithoutVideosInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface CommentReviewUpdateWithWhereUniqueWithoutUserInput {
+  where: CommentReviewWhereUniqueInput;
+  data: CommentReviewUpdateWithoutUserDataInput;
+}
+
+export interface CommentCreateManyInput {
+  create?: CommentCreateInput[] | CommentCreateInput;
   connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+}
+
+export interface CommentReviewUpdateWithoutUserDataInput {
+  status?: ReviewStatus;
+  comment?: CommentUpdateManyWithoutReviewsInput;
+}
+
+export interface UserCreateWithoutCommentReviewsInput {
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoCreateManyWithoutUserInput;
+  views?: ViewCreateManyWithoutUserInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
+  comments?: CommentCreateManyWithoutUserInput;
+  role: Role;
+}
+
+export interface CommentUpdateManyWithoutReviewsInput {
+  create?:
+    | CommentCreateWithoutReviewsInput[]
+    | CommentCreateWithoutReviewsInput;
+  delete?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+  disconnect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+  update?:
+    | CommentUpdateWithWhereUniqueWithoutReviewsInput[]
+    | CommentUpdateWithWhereUniqueWithoutReviewsInput;
+  upsert?:
+    | CommentUpsertWithWhereUniqueWithoutReviewsInput[]
+    | CommentUpsertWithWhereUniqueWithoutReviewsInput;
+  deleteMany?: CommentScalarWhereInput[] | CommentScalarWhereInput;
+  updateMany?:
+    | CommentUpdateManyWithWhereNestedInput[]
+    | CommentUpdateManyWithWhereNestedInput;
+}
+
+export interface CommentCreateWithoutReviewsInput {
+  text: String;
+  reply: Boolean;
+  edited?: Boolean;
+  video?: VideoCreateOneWithoutCommentsInput;
+  user?: UserCreateOneWithoutCommentsInput;
+  replies?: CommentCreateManyInput;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutReviewsInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutReviewsDataInput;
+}
+
+export interface ViewWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  complete?: Boolean;
+  complete_not?: Boolean;
+  progress?: Int;
+  progress_not?: Int;
+  progress_in?: Int[] | Int;
+  progress_not_in?: Int[] | Int;
+  progress_lt?: Int;
+  progress_lte?: Int;
+  progress_gt?: Int;
+  progress_gte?: Int;
+  video?: VideoWhereInput;
+  user?: UserWhereInput;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  AND?: ViewWhereInput[] | ViewWhereInput;
+  OR?: ViewWhereInput[] | ViewWhereInput;
+  NOT?: ViewWhereInput[] | ViewWhereInput;
+}
+
+export interface CommentUpdateWithoutReviewsDataInput {
+  text?: String;
+  reply?: Boolean;
+  edited?: Boolean;
+  video?: VideoUpdateOneWithoutCommentsInput;
+  user?: UserUpdateOneWithoutCommentsInput;
+  replies?: CommentUpdateManyInput;
+}
+
+export interface ViewUpdateInput {
+  complete?: Boolean;
+  progress?: Int;
+  video?: VideoUpdateOneWithoutViewsInput;
+  user?: UserUpdateOneWithoutViewsInput;
+}
+
+export interface CommentUpsertWithWhereUniqueWithoutReviewsInput {
+  where: CommentWhereUniqueInput;
+  update: CommentUpdateWithoutReviewsDataInput;
+  create: CommentCreateWithoutReviewsInput;
+}
+
+export interface UserUpdateInput {
+  googleID?: String;
+  email?: String;
+  name?: String;
+  image?: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  videos?: VideoUpdateManyWithoutUserInput;
+  views?: ViewUpdateManyWithoutUserInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
+  comments?: CommentUpdateManyWithoutUserInput;
+  commentReviews?: CommentReviewUpdateManyWithoutUserInput;
+  role?: Role;
+}
+
+export interface CommentReviewUpsertWithWhereUniqueWithoutUserInput {
+  where: CommentReviewWhereUniqueInput;
+  update: CommentReviewUpdateWithoutUserDataInput;
+  create: CommentReviewCreateWithoutUserInput;
+}
+
+export interface CommentReviewUpdateInput {
+  status?: ReviewStatus;
+  comment?: CommentUpdateManyWithoutReviewsInput;
+  user?: UserUpdateOneWithoutCommentReviewsInput;
 }
 
 export interface UserUpsertWithoutVideosInput {
@@ -1756,15 +2151,14 @@ export interface UserUpsertWithoutVideosInput {
   create: UserCreateWithoutVideosInput;
 }
 
-export interface ViewSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: ViewWhereInput;
-  AND?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
-  OR?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
-  NOT?: ViewSubscriptionWhereInput[] | ViewSubscriptionWhereInput;
+export interface CommentCreateInput {
+  text: String;
+  reply: Boolean;
+  edited?: Boolean;
+  video?: VideoCreateOneWithoutCommentsInput;
+  user?: UserCreateOneWithoutCommentsInput;
+  replies?: CommentCreateManyInput;
+  reviews?: CommentReviewCreateManyWithoutCommentInput;
 }
 
 export interface VideoUpsertWithoutReviewsInput {
@@ -1772,9 +2166,10 @@ export interface VideoUpsertWithoutReviewsInput {
   create: VideoCreateWithoutReviewsInput;
 }
 
-export type ReviewWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
+export interface VideoCreateManyWithoutUserInput {
+  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
+  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
+}
 
 export interface ReviewUpsertWithWhereUniqueWithoutUserInput {
   where: ReviewWhereUniqueInput;
@@ -1782,8 +2177,9 @@ export interface ReviewUpsertWithWhereUniqueWithoutUserInput {
   create: ReviewCreateWithoutUserInput;
 }
 
-export interface ReviewUpdateManyMutationInput {
-  status?: ReviewStatus;
+export interface VideoCreateOneWithoutViewsInput {
+  create?: VideoCreateWithoutViewsInput;
+  connect?: VideoWhereUniqueInput;
 }
 
 export interface ReviewScalarWhereInput {
@@ -1818,9 +2214,9 @@ export interface ReviewScalarWhereInput {
   NOT?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
 }
 
-export interface UserUpsertWithoutViewsInput {
-  update: UserUpdateWithoutViewsDataInput;
-  create: UserCreateWithoutViewsInput;
+export interface VideoCreateOneWithoutReviewsInput {
+  create?: VideoCreateWithoutReviewsInput;
+  connect?: VideoWhereUniqueInput;
 }
 
 export interface ReviewUpdateManyWithWhereNestedInput {
@@ -1828,18 +2224,22 @@ export interface ReviewUpdateManyWithWhereNestedInput {
   data: ReviewUpdateManyDataInput;
 }
 
-export interface UserCreateOneWithoutViewsInput {
-  create?: UserCreateWithoutViewsInput;
-  connect?: UserWhereUniqueInput;
+export interface CommentReviewCreateWithoutCommentInput {
+  status?: ReviewStatus;
+  user?: UserCreateOneWithoutCommentReviewsInput;
 }
 
 export interface ReviewUpdateManyDataInput {
   status?: ReviewStatus;
 }
 
-export interface ViewCreateManyWithoutUserInput {
-  create?: ViewCreateWithoutUserInput[] | ViewCreateWithoutUserInput;
-  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+export interface VideoUpdateOneWithoutCommentsInput {
+  create?: VideoCreateWithoutCommentsInput;
+  update?: VideoUpdateWithoutCommentsDataInput;
+  upsert?: VideoUpsertWithoutCommentsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: VideoWhereUniqueInput;
 }
 
 export interface UserUpsertWithoutCommentsInput {
@@ -1847,9 +2247,22 @@ export interface UserUpsertWithoutCommentsInput {
   create: UserCreateWithoutCommentsInput;
 }
 
-export interface ReviewCreateManyWithoutUserInput {
-  create?: ReviewCreateWithoutUserInput[] | ReviewCreateWithoutUserInput;
-  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+export interface VideoUpdateInput {
+  videoURL?: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title?: String;
+  description?: String;
+  tags?: VideoUpdatetagsInput;
+  isPublished?: Boolean;
+  isPublic?: Boolean;
+  category?: Category;
+  views?: ViewUpdateManyWithoutVideoInput;
+  reviews?: ReviewUpdateManyWithoutVideoInput;
+  comments?: CommentUpdateManyWithoutVideoInput;
+  user?: UserUpdateOneWithoutVideosInput;
 }
 
 export interface CommentUpsertWithWhereUniqueWithoutVideoInput {
@@ -1858,9 +2271,9 @@ export interface CommentUpsertWithWhereUniqueWithoutVideoInput {
   create: CommentCreateWithoutVideoInput;
 }
 
-export interface CommentCreateManyInput {
-  create?: CommentCreateInput[] | CommentCreateInput;
-  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+export interface VideoUpsertWithoutCommentsInput {
+  update: VideoUpdateWithoutCommentsDataInput;
+  create: VideoCreateWithoutCommentsInput;
 }
 
 export interface VideoUpsertWithoutViewsInput {
@@ -1868,11 +2281,10 @@ export interface VideoUpsertWithoutViewsInput {
   create: VideoCreateWithoutViewsInput;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  googleID?: String;
-  email?: String;
-}>;
+export interface UserCreateOneWithoutReviewsInput {
+  create?: UserCreateWithoutReviewsInput;
+  connect?: UserWhereUniqueInput;
+}
 
 export interface ViewUpsertWithWhereUniqueWithoutUserInput {
   where: ViewWhereUniqueInput;
@@ -1880,21 +2292,9 @@ export interface ViewUpsertWithWhereUniqueWithoutUserInput {
   create: ViewCreateWithoutUserInput;
 }
 
-export interface VideoCreateWithoutCommentsInput {
-  videoURL: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title: String;
-  description?: String;
-  tags?: VideoCreatetagsInput;
-  isPublished?: Boolean;
-  isPublic?: Boolean;
-  category?: Category;
-  views?: ViewCreateManyWithoutVideoInput;
-  reviews?: ReviewCreateManyWithoutVideoInput;
-  user?: UserCreateOneWithoutVideosInput;
+export interface CommentCreateManyWithoutUserInput {
+  create?: CommentCreateWithoutUserInput[] | CommentCreateWithoutUserInput;
+  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
 }
 
 export interface ViewScalarWhereInput {
@@ -1935,9 +2335,15 @@ export interface ViewScalarWhereInput {
   NOT?: ViewScalarWhereInput[] | ViewScalarWhereInput;
 }
 
-export interface CommentCreateManyWithoutVideoInput {
-  create?: CommentCreateWithoutVideoInput[] | CommentCreateWithoutVideoInput;
-  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+export interface ReviewSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ReviewWhereInput;
+  AND?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
+  OR?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
+  NOT?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
 }
 
 export interface ReviewUpsertWithWhereUniqueWithoutVideoInput {
@@ -1961,30 +2367,25 @@ export interface ViewUpdateManyWithWhereNestedInput {
   data: ViewUpdateManyDataInput;
 }
 
-export interface UserCreateOneWithoutVideosInput {
-  create?: UserCreateWithoutVideosInput;
+export interface ReviewUpdateInput {
+  status?: ReviewStatus;
+  video?: VideoUpdateOneWithoutReviewsInput;
+  user?: UserUpdateOneWithoutReviewsInput;
+}
+
+export interface CommentReviewCreateWithoutUserInput {
+  status?: ReviewStatus;
+  comment?: CommentCreateManyWithoutReviewsInput;
+}
+
+export interface UserCreateOneWithoutCommentsInput {
+  create?: UserCreateWithoutCommentsInput;
   connect?: UserWhereUniqueInput;
 }
 
-export interface ReviewCreateManyWithoutVideoInput {
-  create?: ReviewCreateWithoutVideoInput[] | ReviewCreateWithoutVideoInput;
-  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-}
-
-export interface CommentUpdateManyMutationInput {
-  text?: String;
-  reply?: Boolean;
-}
-
-export interface CommentSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: CommentWhereInput;
-  AND?: CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput;
-  OR?: CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput;
-  NOT?: CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput;
+export interface ViewCreateManyWithoutVideoInput {
+  create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
+  connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
 }
 
 export interface NodeNode {
@@ -2132,6 +2533,15 @@ export interface UserPromise extends Promise<User>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  commentReviews: <T = FragmentableArray<CommentReview>>(args?: {
+    where?: CommentReviewWhereInput;
+    orderBy?: CommentReviewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   role: () => Promise<Role>;
   createdAt: () => Promise<DateTimeOutput>;
 }
@@ -2176,6 +2586,17 @@ export interface UserSubscription
   comments: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
     where?: CommentWhereInput;
     orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  commentReviews: <
+    T = Promise<AsyncIterator<CommentReviewSubscription>>
+  >(args?: {
+    where?: CommentReviewWhereInput;
+    orderBy?: CommentReviewOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -2284,6 +2705,593 @@ export interface ViewConnectionSubscription
   aggregate: <T = AggregateViewSubscription>() => T;
 }
 
+export interface Review {
+  id: ID_Output;
+  status?: ReviewStatus;
+  createdAt: DateTimeOutput;
+}
+
+export interface ReviewPromise extends Promise<Review>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  status: () => Promise<ReviewStatus>;
+  video: <T = VideoPromise>() => T;
+  user: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface ReviewSubscription
+  extends Promise<AsyncIterator<Review>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  status: () => Promise<AsyncIterator<ReviewStatus>>;
+  video: <T = VideoSubscription>() => T;
+  user: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface Comment {
+  id: ID_Output;
+  text: String;
+  reply: Boolean;
+  edited?: Boolean;
+  createdAt: DateTimeOutput;
+}
+
+export interface CommentPromise extends Promise<Comment>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  text: () => Promise<String>;
+  reply: () => Promise<Boolean>;
+  edited: () => Promise<Boolean>;
+  video: <T = VideoPromise>() => T;
+  user: <T = UserPromise>() => T;
+  replies: <T = FragmentableArray<Comment>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  reviews: <T = FragmentableArray<CommentReview>>(args?: {
+    where?: CommentReviewWhereInput;
+    orderBy?: CommentReviewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentSubscription
+  extends Promise<AsyncIterator<Comment>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  text: () => Promise<AsyncIterator<String>>;
+  reply: () => Promise<AsyncIterator<Boolean>>;
+  edited: () => Promise<AsyncIterator<Boolean>>;
+  video: <T = VideoSubscription>() => T;
+  user: <T = UserSubscription>() => T;
+  replies: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  reviews: <T = Promise<AsyncIterator<CommentReviewSubscription>>>(args?: {
+    where?: CommentReviewWhereInput;
+    orderBy?: CommentReviewOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface VideoEdge {
+  node: Video;
+  cursor: String;
+}
+
+export interface VideoEdgePromise extends Promise<VideoEdge>, Fragmentable {
+  node: <T = VideoPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface VideoEdgeSubscription
+  extends Promise<AsyncIterator<VideoEdge>>,
+    Fragmentable {
+  node: <T = VideoSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateUser {
+  count: Int;
+}
+
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface CommentSubscriptionPayload {
+  mutation: MutationType;
+  node: Comment;
+  updatedFields: String[];
+  previousValues: CommentPreviousValues;
+}
+
+export interface CommentSubscriptionPayloadPromise
+  extends Promise<CommentSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CommentPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CommentPreviousValuesPromise>() => T;
+}
+
+export interface CommentSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CommentSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CommentSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CommentPreviousValuesSubscription>() => T;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface CommentPreviousValues {
+  id: ID_Output;
+  text: String;
+  reply: Boolean;
+  edited?: Boolean;
+  createdAt: DateTimeOutput;
+}
+
+export interface CommentPreviousValuesPromise
+  extends Promise<CommentPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  text: () => Promise<String>;
+  reply: () => Promise<Boolean>;
+  edited: () => Promise<Boolean>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentPreviousValuesSubscription
+  extends Promise<AsyncIterator<CommentPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  text: () => Promise<AsyncIterator<String>>;
+  reply: () => Promise<AsyncIterator<Boolean>>;
+  edited: () => Promise<AsyncIterator<Boolean>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface AggregateReview {
+  count: Int;
+}
+
+export interface AggregateReviewPromise
+  extends Promise<AggregateReview>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateReviewSubscription
+  extends Promise<AsyncIterator<AggregateReview>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface CommentReview {
+  id: ID_Output;
+  status?: ReviewStatus;
+  createdAt: DateTimeOutput;
+}
+
+export interface CommentReviewPromise
+  extends Promise<CommentReview>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  status: () => Promise<ReviewStatus>;
+  comment: <T = FragmentableArray<Comment>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  user: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentReviewSubscription
+  extends Promise<AsyncIterator<CommentReview>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  status: () => Promise<AsyncIterator<ReviewStatus>>;
+  comment: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  user: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface ReviewConnection {
+  pageInfo: PageInfo;
+  edges: ReviewEdge[];
+}
+
+export interface ReviewConnectionPromise
+  extends Promise<ReviewConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ReviewEdge>>() => T;
+  aggregate: <T = AggregateReviewPromise>() => T;
+}
+
+export interface ReviewConnectionSubscription
+  extends Promise<AsyncIterator<ReviewConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ReviewEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateReviewSubscription>() => T;
+}
+
+export interface CommentReviewSubscriptionPayload {
+  mutation: MutationType;
+  node: CommentReview;
+  updatedFields: String[];
+  previousValues: CommentReviewPreviousValues;
+}
+
+export interface CommentReviewSubscriptionPayloadPromise
+  extends Promise<CommentReviewSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CommentReviewPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CommentReviewPreviousValuesPromise>() => T;
+}
+
+export interface CommentReviewSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CommentReviewSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CommentReviewSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CommentReviewPreviousValuesSubscription>() => T;
+}
+
+export interface CommentReviewEdge {
+  node: CommentReview;
+  cursor: String;
+}
+
+export interface CommentReviewEdgePromise
+  extends Promise<CommentReviewEdge>,
+    Fragmentable {
+  node: <T = CommentReviewPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface CommentReviewEdgeSubscription
+  extends Promise<AsyncIterator<CommentReviewEdge>>,
+    Fragmentable {
+  node: <T = CommentReviewSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CommentReviewPreviousValues {
+  id: ID_Output;
+  status?: ReviewStatus;
+  createdAt: DateTimeOutput;
+}
+
+export interface CommentReviewPreviousValuesPromise
+  extends Promise<CommentReviewPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  status: () => Promise<ReviewStatus>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentReviewPreviousValuesSubscription
+  extends Promise<AsyncIterator<CommentReviewPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  status: () => Promise<AsyncIterator<ReviewStatus>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface VideoPreviousValues {
+  id: ID_Output;
+  videoURL: String;
+  thumbURL?: String;
+  posterURL?: String;
+  previewURL?: String;
+  duration?: Int;
+  title: String;
+  description?: String;
+  tags: String[];
+  isPublished: Boolean;
+  isPublic: Boolean;
+  category?: Category;
+  createdAt: DateTimeOutput;
+}
+
+export interface VideoPreviousValuesPromise
+  extends Promise<VideoPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  videoURL: () => Promise<String>;
+  thumbURL: () => Promise<String>;
+  posterURL: () => Promise<String>;
+  previewURL: () => Promise<String>;
+  duration: () => Promise<Int>;
+  title: () => Promise<String>;
+  description: () => Promise<String>;
+  tags: () => Promise<String[]>;
+  isPublished: () => Promise<Boolean>;
+  isPublic: () => Promise<Boolean>;
+  category: () => Promise<Category>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface VideoPreviousValuesSubscription
+  extends Promise<AsyncIterator<VideoPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  videoURL: () => Promise<AsyncIterator<String>>;
+  thumbURL: () => Promise<AsyncIterator<String>>;
+  posterURL: () => Promise<AsyncIterator<String>>;
+  previewURL: () => Promise<AsyncIterator<String>>;
+  duration: () => Promise<AsyncIterator<Int>>;
+  title: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  tags: () => Promise<AsyncIterator<String[]>>;
+  isPublished: () => Promise<AsyncIterator<Boolean>>;
+  isPublic: () => Promise<AsyncIterator<Boolean>>;
+  category: () => Promise<AsyncIterator<Category>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface VideoSubscriptionPayload {
+  mutation: MutationType;
+  node: Video;
+  updatedFields: String[];
+  previousValues: VideoPreviousValues;
+}
+
+export interface VideoSubscriptionPayloadPromise
+  extends Promise<VideoSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = VideoPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = VideoPreviousValuesPromise>() => T;
+}
+
+export interface VideoSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<VideoSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = VideoSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = VideoPreviousValuesSubscription>() => T;
+}
+
+export interface VideoConnection {
+  pageInfo: PageInfo;
+  edges: VideoEdge[];
+}
+
+export interface VideoConnectionPromise
+  extends Promise<VideoConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<VideoEdge>>() => T;
+  aggregate: <T = AggregateVideoPromise>() => T;
+}
+
+export interface VideoConnectionSubscription
+  extends Promise<AsyncIterator<VideoConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<VideoEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateVideoSubscription>() => T;
+}
+
+export interface ReviewSubscriptionPayload {
+  mutation: MutationType;
+  node: Review;
+  updatedFields: String[];
+  previousValues: ReviewPreviousValues;
+}
+
+export interface ReviewSubscriptionPayloadPromise
+  extends Promise<ReviewSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ReviewPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ReviewPreviousValuesPromise>() => T;
+}
+
+export interface ReviewSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ReviewSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ReviewSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ReviewPreviousValuesSubscription>() => T;
+}
+
+export interface ViewSubscriptionPayload {
+  mutation: MutationType;
+  node: View;
+  updatedFields: String[];
+  previousValues: ViewPreviousValues;
+}
+
+export interface ViewSubscriptionPayloadPromise
+  extends Promise<ViewSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ViewPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ViewPreviousValuesPromise>() => T;
+}
+
+export interface ViewSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ViewSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ViewSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ViewPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateCommentReview {
+  count: Int;
+}
+
+export interface AggregateCommentReviewPromise
+  extends Promise<AggregateCommentReview>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCommentReviewSubscription
+  extends Promise<AsyncIterator<AggregateCommentReview>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserPreviousValues {
+  id: ID_Output;
+  googleID: String;
+  email: String;
+  name: String;
+  image: String;
+  googlePhotoAT?: String;
+  googlePhotoRT?: String;
+  role: Role;
+  createdAt: DateTimeOutput;
+}
+
+export interface UserPreviousValuesPromise
+  extends Promise<UserPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  googleID: () => Promise<String>;
+  email: () => Promise<String>;
+  name: () => Promise<String>;
+  image: () => Promise<String>;
+  googlePhotoAT: () => Promise<String>;
+  googlePhotoRT: () => Promise<String>;
+  role: () => Promise<Role>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface UserPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  googleID: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+  image: () => Promise<AsyncIterator<String>>;
+  googlePhotoAT: () => Promise<AsyncIterator<String>>;
+  googlePhotoRT: () => Promise<AsyncIterator<String>>;
+  role: () => Promise<AsyncIterator<Role>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface UserSubscriptionPayload {
+  mutation: MutationType;
+  node: User;
+  updatedFields: String[];
+  previousValues: UserPreviousValues;
+}
+
+export interface UserSubscriptionPayloadPromise
+  extends Promise<UserSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = UserPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserPreviousValuesPromise>() => T;
+}
+
+export interface UserSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserPreviousValuesSubscription>() => T;
+}
+
 export interface Video {
   id: ID_Output;
   videoURL: String;
@@ -2390,380 +3398,6 @@ export interface VideoSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface Comment {
-  id: ID_Output;
-  text: String;
-  reply: Boolean;
-  createdAt: DateTimeOutput;
-}
-
-export interface CommentPromise extends Promise<Comment>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  text: () => Promise<String>;
-  reply: () => Promise<Boolean>;
-  video: <T = VideoPromise>() => T;
-  user: <T = UserPromise>() => T;
-  replies: <T = FragmentableArray<Comment>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface CommentSubscription
-  extends Promise<AsyncIterator<Comment>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  text: () => Promise<AsyncIterator<String>>;
-  reply: () => Promise<AsyncIterator<Boolean>>;
-  video: <T = VideoSubscription>() => T;
-  user: <T = UserSubscription>() => T;
-  replies: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface VideoEdge {
-  node: Video;
-  cursor: String;
-}
-
-export interface VideoEdgePromise extends Promise<VideoEdge>, Fragmentable {
-  node: <T = VideoPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface VideoEdgeSubscription
-  extends Promise<AsyncIterator<VideoEdge>>,
-    Fragmentable {
-  node: <T = VideoSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateUser {
-  count: Int;
-}
-
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface CommentSubscriptionPayload {
-  mutation: MutationType;
-  node: Comment;
-  updatedFields: String[];
-  previousValues: CommentPreviousValues;
-}
-
-export interface CommentSubscriptionPayloadPromise
-  extends Promise<CommentSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = CommentPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = CommentPreviousValuesPromise>() => T;
-}
-
-export interface CommentSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<CommentSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = CommentSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = CommentPreviousValuesSubscription>() => T;
-}
-
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
-}
-
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
-}
-
-export interface CommentPreviousValues {
-  id: ID_Output;
-  text: String;
-  reply: Boolean;
-  createdAt: DateTimeOutput;
-}
-
-export interface CommentPreviousValuesPromise
-  extends Promise<CommentPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  text: () => Promise<String>;
-  reply: () => Promise<Boolean>;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface CommentPreviousValuesSubscription
-  extends Promise<AsyncIterator<CommentPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  text: () => Promise<AsyncIterator<String>>;
-  reply: () => Promise<AsyncIterator<Boolean>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface AggregateReview {
-  count: Int;
-}
-
-export interface AggregateReviewPromise
-  extends Promise<AggregateReview>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateReviewSubscription
-  extends Promise<AsyncIterator<AggregateReview>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface VideoSubscriptionPayload {
-  mutation: MutationType;
-  node: Video;
-  updatedFields: String[];
-  previousValues: VideoPreviousValues;
-}
-
-export interface VideoSubscriptionPayloadPromise
-  extends Promise<VideoSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = VideoPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = VideoPreviousValuesPromise>() => T;
-}
-
-export interface VideoSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<VideoSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = VideoSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = VideoPreviousValuesSubscription>() => T;
-}
-
-export interface ReviewConnection {
-  pageInfo: PageInfo;
-  edges: ReviewEdge[];
-}
-
-export interface ReviewConnectionPromise
-  extends Promise<ReviewConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ReviewEdge>>() => T;
-  aggregate: <T = AggregateReviewPromise>() => T;
-}
-
-export interface ReviewConnectionSubscription
-  extends Promise<AsyncIterator<ReviewConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ReviewEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateReviewSubscription>() => T;
-}
-
-export interface ReviewSubscriptionPayload {
-  mutation: MutationType;
-  node: Review;
-  updatedFields: String[];
-  previousValues: ReviewPreviousValues;
-}
-
-export interface ReviewSubscriptionPayloadPromise
-  extends Promise<ReviewSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = ReviewPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = ReviewPreviousValuesPromise>() => T;
-}
-
-export interface ReviewSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<ReviewSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = ReviewSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = ReviewPreviousValuesSubscription>() => T;
-}
-
-export interface AggregateView {
-  count: Int;
-}
-
-export interface AggregateViewPromise
-  extends Promise<AggregateView>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateViewSubscription
-  extends Promise<AsyncIterator<AggregateView>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserPreviousValues {
-  id: ID_Output;
-  googleID: String;
-  email: String;
-  name: String;
-  image: String;
-  googlePhotoAT?: String;
-  googlePhotoRT?: String;
-  role: Role;
-  createdAt: DateTimeOutput;
-}
-
-export interface UserPreviousValuesPromise
-  extends Promise<UserPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  googleID: () => Promise<String>;
-  email: () => Promise<String>;
-  name: () => Promise<String>;
-  image: () => Promise<String>;
-  googlePhotoAT: () => Promise<String>;
-  googlePhotoRT: () => Promise<String>;
-  role: () => Promise<Role>;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface UserPreviousValuesSubscription
-  extends Promise<AsyncIterator<UserPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  googleID: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  name: () => Promise<AsyncIterator<String>>;
-  image: () => Promise<AsyncIterator<String>>;
-  googlePhotoAT: () => Promise<AsyncIterator<String>>;
-  googlePhotoRT: () => Promise<AsyncIterator<String>>;
-  role: () => Promise<AsyncIterator<Role>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface UserSubscriptionPayload {
-  mutation: MutationType;
-  node: User;
-  updatedFields: String[];
-  previousValues: UserPreviousValues;
-}
-
-export interface UserSubscriptionPayloadPromise
-  extends Promise<UserSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = UserPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserPreviousValuesPromise>() => T;
-}
-
-export interface UserSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserPreviousValuesSubscription>() => T;
-}
-
-export interface Review {
-  id: ID_Output;
-  status?: ReviewStatus;
-  createdAt: DateTimeOutput;
-}
-
-export interface ReviewPromise extends Promise<Review>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  status: () => Promise<ReviewStatus>;
-  video: <T = VideoPromise>() => T;
-  user: <T = UserPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface ReviewSubscription
-  extends Promise<AsyncIterator<Review>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  status: () => Promise<AsyncIterator<ReviewStatus>>;
-  video: <T = VideoSubscription>() => T;
-  user: <T = UserSubscription>() => T;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
 export interface ReviewPreviousValues {
   id: ID_Output;
   status?: ReviewStatus;
@@ -2786,102 +3420,25 @@ export interface ReviewPreviousValuesSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface ViewSubscriptionPayload {
-  mutation: MutationType;
-  node: View;
-  updatedFields: String[];
-  previousValues: ViewPreviousValues;
-}
-
-export interface ViewSubscriptionPayloadPromise
-  extends Promise<ViewSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = ViewPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = ViewPreviousValuesPromise>() => T;
-}
-
-export interface ViewSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<ViewSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = ViewSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = ViewPreviousValuesSubscription>() => T;
-}
-
-export interface VideoConnection {
+export interface CommentReviewConnection {
   pageInfo: PageInfo;
-  edges: VideoEdge[];
+  edges: CommentReviewEdge[];
 }
 
-export interface VideoConnectionPromise
-  extends Promise<VideoConnection>,
+export interface CommentReviewConnectionPromise
+  extends Promise<CommentReviewConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<VideoEdge>>() => T;
-  aggregate: <T = AggregateVideoPromise>() => T;
+  edges: <T = FragmentableArray<CommentReviewEdge>>() => T;
+  aggregate: <T = AggregateCommentReviewPromise>() => T;
 }
 
-export interface VideoConnectionSubscription
-  extends Promise<AsyncIterator<VideoConnection>>,
+export interface CommentReviewConnectionSubscription
+  extends Promise<AsyncIterator<CommentReviewConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<VideoEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateVideoSubscription>() => T;
-}
-
-export interface VideoPreviousValues {
-  id: ID_Output;
-  videoURL: String;
-  thumbURL?: String;
-  posterURL?: String;
-  previewURL?: String;
-  duration?: Int;
-  title: String;
-  description?: String;
-  tags: String[];
-  isPublished: Boolean;
-  isPublic: Boolean;
-  category?: Category;
-  createdAt: DateTimeOutput;
-}
-
-export interface VideoPreviousValuesPromise
-  extends Promise<VideoPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  videoURL: () => Promise<String>;
-  thumbURL: () => Promise<String>;
-  posterURL: () => Promise<String>;
-  previewURL: () => Promise<String>;
-  duration: () => Promise<Int>;
-  title: () => Promise<String>;
-  description: () => Promise<String>;
-  tags: () => Promise<String[]>;
-  isPublished: () => Promise<Boolean>;
-  isPublic: () => Promise<Boolean>;
-  category: () => Promise<Category>;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface VideoPreviousValuesSubscription
-  extends Promise<AsyncIterator<VideoPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  videoURL: () => Promise<AsyncIterator<String>>;
-  thumbURL: () => Promise<AsyncIterator<String>>;
-  posterURL: () => Promise<AsyncIterator<String>>;
-  previewURL: () => Promise<AsyncIterator<String>>;
-  duration: () => Promise<AsyncIterator<Int>>;
-  title: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
-  tags: () => Promise<AsyncIterator<String[]>>;
-  isPublished: () => Promise<AsyncIterator<Boolean>>;
-  isPublic: () => Promise<AsyncIterator<Boolean>>;
-  category: () => Promise<AsyncIterator<Category>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  edges: <T = Promise<AsyncIterator<CommentReviewEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCommentReviewSubscription>() => T;
 }
 
 export interface ReviewEdge {
@@ -2899,6 +3456,39 @@ export interface ReviewEdgeSubscription
     Fragmentable {
   node: <T = ReviewSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface UserEdge {
+  node: User;
+  cursor: String;
+}
+
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
+    Fragmentable {
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateView {
+  count: Int;
+}
+
+export interface AggregateViewPromise
+  extends Promise<AggregateView>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateViewSubscription
+  extends Promise<AsyncIterator<AggregateView>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 /*
@@ -2945,6 +3535,10 @@ export const models: Model[] = [
   },
   {
     name: "Comment",
+    embedded: false
+  },
+  {
+    name: "CommentReview",
     embedded: false
   },
   {

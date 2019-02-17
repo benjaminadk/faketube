@@ -10,6 +10,7 @@ type User {
   views: [View]
   reviews: [Review]
   comments: [Comment]
+  commentReviews: [CommentReview]
   role: Role!
   createdAt: DateTime!
 }
@@ -55,9 +56,19 @@ type Comment {
   id: ID! @unique
   text: String!
   reply: Boolean!
+  edited: Boolean @default(value: "false")
   video: Video
   user: User
   replies: [Comment]
+  reviews: [CommentReview]
+  createdAt: DateTime!
+}
+
+type CommentReview {
+  id: ID! @unique
+  status: ReviewStatus
+  comment: [Comment]
+  user: User
   createdAt: DateTime!
 }
 
