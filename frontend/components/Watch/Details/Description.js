@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
-import linkify from '../../../lib/linkify'
+import { linkifyDescription } from '../../../lib/linkify'
 
 const Container = styled.div`
   margin-left: 6rem;
@@ -50,7 +50,7 @@ class Description extends React.Component {
     } = this
     return (
       <Container expand={expand}>
-        <pre dangerouslySetInnerHTML={{ __html: linkify(video) }} />
+        <pre dangerouslySetInnerHTML={{ __html: linkifyDescription(video) }} />
         <div onClick={this.toggleExpand}>show {expand ? 'less' : 'more'}</div>
       </Container>
     )

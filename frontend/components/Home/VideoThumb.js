@@ -4,6 +4,7 @@ import { WatchLater } from 'styled-icons/material/WatchLater'
 import Router from 'next/router'
 import formatDistance from '../../lib/formatDistance'
 import formatDuration from '../../lib/formatDuration'
+import Popup from '../styles/Popup'
 
 const Container = styled.div`
   margin-right: 0.5rem;
@@ -122,28 +123,6 @@ const ViewProgress = styled.div`
   }
 `
 
-const Popup = styled.div`
-  position: absolute;
-  top: ${props => props.y + 22.5}px;
-  left: ${props => props.x - 120}px;
-  display: ${props => (props.show ? 'block' : 'none')};
-  background: ${props => props.theme.white};
-  box-shadow: ${props => props.theme.shadows[2]};
-  font-size: 1.3rem;
-  & > :first-child {
-    margin-top: 0.5rem;
-  }
-  & > :last-child {
-    margin-bottom: 0.5rem;
-  }
-  & > * {
-    padding: 1.75rem;
-    &:hover {
-      background: ${props => props.theme.grey[1]};
-    }
-  }
-`
-
 class VideoThumb extends React.Component {
   state = {
     preview: false,
@@ -225,7 +204,7 @@ class VideoThumb extends React.Component {
             {video.views.length} views &bull; {formatDistance(video.createdAt)} ago
           </div>
         </div>
-        <Popup show={popup} x={x} y={y}>
+        <Popup show={popup} x={x - 120} y={y + 22.5}>
           <div>Not interested</div>
           <div>Save to Watch later</div>
           <div>Save to playlist</div>

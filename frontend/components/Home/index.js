@@ -48,7 +48,7 @@ class Home extends React.Component {
                   <div className="heading">Recommended</div>
                   <Videos>
                     {videos.map((v, i) => {
-                      const view = user.views.find(vi => vi.video.id === v.id)
+                      const view = user ? user.views.find(vi => vi.video.id === v.id) : null
                       return <VideoThumb key={v.id} video={v} view={view} />
                     })}
                   </Videos>

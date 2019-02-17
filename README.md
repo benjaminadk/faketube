@@ -28,6 +28,9 @@
   - [x] Separate permission from login
   - [x] Refresh access token logic
   - [ ] How to get video file from Google Photo to AWS
+- [ ] Upload Page
+  - [ ] Multi uploads
+  - [ ] Collapse when published - hide form
 - [ ] Video Player
   - [x] Refactor out Rail into custom component to capture time above hover vs play time
   - [x] Icon row
@@ -42,3 +45,7 @@
   - [ ] More vert menu
 - [x] Refetch videos query on video upload
 - [x] Update links on upload page /watch
+- [ ] User auth
+  - [ ] ALlow user to signout
+  - [ ] Switch google accounts
+  - [ ] Handle no user signed in

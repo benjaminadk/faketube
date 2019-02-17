@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import TopRow from './TopRow'
 import AddComment from './AddComment'
-import CommentList from './CommentList'
+import CommentItem from './CommentItem'
 
 const COMMENTS_QUERY = gql`
   query COMMENTS_QUERY(
@@ -123,7 +123,7 @@ class Comments extends React.Component {
 
   render() {
     const {
-      props: { user },
+      props: { user, video },
       state: { loading, comments, focus, text, buttons }
     } = this
     return (
@@ -141,7 +141,11 @@ class Comments extends React.Component {
           onCancelClick={this.onCancelClick}
           onCommentClick={this.onCommentClick}
         />
-        <CommentList comments={comments} />
+        <div>
+          {comments.map(c => (
+            <CommentItem key={c.id} video={video} user={user} comment={c} />
+          ))}
+        </div>
       </Container>
     )
   }
