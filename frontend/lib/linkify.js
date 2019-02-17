@@ -2,8 +2,9 @@ import formatHMStoSecs from './formatHMStoSecs'
 import formatCategory from './formatCategory'
 import { frontend } from '../config'
 
-const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
+const reUrl = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
 const reTime = /\s(?:(?:([01]?\d):)?([0-5]?\d))?:([0-5]?\d)\s/g
+const reHash = /(?:\s|^)?#[A-Za-z0-9\-\.\_]+(?:\s|$)/g
 
 export default function linkify(video) {
   return (

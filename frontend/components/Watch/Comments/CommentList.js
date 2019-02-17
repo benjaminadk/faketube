@@ -74,25 +74,33 @@ const Comment = styled.div`
 
 const CommentList = ({ comments }) => (
   <Container>
-    {comments.map((c, i) => (
-      <Comment key={c.id}>
-        <img src={c.user.image} />
-        <div>
-          <div className="user-row">
-            <div className="user-name">{c.user.name}</div>
-            <div className="user-created">{formatDistance(c.createdAt)} ago (edited)</div>
+    {comments.map((c, i) => {
+      let likes = 0
+      c.reviews.forEach(r => {
+        if (r.status === 'LIKE') likes += 1
+      })
+      return (
+        <Comment key={c.id}>
+          <img src={c.user.image} />
+          <div>
+            <div className="user-row">
+              <div className="user-name">{c.user.name}</div>
+              <div className="user-created">
+                {formatDistance(c.createdAt)} ago {c.edited ? '(edited)' : ''}
+              </div>
+            </div>
+            <div className="text-row">{c.text}</div>
+            <div className="thumb-row">
+              <ThumbUp />
+              <div className="thumb-ups">{likes}</div>
+              <ThumbDown className="thumb-down" />
+              <div>reply</div>
+            </div>
+            {c.replies.length ? <div>replies</div> : null}
           </div>
-          <div className="text-row">{c.text}</div>
-          <div className="thumb-row">
-            <ThumbUp />
-            <div className="thumb-ups">12</div>
-            <ThumbDown className="thumb-down" />
-            <div>reply</div>
-          </div>
-          {c.replies.length ? <div>replies</div> : null}
-        </div>
-      </Comment>
-    ))}
+        </Comment>
+      )
+    })}
   </Container>
 )
 

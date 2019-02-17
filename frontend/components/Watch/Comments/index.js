@@ -16,20 +16,31 @@ const COMMENTS_QUERY = gql`
       id
       text
       reply
+      edited
       createdAt
       user {
         id
         image
         name
       }
+      reviews {
+        id
+        status
+      }
       replies {
         id
         text
+        reply
+        edited
         createdAt
         user {
           id
           image
           name
+        }
+        reviews {
+          id
+          status
         }
       }
     }
@@ -67,7 +78,7 @@ class Comments extends React.Component {
         query: { id },
         client
       },
-      state: { comments, orderBy, skip, first }
+      state: { orderBy, skip, first }
     } = this
     const res = await client.query({
       query: COMMENTS_QUERY,
@@ -76,9 +87,10 @@ class Comments extends React.Component {
         orderBy,
         skip,
         first
-      }
+      },
+      fetchPolicy: 'network-only'
     })
-    this.setState({ loading: false, comments: [...comments, ...res.data.comments] })
+    this.setState({ loading: false, comments: res.data.comments })
   }
 
   onChange = e => {
@@ -91,30 +103,20 @@ class Comments extends React.Component {
 
   onCommentClick = async createComment => {
     const {
-      state: { text, orderBy, skip, first },
+      state: { text },
       props: {
         query: { id }
       }
     } = this
     const res = await createComment({
-      variables: { id, data: { text, reply: false } },
-      refetchQueries: [
-        {
-          query: COMMENTS_QUERY,
-          variables: {
-            where: { video: { id }, reply: false },
-            orderBy,
-            skip,
-            first
-          }
-        }
-      ]
+      variables: { id, data: { text, reply: false } }
     })
     const { success } = res.data.createComment
     if (!success) {
       return // error creating comment
     }
     this.setState({ text: '', buttons: false })
+    await this.getComments()
   }
 
   onCancelClick = () => this.setState({ text: '', buttons: false })
@@ -128,6 +130,7 @@ class Comments extends React.Component {
       <Container>
         <TopRow length={comments.length} />
         <AddComment
+          loading={loading}
           image={user.image}
           focus={focus}
           text={text}

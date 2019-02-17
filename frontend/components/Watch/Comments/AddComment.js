@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { darken, transparentize } from 'polished'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
+import TextInput from './TextInput'
 
 const CREATE_COMMENT_MUTATION = gql`
   mutation CREATE_COMMENT_MUTATION($id: ID!, $data: CommentCreateInput) {
@@ -27,7 +28,7 @@ const Container = styled.div`
   & > :last-child {
     display: grid;
     grid-template-rows: 1fr 1fr;
-    input {
+    textarea {
       width: 100%;
       font-family: 'Roboto';
       font-size: 1.4rem;
@@ -35,6 +36,8 @@ const Container = styled.div`
       border: 0;
       outline: 0;
       padding-bottom: 0.5rem;
+      overflow: hidden;
+      resize: none;
     }
   }
 `
@@ -50,7 +53,7 @@ const Underline = styled.div`
   & > :last-child {
     opacity: ${props => (props.focus ? 1 : 0)};
     width: ${props => (props.focus ? '50%' : '0%')};
-    height: 0.2rem;
+    height: 0.22rem;
     background: ${props => props.theme.grey[10]};
     transition: width 0.25s;
   }
@@ -85,6 +88,7 @@ const CommentButtons = styled.div`
 `
 
 const AddComment = ({
+  loading,
   image,
   text,
   focus,
@@ -94,36 +98,41 @@ const AddComment = ({
   onBlur,
   onCancelClick,
   onCommentClick
-}) => (
-  <Container>
-    <img src={image} />
-    <div>
-      <div className="comments-input">
-        <input
-          type="text"
-          placeholder="Add a public comment..."
-          value={text}
-          onChange={onChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-        />
-        <Underline focus={focus}>
-          <div />
-          <div />
-        </Underline>
-      </div>
-      <CommentButtons show={buttons} text={Boolean(text)}>
-        <div onClick={onCancelClick}>cancel</div>
-        <Mutation mutation={CREATE_COMMENT_MUTATION}>
-          {(createComment, { loading }) => (
-            <button disabled={loading || !text} onClick={() => onCommentClick(createComment)}>
-              comment
-            </button>
-          )}
-        </Mutation>
-      </CommentButtons>
-    </div>
-  </Container>
-)
+}) => {
+  if (loading) {
+    return null
+  } else {
+    return (
+      <Container>
+        <img src={image} />
+        <div>
+          <div className="comments-input">
+            <TextInput
+              placeholder="Add a public comment..."
+              value={text}
+              onChange={onChange}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+            <Underline focus={focus}>
+              <div />
+              <div />
+            </Underline>
+          </div>
+          <CommentButtons show={buttons} text={Boolean(text)}>
+            <div onClick={onCancelClick}>cancel</div>
+            <Mutation mutation={CREATE_COMMENT_MUTATION}>
+              {(createComment, { loading }) => (
+                <button disabled={loading || !text} onClick={() => onCommentClick(createComment)}>
+                  comment
+                </button>
+              )}
+            </Mutation>
+          </CommentButtons>
+        </div>
+      </Container>
+    )
+  }
+}
 
 export default AddComment
