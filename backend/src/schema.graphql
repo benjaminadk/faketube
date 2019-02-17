@@ -4,6 +4,7 @@ type Query {
   me: User
   video(id: ID!): Video
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, first: Int): [Video]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, first: Int): [Comment]
 }
 
 type Mutation {
@@ -17,6 +18,7 @@ type Mutation {
   updateView(id: ID!, data: ViewCreateInput): ViewPayload
   createReview(id: ID!, status: ReviewStatus): ReviewPayload
   updateReview(id: ID!, status: ReviewStatus): ReviewPayload
+  createComment(id: ID!, data: CommentCreateInput): CommentPayload
   refreshGooglePhotoToken: TokenPayload
 }
 
@@ -106,6 +108,11 @@ type ViewPayload {
 type ReviewPayload {
   success: Boolean
   review: Review
+}
+
+type CommentPayload {
+  success: Boolean
+  comment: Comment
 }
 
 type TokenPayload {

@@ -20,15 +20,6 @@ export const VIDEO_QUERY = gql`
         id
         status
       }
-      comments {
-        id
-        text
-        reply
-        createdAt
-        user {
-          id
-        }
-      }
       user {
         id
         name

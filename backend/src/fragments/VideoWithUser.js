@@ -20,15 +20,6 @@ module.exports = `
       id
       status
     }
-    comments {
-      id
-      text
-      reply
-      createdAt
-      user {
-        id
-      }
-    }
     user {
       id
       name

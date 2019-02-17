@@ -37,7 +37,7 @@ class Watch extends React.Component {
               <div className="left">
                 <Player video={data.video} user={user} query={query} updateTime={this.updateTime} />
                 <Details video={data.video} user={user} time={time} />
-                <Comments comments={data.video.comments} user={user} />
+                <Comments user={user} query={query} />
               </div>
             )
           }}
