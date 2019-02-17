@@ -17,7 +17,11 @@ export default function linkify(video) {
         } else {
           return `<a href="${frontend}/watch?id=${video.id}&t=${formatHMStoSecs(time)}">${time}</a>`
         }
-      }) +
+      })
+      .replace(
+        reHash,
+        hash => `<a href="${frontend}/search?term=${hash.replace('#', '').trim()}">${hash}</a>`
+      ) +
     `<div className='category'>
             <div>Category</div>
             <a href="/category?name=${video.category}">${formatCategory(video.category)}</a>

@@ -66,7 +66,7 @@ class Comments extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.text.length === 0 && this.state.text.length === 1) {
+    if (prevState.text.length === 0 && this.state.text.length >= 1) {
       this.setState({ buttons: true })
     }
   }

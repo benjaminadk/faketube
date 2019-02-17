@@ -12,11 +12,22 @@ const Container = styled.div`
     width: ${props => (props.drawer ? '24rem' : 0)};
     transition: width 0.25s ease-out;
   }
+  .content-wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+  .heading {
+    font-family: 'Roboto Bold';
+    margin: 2rem 0 2rem 5rem;
+  }
 `
 
 const Videos = styled.div`
+  justify-self: center;
+  width: 90%;
   display: flex;
-  padding: 2rem;
+  flex-wrap: wrap;
+  align-content: flex-start;
 `
 
 class Home extends React.Component {
@@ -33,8 +44,8 @@ class Home extends React.Component {
             <Container drawer={drawer}>
               <div className="spacer" />
               <div>
-                <div>
-                  <div>Recommended</div>
+                <div className="content-wrapper">
+                  <div className="heading">Recommended</div>
                   <Videos>
                     {videos.map((v, i) => {
                       const view = user.views.find(vi => vi.video.id === v.id)

@@ -7,6 +7,7 @@ import formatDuration from '../../lib/formatDuration'
 
 const Container = styled.div`
   margin-right: 0.5rem;
+  margin-bottom: 3rem;
   cursor: pointer;
   .top {
     position: relative;

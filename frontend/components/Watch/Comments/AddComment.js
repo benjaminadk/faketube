@@ -1,5 +1,6 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { darken, transparentize } from 'polished'
+import { Spinner8 as Spinner } from 'styled-icons/icomoon/Spinner8'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import TextInput from './TextInput'
@@ -27,7 +28,7 @@ const Container = styled.div`
   }
   & > :last-child {
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto 1fr;
     textarea {
       width: 100%;
       font-family: 'Roboto';
@@ -63,6 +64,7 @@ const CommentButtons = styled.div`
   justify-self: flex-end;
   display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
+  margin-top: 0.5rem;
   & > * {
     text-transform: uppercase;
     font-family: 'Roboto Bold';
@@ -87,6 +89,30 @@ const CommentButtons = styled.div`
   }
 `
 
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+const Loading = styled.div`
+  width: 100%;
+  height: 6rem;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  margin-bottom: 3rem;
+  svg {
+    width: 4rem;
+    height: 4rem;
+    color: ${props => props.theme.grey[10]};
+    animation: ${spin} 0.5s linear infinite;
+  }
+`
+
 const AddComment = ({
   loading,
   image,
@@ -100,7 +126,11 @@ const AddComment = ({
   onCommentClick
 }) => {
   if (loading) {
-    return null
+    return (
+      <Loading>
+        <Spinner />
+      </Loading>
+    )
   } else {
     return (
       <Container>

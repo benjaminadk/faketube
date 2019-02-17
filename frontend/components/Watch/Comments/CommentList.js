@@ -35,10 +35,11 @@ const Comment = styled.div`
       }
     }
     .text-row {
-      max-height: 8rem;
+      max-height: 8.5rem;
       overflow: hidden;
       font-size: 1.4rem;
       margin-bottom: 1rem;
+      white-space: pre-wrap;
     }
     .thumb-row {
       display: flex;
