@@ -347,6 +347,8 @@ export type VideoOrderByInput =
   | "isPublic_DESC"
   | "category_ASC"
   | "category_DESC"
+  | "allowComments_ASC"
+  | "allowComments_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -443,6 +445,7 @@ export interface VideoUpdateWithoutViewsDataInput {
   isPublic?: Boolean;
   category?: Category;
   reviews?: ReviewUpdateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentUpdateManyWithoutVideoInput;
   user?: UserUpdateOneWithoutVideosInput;
 }
@@ -823,6 +826,7 @@ export interface VideoUpdateManyMutationInput {
   isPublished?: Boolean;
   isPublic?: Boolean;
   category?: Category;
+  allowComments?: Boolean;
 }
 
 export interface VideoUpdateWithoutUserDataInput {
@@ -839,6 +843,7 @@ export interface VideoUpdateWithoutUserDataInput {
   category?: Category;
   views?: ViewUpdateManyWithoutVideoInput;
   reviews?: ReviewUpdateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentUpdateManyWithoutVideoInput;
 }
 
@@ -856,6 +861,7 @@ export interface VideoCreateInput {
   category?: Category;
   views?: ViewCreateManyWithoutVideoInput;
   reviews?: ReviewCreateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentCreateManyWithoutVideoInput;
   user?: UserCreateOneWithoutVideosInput;
 }
@@ -928,6 +934,7 @@ export interface VideoUpdateManyDataInput {
   isPublished?: Boolean;
   isPublic?: Boolean;
   category?: Category;
+  allowComments?: Boolean;
 }
 
 export interface ReviewCreateInput {
@@ -1202,6 +1209,8 @@ export interface VideoWhereInput {
   reviews_every?: ReviewWhereInput;
   reviews_some?: ReviewWhereInput;
   reviews_none?: ReviewWhereInput;
+  allowComments?: Boolean;
+  allowComments_not?: Boolean;
   comments_every?: CommentWhereInput;
   comments_some?: CommentWhereInput;
   comments_none?: CommentWhereInput;
@@ -1348,6 +1357,8 @@ export interface VideoScalarWhereInput {
   category_not?: Category;
   category_in?: Category[] | Category;
   category_not_in?: Category[] | Category;
+  allowComments?: Boolean;
+  allowComments_not?: Boolean;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
   createdAt_in?: DateTimeInput[] | DateTimeInput;
@@ -1375,6 +1386,7 @@ export interface VideoCreateWithoutUserInput {
   category?: Category;
   views?: ViewCreateManyWithoutVideoInput;
   reviews?: ReviewCreateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentCreateManyWithoutVideoInput;
 }
 
@@ -1461,6 +1473,7 @@ export interface VideoCreateWithoutViewsInput {
   isPublic?: Boolean;
   category?: Category;
   reviews?: ReviewCreateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentCreateManyWithoutVideoInput;
   user?: UserCreateOneWithoutVideosInput;
 }
@@ -1515,6 +1528,7 @@ export interface VideoUpdateWithoutReviewsDataInput {
   isPublic?: Boolean;
   category?: Category;
   views?: ViewUpdateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentUpdateManyWithoutVideoInput;
   user?: UserUpdateOneWithoutVideosInput;
 }
@@ -1546,6 +1560,7 @@ export interface VideoCreateWithoutReviewsInput {
   isPublic?: Boolean;
   category?: Category;
   views?: ViewCreateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentCreateManyWithoutVideoInput;
   user?: UserCreateOneWithoutVideosInput;
 }
@@ -1717,6 +1732,7 @@ export interface VideoUpdateWithoutCommentsDataInput {
   category?: Category;
   views?: ViewUpdateManyWithoutVideoInput;
   reviews?: ReviewUpdateManyWithoutVideoInput;
+  allowComments?: Boolean;
   user?: UserUpdateOneWithoutVideosInput;
 }
 
@@ -1870,6 +1886,7 @@ export interface VideoCreateWithoutCommentsInput {
   category?: Category;
   views?: ViewCreateManyWithoutVideoInput;
   reviews?: ReviewCreateManyWithoutVideoInput;
+  allowComments?: Boolean;
   user?: UserCreateOneWithoutVideosInput;
 }
 
@@ -2247,6 +2264,7 @@ export interface VideoUpdateInput {
   category?: Category;
   views?: ViewUpdateManyWithoutVideoInput;
   reviews?: ReviewUpdateManyWithoutVideoInput;
+  allowComments?: Boolean;
   comments?: CommentUpdateManyWithoutVideoInput;
   user?: UserUpdateOneWithoutVideosInput;
 }
@@ -3040,6 +3058,7 @@ export interface VideoPreviousValues {
   isPublished: Boolean;
   isPublic: Boolean;
   category?: Category;
+  allowComments?: Boolean;
   createdAt: DateTimeOutput;
 }
 
@@ -3058,6 +3077,7 @@ export interface VideoPreviousValuesPromise
   isPublished: () => Promise<Boolean>;
   isPublic: () => Promise<Boolean>;
   category: () => Promise<Category>;
+  allowComments: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
@@ -3076,6 +3096,7 @@ export interface VideoPreviousValuesSubscription
   isPublished: () => Promise<AsyncIterator<Boolean>>;
   isPublic: () => Promise<AsyncIterator<Boolean>>;
   category: () => Promise<AsyncIterator<Category>>;
+  allowComments: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
@@ -3269,6 +3290,7 @@ export interface Video {
   isPublished: Boolean;
   isPublic: Boolean;
   category?: Category;
+  allowComments?: Boolean;
   createdAt: DateTimeOutput;
 }
 
@@ -3303,6 +3325,7 @@ export interface VideoPromise extends Promise<Video>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  allowComments: () => Promise<Boolean>;
   comments: <T = FragmentableArray<Comment>>(args?: {
     where?: CommentWhereInput;
     orderBy?: CommentOrderByInput;
@@ -3349,6 +3372,7 @@ export interface VideoSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  allowComments: () => Promise<AsyncIterator<Boolean>>;
   comments: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
     where?: CommentWhereInput;
     orderBy?: CommentOrderByInput;

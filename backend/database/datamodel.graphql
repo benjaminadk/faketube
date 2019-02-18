@@ -30,6 +30,7 @@ type Video {
   category: Category @default(value: "ENTERTAINMENT")
   views: [View]
   reviews: [Review]
+  allowComments: Boolean @default(value: "true")
   comments: [Comment]
   user: User @relation(name: "UserOwnedVideos")
   createdAt: DateTime!

@@ -2,6 +2,7 @@ import { GoogleLogin } from 'react-google-login'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { ME_QUERY } from '../apollo/me'
+import { googleClientId } from '../config'
 
 const SIGNIN_MUTATION = gql`
   mutation SIGNIN_MUTATION($data: UserCreateInput) {
@@ -34,7 +35,7 @@ class SignIn extends React.Component {
   render() {
     return (
       <GoogleLogin
-        clientId="162812165284-hvi6iqeqtatt48d2cv824d3bl4n9b5ig.apps.googleusercontent.com"
+        clientId={googleClientId}
         onSuccess={this.onSuccess}
         onFailure={this.onFailure}
         scope="profile email"

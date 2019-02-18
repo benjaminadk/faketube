@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import { format } from 'date-fns'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import Thumbs from './Details/Thumbs'
-import ShareButton from './Details/ShareButton'
-import ShareModal from './Details/ShareModal'
-import Description from './Details/Description'
-import { VIDEO_QUERY } from '../../apollo/video'
-import { ME_QUERY } from '../../apollo/me'
+import Thumbs from './Thumbs'
+import ShareButton from './ShareButton'
+import ShareModal from './ShareModal'
+import Description from './Description'
+import { VIDEO_QUERY } from '../../../apollo/video'
+import { ME_QUERY } from '../../../apollo/me'
 
 const CREATE_REVIEW_MUTATION = gql`
   mutation CREATE_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {

@@ -1470,6 +1470,7 @@ type Video {
   category: Category
   views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
+  allowComments: Boolean
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   user: User
   createdAt: DateTime!
@@ -1495,6 +1496,7 @@ input VideoCreateInput {
   category: Category
   views: ViewCreateManyWithoutVideoInput
   reviews: ReviewCreateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
@@ -1537,6 +1539,7 @@ input VideoCreateWithoutCommentsInput {
   category: Category
   views: ViewCreateManyWithoutVideoInput
   reviews: ReviewCreateManyWithoutVideoInput
+  allowComments: Boolean
   user: UserCreateOneWithoutVideosInput
 }
 
@@ -1553,6 +1556,7 @@ input VideoCreateWithoutReviewsInput {
   isPublic: Boolean
   category: Category
   views: ViewCreateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
@@ -1571,6 +1575,7 @@ input VideoCreateWithoutUserInput {
   category: Category
   views: ViewCreateManyWithoutVideoInput
   reviews: ReviewCreateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentCreateManyWithoutVideoInput
 }
 
@@ -1587,6 +1592,7 @@ input VideoCreateWithoutViewsInput {
   isPublic: Boolean
   category: Category
   reviews: ReviewCreateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
 }
@@ -1619,6 +1625,8 @@ enum VideoOrderByInput {
   isPublic_DESC
   category_ASC
   category_DESC
+  allowComments_ASC
+  allowComments_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -1638,6 +1646,7 @@ type VideoPreviousValues {
   isPublished: Boolean!
   isPublic: Boolean!
   category: Category
+  allowComments: Boolean
   createdAt: DateTime!
 }
 
@@ -1756,6 +1765,8 @@ input VideoScalarWhereInput {
   category_not: Category
   category_in: [Category!]
   category_not_in: [Category!]
+  allowComments: Boolean
+  allowComments_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1801,6 +1812,7 @@ input VideoUpdateInput {
   category: Category
   views: ViewUpdateManyWithoutVideoInput
   reviews: ReviewUpdateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
@@ -1817,6 +1829,7 @@ input VideoUpdateManyDataInput {
   isPublished: Boolean
   isPublic: Boolean
   category: Category
+  allowComments: Boolean
 }
 
 input VideoUpdateManyMutationInput {
@@ -1831,6 +1844,7 @@ input VideoUpdateManyMutationInput {
   isPublished: Boolean
   isPublic: Boolean
   category: Category
+  allowComments: Boolean
 }
 
 input VideoUpdateManyWithoutUserInput {
@@ -1894,6 +1908,7 @@ input VideoUpdateWithoutCommentsDataInput {
   category: Category
   views: ViewUpdateManyWithoutVideoInput
   reviews: ReviewUpdateManyWithoutVideoInput
+  allowComments: Boolean
   user: UserUpdateOneWithoutVideosInput
 }
 
@@ -1910,6 +1925,7 @@ input VideoUpdateWithoutReviewsDataInput {
   isPublic: Boolean
   category: Category
   views: ViewUpdateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
@@ -1928,6 +1944,7 @@ input VideoUpdateWithoutUserDataInput {
   category: Category
   views: ViewUpdateManyWithoutVideoInput
   reviews: ReviewUpdateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentUpdateManyWithoutVideoInput
 }
 
@@ -1944,6 +1961,7 @@ input VideoUpdateWithoutViewsDataInput {
   isPublic: Boolean
   category: Category
   reviews: ReviewUpdateManyWithoutVideoInput
+  allowComments: Boolean
   comments: CommentUpdateManyWithoutVideoInput
   user: UserUpdateOneWithoutVideosInput
 }
@@ -2095,6 +2113,8 @@ input VideoWhereInput {
   reviews_every: ReviewWhereInput
   reviews_some: ReviewWhereInput
   reviews_none: ReviewWhereInput
+  allowComments: Boolean
+  allowComments_not: Boolean
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
