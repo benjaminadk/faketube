@@ -1,11 +1,35 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
-import { ThumbUp } from 'styled-icons/material/ThumbUp'
-import { ThumbDown } from 'styled-icons/material/ThumbDown'
 import { MoreVert } from 'styled-icons/material/MoreVert'
+import gql from 'graphql-tag'
+import { withApollo } from 'react-apollo'
+import isEqual from 'lodash.isequal'
 import formatDistance from '../../../lib/formatDistance'
 import { linkifyComment } from '../../../lib/linkify'
+import CommentThumbs from './CommentThumbs'
 import CommentMenu from './CommentMenu'
+
+const CREATE_COMMENT_REVIEW_MUTATION = gql`
+  mutation CREATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
+    createCommentReview(id: $id, status: $status) {
+      success
+      review {
+        id
+      }
+    }
+  }
+`
+
+const UPDATE_COMMENT_REVIEW_MUTATION = gql`
+  mutation UPDATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
+    updateCommentReview(id: $id, status: $status) {
+      success
+      review {
+        id
+      }
+    }
+  }
+`
 
 const Container = styled.div`
   position: relative;
@@ -54,35 +78,6 @@ const Container = styled.div`
       margin-bottom: 1rem;
       cursor: pointer;
     }
-    .thumb-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
-      & > :first-child {
-        margin-right: 0.75rem;
-      }
-      svg {
-        width: 1.6rem;
-        height: 1.6rem;
-        color: ${props => props.theme.grey[8]};
-        cursor: pointer;
-      }
-      .thumb-ups {
-        color: ${props => props.theme.grey[8]};
-        font-size: 1.3rem;
-        margin-right: 1rem;
-      }
-      .thumb-down {
-        margin-right: 2rem;
-      }
-      & > :last-child {
-        text-transform: uppercase;
-        font-family: 'Roboto Bold';
-        font-size: 1.3rem;
-        color: ${props => props.theme.grey[10]};
-        cursor: pointer;
-      }
-    }
   }
   .more-vert {
     width: 2.5rem;
@@ -114,14 +109,27 @@ class CommentItem extends React.Component {
   }
 
   componentDidMount() {
+    this.setReview()
     this.setHeight()
     this.setPopupCoordinates()
     this.setAuthor()
     this.setOwner()
   }
 
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.comment, this.props.comment)) {
+      this.setReview()
+    }
+  }
+
   componentWillUnmount() {
     document.body.removeEventListener('click', this.onMenuClose)
+  }
+
+  setReview = () => {
+    const { user, comment } = this.props
+    const review = user.commentReviews.find(r => r.comment.id === comment.id)
+    this.setState({ review })
   }
 
   setHeight = () => {
@@ -145,6 +153,37 @@ class CommentItem extends React.Component {
     this.setState({ isOwner: user.id === video.user.id })
   }
 
+  onReviewClick = async status => {
+    const {
+      props: { comment, client },
+      state: { review }
+    } = this
+    if (!review) {
+      let res = await client.mutate({
+        mutation: CREATE_COMMENT_REVIEW_MUTATION,
+        variables: { id: comment.id, status }
+      })
+      let { success, review: newReview } = res.data.createCommentReview
+      if (!success) {
+        return // error creating comment review
+      }
+      await this.setState({ review: newReview })
+      await this.props.getComments()
+    } else {
+      const newStatus = review.status === status ? 'NONE' : status
+      let res = await client.mutate({
+        mutation: UPDATE_COMMENT_REVIEW_MUTATION,
+        variables: { id: review.id, status: newStatus }
+      })
+      let { success, review: updatedReview } = res.data.updateCommentReview
+      if (!success) {
+        return // error updating comment review
+      }
+      await this.setState({ review: updatedReview })
+      await this.props.getComments()
+    }
+  }
+
   onMenuOpen = () => {
     this.setPopupCoordinates()
     this.setState({ popup: true })
@@ -161,12 +200,8 @@ class CommentItem extends React.Component {
   render() {
     const {
       props: { video, comment },
-      state: { height, more, expand, popup, x, y, isAuthor, isOwner }
+      state: { height, more, expand, popup, x, y, isAuthor, isOwner, review }
     } = this
-    let likes = 0
-    comment.reviews.forEach(r => {
-      if (r.status === 'LIKE') likes += 1
-    })
     return (
       <Container height={height} more={more} expand={expand}>
         <img src={comment.user.image} />
@@ -187,12 +222,7 @@ class CommentItem extends React.Component {
               {expand ? 'Show less' : 'Read more'}
             </div>
           ) : null}
-          <div className="thumb-row">
-            <ThumbUp />
-            <div className="thumb-ups">{likes}</div>
-            <ThumbDown className="thumb-down" />
-            <div>reply</div>
-          </div>
+          <CommentThumbs reviews={comment.reviews} review={review} onClick={this.onReviewClick} />
           {comment.replies.length ? <div>replies</div> : null}
         </div>
         <div ref={el => (this.anchor = el)}>
@@ -204,4 +234,4 @@ class CommentItem extends React.Component {
   }
 }
 
-export default CommentItem
+export default withApollo(CommentItem)

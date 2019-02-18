@@ -78,11 +78,6 @@ input CommentCreateManyInput {
   connect: [CommentWhereUniqueInput!]
 }
 
-input CommentCreateManyWithoutReviewsInput {
-  create: [CommentCreateWithoutReviewsInput!]
-  connect: [CommentWhereUniqueInput!]
-}
-
 input CommentCreateManyWithoutUserInput {
   create: [CommentCreateWithoutUserInput!]
   connect: [CommentWhereUniqueInput!]
@@ -91,6 +86,11 @@ input CommentCreateManyWithoutUserInput {
 input CommentCreateManyWithoutVideoInput {
   create: [CommentCreateWithoutVideoInput!]
   connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateOneWithoutReviewsInput {
+  create: CommentCreateWithoutReviewsInput
+  connect: CommentWhereUniqueInput
 }
 
 input CommentCreateWithoutReviewsInput {
@@ -151,7 +151,7 @@ type CommentPreviousValues {
 type CommentReview {
   id: ID!
   status: ReviewStatus
-  comment(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  comment: Comment
   user: User
   createdAt: DateTime!
 }
@@ -164,7 +164,7 @@ type CommentReviewConnection {
 
 input CommentReviewCreateInput {
   status: ReviewStatus
-  comment: CommentCreateManyWithoutReviewsInput
+  comment: CommentCreateOneWithoutReviewsInput
   user: UserCreateOneWithoutCommentReviewsInput
 }
 
@@ -185,7 +185,7 @@ input CommentReviewCreateWithoutCommentInput {
 
 input CommentReviewCreateWithoutUserInput {
   status: ReviewStatus
-  comment: CommentCreateManyWithoutReviewsInput
+  comment: CommentCreateOneWithoutReviewsInput
 }
 
 type CommentReviewEdge {
@@ -262,7 +262,7 @@ input CommentReviewSubscriptionWhereInput {
 
 input CommentReviewUpdateInput {
   status: ReviewStatus
-  comment: CommentUpdateManyWithoutReviewsInput
+  comment: CommentUpdateOneWithoutReviewsInput
   user: UserUpdateOneWithoutCommentReviewsInput
 }
 
@@ -308,7 +308,7 @@ input CommentReviewUpdateWithoutCommentDataInput {
 
 input CommentReviewUpdateWithoutUserDataInput {
   status: ReviewStatus
-  comment: CommentUpdateManyWithoutReviewsInput
+  comment: CommentUpdateOneWithoutReviewsInput
 }
 
 input CommentReviewUpdateWithWhereUniqueWithoutCommentInput {
@@ -352,9 +352,7 @@ input CommentReviewWhereInput {
   status_not: ReviewStatus
   status_in: [ReviewStatus!]
   status_not_in: [ReviewStatus!]
-  comment_every: CommentWhereInput
-  comment_some: CommentWhereInput
-  comment_none: CommentWhereInput
+  comment: CommentWhereInput
   user: UserWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
@@ -480,17 +478,6 @@ input CommentUpdateManyMutationInput {
   edited: Boolean
 }
 
-input CommentUpdateManyWithoutReviewsInput {
-  create: [CommentCreateWithoutReviewsInput!]
-  delete: [CommentWhereUniqueInput!]
-  connect: [CommentWhereUniqueInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  update: [CommentUpdateWithWhereUniqueWithoutReviewsInput!]
-  upsert: [CommentUpsertWithWhereUniqueWithoutReviewsInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-}
-
 input CommentUpdateManyWithoutUserInput {
   create: [CommentCreateWithoutUserInput!]
   delete: [CommentWhereUniqueInput!]
@@ -516,6 +503,15 @@ input CommentUpdateManyWithoutVideoInput {
 input CommentUpdateManyWithWhereNestedInput {
   where: CommentScalarWhereInput!
   data: CommentUpdateManyDataInput!
+}
+
+input CommentUpdateOneWithoutReviewsInput {
+  create: CommentCreateWithoutReviewsInput
+  update: CommentUpdateWithoutReviewsDataInput
+  upsert: CommentUpsertWithoutReviewsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CommentWhereUniqueInput
 }
 
 input CommentUpdateWithoutReviewsDataInput {
@@ -550,11 +546,6 @@ input CommentUpdateWithWhereUniqueNestedInput {
   data: CommentUpdateDataInput!
 }
 
-input CommentUpdateWithWhereUniqueWithoutReviewsInput {
-  where: CommentWhereUniqueInput!
-  data: CommentUpdateWithoutReviewsDataInput!
-}
-
 input CommentUpdateWithWhereUniqueWithoutUserInput {
   where: CommentWhereUniqueInput!
   data: CommentUpdateWithoutUserDataInput!
@@ -565,16 +556,15 @@ input CommentUpdateWithWhereUniqueWithoutVideoInput {
   data: CommentUpdateWithoutVideoDataInput!
 }
 
+input CommentUpsertWithoutReviewsInput {
+  update: CommentUpdateWithoutReviewsDataInput!
+  create: CommentCreateWithoutReviewsInput!
+}
+
 input CommentUpsertWithWhereUniqueNestedInput {
   where: CommentWhereUniqueInput!
   update: CommentUpdateDataInput!
   create: CommentCreateInput!
-}
-
-input CommentUpsertWithWhereUniqueWithoutReviewsInput {
-  where: CommentWhereUniqueInput!
-  update: CommentUpdateWithoutReviewsDataInput!
-  create: CommentCreateWithoutReviewsInput!
 }
 
 input CommentUpsertWithWhereUniqueWithoutUserInput {

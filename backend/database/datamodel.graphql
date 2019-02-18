@@ -67,7 +67,7 @@ type Comment {
 type CommentReview {
   id: ID! @unique
   status: ReviewStatus
-  comment: [Comment]
+  comment: Comment
   user: User
   createdAt: DateTime!
 }

@@ -26,6 +26,13 @@ export const ME_QUERY = gql`
           id
         }
       }
+      commentReviews {
+        id
+        status
+        comment {
+          id
+        }
+      }
     }
   }
 `

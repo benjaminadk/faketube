@@ -19,6 +19,8 @@ type Mutation {
   createReview(id: ID!, status: ReviewStatus): ReviewPayload
   updateReview(id: ID!, status: ReviewStatus): ReviewPayload
   createComment(id: ID!, data: CommentCreateInput): CommentPayload
+  createCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
+  updateCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
   refreshGooglePhotoToken: TokenPayload
 }
 
@@ -91,7 +93,7 @@ type Comment {
 type CommentReview {
   id: ID!
   status: ReviewStatus
-  comment: [Comment]
+  comment: Comment
   user: User
   createdAt: DateTime!
 }
@@ -124,6 +126,11 @@ type ReviewPayload {
 type CommentPayload {
   success: Boolean
   comment: Comment
+}
+
+type CommentReviewPayload {
+  success: Boolean
+  review: CommentReview
 }
 
 type TokenPayload {

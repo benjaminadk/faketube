@@ -23,5 +23,12 @@ module.exports = `
         id
       }
     }
+    commentReviews {
+      id
+      status
+      comment {
+        id
+      }
+    }
   }
 `

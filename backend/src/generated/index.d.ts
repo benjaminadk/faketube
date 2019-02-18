@@ -614,9 +614,7 @@ export interface CommentReviewWhereInput {
   status_not?: ReviewStatus;
   status_in?: ReviewStatus[] | ReviewStatus;
   status_not_in?: ReviewStatus[] | ReviewStatus;
-  comment_every?: CommentWhereInput;
-  comment_some?: CommentWhereInput;
-  comment_none?: CommentWhereInput;
+  comment?: CommentWhereInput;
   user?: UserWhereInput;
   createdAt?: DateTimeInput;
   createdAt_not?: DateTimeInput;
@@ -975,7 +973,7 @@ export interface ViewUpdateManyWithoutUserInput {
 
 export interface CommentReviewCreateInput {
   status?: ReviewStatus;
-  comment?: CommentCreateManyWithoutReviewsInput;
+  comment?: CommentCreateOneWithoutReviewsInput;
   user?: UserCreateOneWithoutCommentReviewsInput;
 }
 
@@ -1661,11 +1659,9 @@ export interface CommentUpdateWithWhereUniqueNestedInput {
   data: CommentUpdateDataInput;
 }
 
-export interface CommentCreateManyWithoutReviewsInput {
-  create?:
-    | CommentCreateWithoutReviewsInput[]
-    | CommentCreateWithoutReviewsInput;
-  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+export interface CommentCreateOneWithoutReviewsInput {
+  create?: CommentCreateWithoutReviewsInput;
+  connect?: CommentWhereUniqueInput;
 }
 
 export interface CommentUpdateDataInput {
@@ -2007,7 +2003,7 @@ export interface CommentCreateManyInput {
 
 export interface CommentReviewUpdateWithoutUserDataInput {
   status?: ReviewStatus;
-  comment?: CommentUpdateManyWithoutReviewsInput;
+  comment?: CommentUpdateOneWithoutReviewsInput;
 }
 
 export interface UserCreateWithoutCommentReviewsInput {
@@ -2024,23 +2020,13 @@ export interface UserCreateWithoutCommentReviewsInput {
   role: Role;
 }
 
-export interface CommentUpdateManyWithoutReviewsInput {
-  create?:
-    | CommentCreateWithoutReviewsInput[]
-    | CommentCreateWithoutReviewsInput;
-  delete?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
-  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
-  disconnect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
-  update?:
-    | CommentUpdateWithWhereUniqueWithoutReviewsInput[]
-    | CommentUpdateWithWhereUniqueWithoutReviewsInput;
-  upsert?:
-    | CommentUpsertWithWhereUniqueWithoutReviewsInput[]
-    | CommentUpsertWithWhereUniqueWithoutReviewsInput;
-  deleteMany?: CommentScalarWhereInput[] | CommentScalarWhereInput;
-  updateMany?:
-    | CommentUpdateManyWithWhereNestedInput[]
-    | CommentUpdateManyWithWhereNestedInput;
+export interface CommentUpdateOneWithoutReviewsInput {
+  create?: CommentCreateWithoutReviewsInput;
+  update?: CommentUpdateWithoutReviewsDataInput;
+  upsert?: CommentUpsertWithoutReviewsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: CommentWhereUniqueInput;
 }
 
 export interface CommentCreateWithoutReviewsInput {
@@ -2052,9 +2038,13 @@ export interface CommentCreateWithoutReviewsInput {
   replies?: CommentCreateManyInput;
 }
 
-export interface CommentUpdateWithWhereUniqueWithoutReviewsInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutReviewsDataInput;
+export interface CommentUpdateWithoutReviewsDataInput {
+  text?: String;
+  reply?: Boolean;
+  edited?: Boolean;
+  video?: VideoUpdateOneWithoutCommentsInput;
+  user?: UserUpdateOneWithoutCommentsInput;
+  replies?: CommentUpdateManyInput;
 }
 
 export interface ViewWhereInput {
@@ -2097,13 +2087,9 @@ export interface ViewWhereInput {
   NOT?: ViewWhereInput[] | ViewWhereInput;
 }
 
-export interface CommentUpdateWithoutReviewsDataInput {
-  text?: String;
-  reply?: Boolean;
-  edited?: Boolean;
-  video?: VideoUpdateOneWithoutCommentsInput;
-  user?: UserUpdateOneWithoutCommentsInput;
-  replies?: CommentUpdateManyInput;
+export interface CommentUpsertWithoutReviewsInput {
+  update: CommentUpdateWithoutReviewsDataInput;
+  create: CommentCreateWithoutReviewsInput;
 }
 
 export interface ViewUpdateInput {
@@ -2113,10 +2099,10 @@ export interface ViewUpdateInput {
   user?: UserUpdateOneWithoutViewsInput;
 }
 
-export interface CommentUpsertWithWhereUniqueWithoutReviewsInput {
-  where: CommentWhereUniqueInput;
-  update: CommentUpdateWithoutReviewsDataInput;
-  create: CommentCreateWithoutReviewsInput;
+export interface CommentReviewUpsertWithWhereUniqueWithoutUserInput {
+  where: CommentReviewWhereUniqueInput;
+  update: CommentReviewUpdateWithoutUserDataInput;
+  create: CommentReviewCreateWithoutUserInput;
 }
 
 export interface UserUpdateInput {
@@ -2134,21 +2120,20 @@ export interface UserUpdateInput {
   role?: Role;
 }
 
-export interface CommentReviewUpsertWithWhereUniqueWithoutUserInput {
-  where: CommentReviewWhereUniqueInput;
-  update: CommentReviewUpdateWithoutUserDataInput;
-  create: CommentReviewCreateWithoutUserInput;
+export interface UserUpsertWithoutVideosInput {
+  update: UserUpdateWithoutVideosDataInput;
+  create: UserCreateWithoutVideosInput;
 }
 
 export interface CommentReviewUpdateInput {
   status?: ReviewStatus;
-  comment?: CommentUpdateManyWithoutReviewsInput;
+  comment?: CommentUpdateOneWithoutReviewsInput;
   user?: UserUpdateOneWithoutCommentReviewsInput;
 }
 
-export interface UserUpsertWithoutVideosInput {
-  update: UserUpdateWithoutVideosDataInput;
-  create: UserCreateWithoutVideosInput;
+export interface VideoUpsertWithoutReviewsInput {
+  update: VideoUpdateWithoutReviewsDataInput;
+  create: VideoCreateWithoutReviewsInput;
 }
 
 export interface CommentCreateInput {
@@ -2161,25 +2146,15 @@ export interface CommentCreateInput {
   reviews?: CommentReviewCreateManyWithoutCommentInput;
 }
 
-export interface VideoUpsertWithoutReviewsInput {
-  update: VideoUpdateWithoutReviewsDataInput;
-  create: VideoCreateWithoutReviewsInput;
-}
-
-export interface VideoCreateManyWithoutUserInput {
-  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
-  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
-}
-
 export interface ReviewUpsertWithWhereUniqueWithoutUserInput {
   where: ReviewWhereUniqueInput;
   update: ReviewUpdateWithoutUserDataInput;
   create: ReviewCreateWithoutUserInput;
 }
 
-export interface VideoCreateOneWithoutViewsInput {
-  create?: VideoCreateWithoutViewsInput;
-  connect?: VideoWhereUniqueInput;
+export interface VideoCreateManyWithoutUserInput {
+  create?: VideoCreateWithoutUserInput[] | VideoCreateWithoutUserInput;
+  connect?: VideoWhereUniqueInput[] | VideoWhereUniqueInput;
 }
 
 export interface ReviewScalarWhereInput {
@@ -2214,8 +2189,8 @@ export interface ReviewScalarWhereInput {
   NOT?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
 }
 
-export interface VideoCreateOneWithoutReviewsInput {
-  create?: VideoCreateWithoutReviewsInput;
+export interface VideoCreateOneWithoutViewsInput {
+  create?: VideoCreateWithoutViewsInput;
   connect?: VideoWhereUniqueInput;
 }
 
@@ -2224,13 +2199,23 @@ export interface ReviewUpdateManyWithWhereNestedInput {
   data: ReviewUpdateManyDataInput;
 }
 
+export interface VideoCreateOneWithoutReviewsInput {
+  create?: VideoCreateWithoutReviewsInput;
+  connect?: VideoWhereUniqueInput;
+}
+
+export interface ReviewUpdateManyDataInput {
+  status?: ReviewStatus;
+}
+
 export interface CommentReviewCreateWithoutCommentInput {
   status?: ReviewStatus;
   user?: UserCreateOneWithoutCommentReviewsInput;
 }
 
-export interface ReviewUpdateManyDataInput {
-  status?: ReviewStatus;
+export interface UserUpsertWithoutCommentsInput {
+  update: UserUpdateWithoutCommentsDataInput;
+  create: UserCreateWithoutCommentsInput;
 }
 
 export interface VideoUpdateOneWithoutCommentsInput {
@@ -2242,9 +2227,10 @@ export interface VideoUpdateOneWithoutCommentsInput {
   connect?: VideoWhereUniqueInput;
 }
 
-export interface UserUpsertWithoutCommentsInput {
-  update: UserUpdateWithoutCommentsDataInput;
-  create: UserCreateWithoutCommentsInput;
+export interface CommentUpsertWithWhereUniqueWithoutVideoInput {
+  where: CommentWhereUniqueInput;
+  update: CommentUpdateWithoutVideoDataInput;
+  create: CommentCreateWithoutVideoInput;
 }
 
 export interface VideoUpdateInput {
@@ -2265,25 +2251,14 @@ export interface VideoUpdateInput {
   user?: UserUpdateOneWithoutVideosInput;
 }
 
-export interface CommentUpsertWithWhereUniqueWithoutVideoInput {
-  where: CommentWhereUniqueInput;
-  update: CommentUpdateWithoutVideoDataInput;
-  create: CommentCreateWithoutVideoInput;
-}
-
-export interface VideoUpsertWithoutCommentsInput {
-  update: VideoUpdateWithoutCommentsDataInput;
-  create: VideoCreateWithoutCommentsInput;
-}
-
 export interface VideoUpsertWithoutViewsInput {
   update: VideoUpdateWithoutViewsDataInput;
   create: VideoCreateWithoutViewsInput;
 }
 
-export interface UserCreateOneWithoutReviewsInput {
-  create?: UserCreateWithoutReviewsInput;
-  connect?: UserWhereUniqueInput;
+export interface VideoUpsertWithoutCommentsInput {
+  update: VideoUpdateWithoutCommentsDataInput;
+  create: VideoCreateWithoutCommentsInput;
 }
 
 export interface ViewUpsertWithWhereUniqueWithoutUserInput {
@@ -2292,9 +2267,9 @@ export interface ViewUpsertWithWhereUniqueWithoutUserInput {
   create: ViewCreateWithoutUserInput;
 }
 
-export interface CommentCreateManyWithoutUserInput {
-  create?: CommentCreateWithoutUserInput[] | CommentCreateWithoutUserInput;
-  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
+export interface UserCreateOneWithoutReviewsInput {
+  create?: UserCreateWithoutReviewsInput;
+  connect?: UserWhereUniqueInput;
 }
 
 export interface ViewScalarWhereInput {
@@ -2335,15 +2310,9 @@ export interface ViewScalarWhereInput {
   NOT?: ViewScalarWhereInput[] | ViewScalarWhereInput;
 }
 
-export interface ReviewSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: ReviewWhereInput;
-  AND?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
-  OR?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
-  NOT?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
+export interface CommentCreateManyWithoutUserInput {
+  create?: CommentCreateWithoutUserInput[] | CommentCreateWithoutUserInput;
+  connect?: CommentWhereUniqueInput[] | CommentWhereUniqueInput;
 }
 
 export interface ReviewUpsertWithWhereUniqueWithoutVideoInput {
@@ -2367,15 +2336,9 @@ export interface ViewUpdateManyWithWhereNestedInput {
   data: ViewUpdateManyDataInput;
 }
 
-export interface ReviewUpdateInput {
-  status?: ReviewStatus;
-  video?: VideoUpdateOneWithoutReviewsInput;
-  user?: UserUpdateOneWithoutReviewsInput;
-}
-
 export interface CommentReviewCreateWithoutUserInput {
   status?: ReviewStatus;
-  comment?: CommentCreateManyWithoutReviewsInput;
+  comment?: CommentCreateOneWithoutReviewsInput;
 }
 
 export interface UserCreateOneWithoutCommentsInput {
@@ -2386,6 +2349,23 @@ export interface UserCreateOneWithoutCommentsInput {
 export interface ViewCreateManyWithoutVideoInput {
   create?: ViewCreateWithoutVideoInput[] | ViewCreateWithoutVideoInput;
   connect?: ViewWhereUniqueInput[] | ViewWhereUniqueInput;
+}
+
+export interface ReviewUpdateInput {
+  status?: ReviewStatus;
+  video?: VideoUpdateOneWithoutReviewsInput;
+  user?: UserUpdateOneWithoutReviewsInput;
+}
+
+export interface ReviewSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ReviewWhereInput;
+  AND?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
+  OR?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
+  NOT?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
 }
 
 export interface NodeNode {
@@ -2945,15 +2925,7 @@ export interface CommentReviewPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   status: () => Promise<ReviewStatus>;
-  comment: <T = FragmentableArray<Comment>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
+  comment: <T = CommentPromise>() => T;
   user: <T = UserPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
 }
@@ -2963,15 +2935,7 @@ export interface CommentReviewSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   status: () => Promise<AsyncIterator<ReviewStatus>>;
-  comment: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
+  comment: <T = CommentSubscription>() => T;
   user: <T = UserSubscription>() => T;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }

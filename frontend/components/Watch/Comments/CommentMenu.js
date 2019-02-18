@@ -1,7 +1,7 @@
 import Popup from '../../styles/Popup'
 
 const CommentMenu = ({ show, x, y, isAuthor, isOwner }) => (
-  <Popup show={show} x={x} y={y + 40} width={isOwner && !isAuthor ? 17 : false}>
+  <Popup show={show} x={x} y={y + 40} width={isOwner && !isAuthor ? 17 : ''}>
     {isAuthor ? (
       <React.Fragment>
         <div>Edit</div>

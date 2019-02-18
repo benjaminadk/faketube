@@ -163,6 +163,33 @@ module.exports = {
     }
   },
 
+  createCommentReview: async (_, args, ctx, info) => {
+    try {
+      const review = await ctx.prisma.createCommentReview({
+        status: args.status,
+        comment: { connect: { id: args.id } },
+        user: { connect: { id: ctx.userId } }
+      })
+      return { success: true, review }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
+  updateCommentReview: async (_, args, ctx, info) => {
+    try {
+      const review = await ctx.prisma.updateCommentReview({
+        where: { id: args.id },
+        data: { status: args.status }
+      })
+      return { success: true, review }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
   refreshGooglePhotoToken: async (_, args, ctx, info) => {
     try {
       const { id, googlePhotoRT } = ctx.user

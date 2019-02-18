@@ -143,7 +143,13 @@ class Comments extends React.Component {
         />
         <div>
           {comments.map(c => (
-            <CommentItem key={c.id} video={video} user={user} comment={c} />
+            <CommentItem
+              key={c.id}
+              video={video}
+              user={user}
+              comment={c}
+              getComments={this.getComments}
+            />
           ))}
         </div>
       </Container>
