@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { darken } from 'polished'
 import { Menu } from 'styled-icons/material/Menu'
 import { Search } from 'styled-icons/material/Search'
-import { Videocam } from 'styled-icons/material/Videocam'
+import { VideoCall } from 'styled-icons/material/VideoCall'
 import { Apps } from 'styled-icons/material/Apps'
 import { Chat } from 'styled-icons/material/Chat'
 import { Notifications } from 'styled-icons/material/Notifications'
@@ -108,7 +108,7 @@ const Container = styled.div`
 class Header extends React.Component {
   render() {
     const {
-      props: { user, openDrawer }
+      props: { user, openDrawer, openUserMenu }
     } = this
     return (
       <Container>
@@ -128,7 +128,7 @@ class Header extends React.Component {
         </div>
         <div className="icon-menu">
           <div className="icon" onClick={() => Router.push('/upload')}>
-            <Videocam />
+            <VideoCall />
           </div>
           <div className="icon">
             <Apps />
@@ -137,7 +137,9 @@ class Header extends React.Component {
             <Chat />
           </div>
           <div className="icon">{user ? <Notifications /> : <MoreVert />}</div>
-          <div className="user">{user ? <img src={user.image} /> : <SignIn />}</div>
+          <div className="user">
+            {user ? <img src={user.image} onClick={openUserMenu} /> : <SignIn />}
+          </div>
         </div>
       </Container>
     )

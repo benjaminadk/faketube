@@ -7,6 +7,7 @@ import User from './User'
 import Meta from './Meta'
 import Header from './Header'
 import Drawer from './Drawer'
+import UserMenu from './UserMenu'
 
 const StyledPage = styled.div`
   background: ${props => props.theme.white};
@@ -81,7 +82,8 @@ const GlobalStyle = createGlobalStyle`
 export default class Page extends React.Component {
   state = {
     drawer: false,
-    backdrop: false
+    backdrop: false,
+    userMenu: false
   }
 
   componentDidMount() {
@@ -108,9 +110,13 @@ export default class Page extends React.Component {
 
   closeDrawer = () => this.setState({ drawer: false, backdrop: false })
 
+  openUserMenu = () => this.setState({ userMenu: true })
+
+  closeUserMenu = () => this.setState({ userMenu: false })
+
   render() {
     const {
-      state: { drawer, backdrop },
+      state: { drawer, backdrop, userMenu },
       props: { pathname }
     } = this
     return (
@@ -122,7 +128,11 @@ export default class Page extends React.Component {
               <StyledPage>
                 <GlobalStyle />
                 <Meta />
-                <Header user={data.me} openDrawer={this.openDrawer} />
+                <Header
+                  user={data.me}
+                  openDrawer={this.openDrawer}
+                  openUserMenu={this.openUserMenu}
+                />
                 <Inner>
                   {React.Children.map(this.props.children, child =>
                     React.cloneElement(child, {
@@ -137,6 +147,7 @@ export default class Page extends React.Component {
                   pathname={pathname}
                   closeDrawer={this.closeDrawer}
                 />
+                <UserMenu show={userMenu} user={data.me} closeUserMenu={this.closeUserMenu} />
               </StyledPage>
             )
           }}
