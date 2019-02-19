@@ -21,6 +21,7 @@ type Mutation {
   createComment(id: ID!, data: CommentCreateInput): CommentPayload
   createCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
   updateCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
+  createReply(id: ID!, data: CommentCreateInput): CommentPayload
   refreshGooglePhotoToken: TokenPayload
 }
 
@@ -83,6 +84,7 @@ type Comment {
   id: ID!
   text: String!
   reply: Boolean!
+  replyTo: Comment
   edited: Boolean
   video: Video
   user: User

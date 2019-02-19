@@ -49,6 +49,7 @@ type Comment {
   id: ID!
   text: String!
   reply: Boolean!
+  replyTo: Comment
   edited: Boolean
   video: Video
   user: User
@@ -66,15 +67,16 @@ type CommentConnection {
 input CommentCreateInput {
   text: String!
   reply: Boolean!
+  replyTo: CommentCreateOneWithoutRepliesInput
   edited: Boolean
   video: VideoCreateOneWithoutCommentsInput
   user: UserCreateOneWithoutCommentsInput
-  replies: CommentCreateManyInput
+  replies: CommentCreateManyWithoutReplyToInput
   reviews: CommentReviewCreateManyWithoutCommentInput
 }
 
-input CommentCreateManyInput {
-  create: [CommentCreateInput!]
+input CommentCreateManyWithoutReplyToInput {
+  create: [CommentCreateWithoutReplyToInput!]
   connect: [CommentWhereUniqueInput!]
 }
 
@@ -88,35 +90,63 @@ input CommentCreateManyWithoutVideoInput {
   connect: [CommentWhereUniqueInput!]
 }
 
+input CommentCreateOneWithoutRepliesInput {
+  create: CommentCreateWithoutRepliesInput
+  connect: CommentWhereUniqueInput
+}
+
 input CommentCreateOneWithoutReviewsInput {
   create: CommentCreateWithoutReviewsInput
   connect: CommentWhereUniqueInput
 }
 
-input CommentCreateWithoutReviewsInput {
+input CommentCreateWithoutRepliesInput {
+  text: String!
+  reply: Boolean!
+  replyTo: CommentCreateOneWithoutRepliesInput
+  edited: Boolean
+  video: VideoCreateOneWithoutCommentsInput
+  user: UserCreateOneWithoutCommentsInput
+  reviews: CommentReviewCreateManyWithoutCommentInput
+}
+
+input CommentCreateWithoutReplyToInput {
   text: String!
   reply: Boolean!
   edited: Boolean
   video: VideoCreateOneWithoutCommentsInput
   user: UserCreateOneWithoutCommentsInput
-  replies: CommentCreateManyInput
+  replies: CommentCreateManyWithoutReplyToInput
+  reviews: CommentReviewCreateManyWithoutCommentInput
+}
+
+input CommentCreateWithoutReviewsInput {
+  text: String!
+  reply: Boolean!
+  replyTo: CommentCreateOneWithoutRepliesInput
+  edited: Boolean
+  video: VideoCreateOneWithoutCommentsInput
+  user: UserCreateOneWithoutCommentsInput
+  replies: CommentCreateManyWithoutReplyToInput
 }
 
 input CommentCreateWithoutUserInput {
   text: String!
   reply: Boolean!
+  replyTo: CommentCreateOneWithoutRepliesInput
   edited: Boolean
   video: VideoCreateOneWithoutCommentsInput
-  replies: CommentCreateManyInput
+  replies: CommentCreateManyWithoutReplyToInput
   reviews: CommentReviewCreateManyWithoutCommentInput
 }
 
 input CommentCreateWithoutVideoInput {
   text: String!
   reply: Boolean!
+  replyTo: CommentCreateOneWithoutRepliesInput
   edited: Boolean
   user: UserCreateOneWithoutCommentsInput
-  replies: CommentCreateManyInput
+  replies: CommentCreateManyWithoutReplyToInput
   reviews: CommentReviewCreateManyWithoutCommentInput
 }
 
@@ -435,23 +465,14 @@ input CommentSubscriptionWhereInput {
   NOT: [CommentSubscriptionWhereInput!]
 }
 
-input CommentUpdateDataInput {
-  text: String
-  reply: Boolean
-  edited: Boolean
-  video: VideoUpdateOneWithoutCommentsInput
-  user: UserUpdateOneWithoutCommentsInput
-  replies: CommentUpdateManyInput
-  reviews: CommentReviewUpdateManyWithoutCommentInput
-}
-
 input CommentUpdateInput {
   text: String
   reply: Boolean
+  replyTo: CommentUpdateOneWithoutRepliesInput
   edited: Boolean
   video: VideoUpdateOneWithoutCommentsInput
   user: UserUpdateOneWithoutCommentsInput
-  replies: CommentUpdateManyInput
+  replies: CommentUpdateManyWithoutReplyToInput
   reviews: CommentReviewUpdateManyWithoutCommentInput
 }
 
@@ -461,21 +482,21 @@ input CommentUpdateManyDataInput {
   edited: Boolean
 }
 
-input CommentUpdateManyInput {
-  create: [CommentCreateInput!]
-  update: [CommentUpdateWithWhereUniqueNestedInput!]
-  upsert: [CommentUpsertWithWhereUniqueNestedInput!]
-  delete: [CommentWhereUniqueInput!]
-  connect: [CommentWhereUniqueInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-}
-
 input CommentUpdateManyMutationInput {
   text: String
   reply: Boolean
   edited: Boolean
+}
+
+input CommentUpdateManyWithoutReplyToInput {
+  create: [CommentCreateWithoutReplyToInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutReplyToInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutReplyToInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
 
 input CommentUpdateManyWithoutUserInput {
@@ -505,6 +526,15 @@ input CommentUpdateManyWithWhereNestedInput {
   data: CommentUpdateManyDataInput!
 }
 
+input CommentUpdateOneWithoutRepliesInput {
+  create: CommentCreateWithoutRepliesInput
+  update: CommentUpdateWithoutRepliesDataInput
+  upsert: CommentUpsertWithoutRepliesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CommentWhereUniqueInput
+}
+
 input CommentUpdateOneWithoutReviewsInput {
   create: CommentCreateWithoutReviewsInput
   update: CommentUpdateWithoutReviewsDataInput
@@ -514,36 +544,59 @@ input CommentUpdateOneWithoutReviewsInput {
   connect: CommentWhereUniqueInput
 }
 
-input CommentUpdateWithoutReviewsDataInput {
+input CommentUpdateWithoutRepliesDataInput {
+  text: String
+  reply: Boolean
+  replyTo: CommentUpdateOneWithoutRepliesInput
+  edited: Boolean
+  video: VideoUpdateOneWithoutCommentsInput
+  user: UserUpdateOneWithoutCommentsInput
+  reviews: CommentReviewUpdateManyWithoutCommentInput
+}
+
+input CommentUpdateWithoutReplyToDataInput {
   text: String
   reply: Boolean
   edited: Boolean
   video: VideoUpdateOneWithoutCommentsInput
   user: UserUpdateOneWithoutCommentsInput
-  replies: CommentUpdateManyInput
+  replies: CommentUpdateManyWithoutReplyToInput
+  reviews: CommentReviewUpdateManyWithoutCommentInput
+}
+
+input CommentUpdateWithoutReviewsDataInput {
+  text: String
+  reply: Boolean
+  replyTo: CommentUpdateOneWithoutRepliesInput
+  edited: Boolean
+  video: VideoUpdateOneWithoutCommentsInput
+  user: UserUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyWithoutReplyToInput
 }
 
 input CommentUpdateWithoutUserDataInput {
   text: String
   reply: Boolean
+  replyTo: CommentUpdateOneWithoutRepliesInput
   edited: Boolean
   video: VideoUpdateOneWithoutCommentsInput
-  replies: CommentUpdateManyInput
+  replies: CommentUpdateManyWithoutReplyToInput
   reviews: CommentReviewUpdateManyWithoutCommentInput
 }
 
 input CommentUpdateWithoutVideoDataInput {
   text: String
   reply: Boolean
+  replyTo: CommentUpdateOneWithoutRepliesInput
   edited: Boolean
   user: UserUpdateOneWithoutCommentsInput
-  replies: CommentUpdateManyInput
+  replies: CommentUpdateManyWithoutReplyToInput
   reviews: CommentReviewUpdateManyWithoutCommentInput
 }
 
-input CommentUpdateWithWhereUniqueNestedInput {
+input CommentUpdateWithWhereUniqueWithoutReplyToInput {
   where: CommentWhereUniqueInput!
-  data: CommentUpdateDataInput!
+  data: CommentUpdateWithoutReplyToDataInput!
 }
 
 input CommentUpdateWithWhereUniqueWithoutUserInput {
@@ -556,15 +609,20 @@ input CommentUpdateWithWhereUniqueWithoutVideoInput {
   data: CommentUpdateWithoutVideoDataInput!
 }
 
+input CommentUpsertWithoutRepliesInput {
+  update: CommentUpdateWithoutRepliesDataInput!
+  create: CommentCreateWithoutRepliesInput!
+}
+
 input CommentUpsertWithoutReviewsInput {
   update: CommentUpdateWithoutReviewsDataInput!
   create: CommentCreateWithoutReviewsInput!
 }
 
-input CommentUpsertWithWhereUniqueNestedInput {
+input CommentUpsertWithWhereUniqueWithoutReplyToInput {
   where: CommentWhereUniqueInput!
-  update: CommentUpdateDataInput!
-  create: CommentCreateInput!
+  update: CommentUpdateWithoutReplyToDataInput!
+  create: CommentCreateWithoutReplyToInput!
 }
 
 input CommentUpsertWithWhereUniqueWithoutUserInput {
@@ -610,6 +668,7 @@ input CommentWhereInput {
   text_not_ends_with: String
   reply: Boolean
   reply_not: Boolean
+  replyTo: CommentWhereInput
   edited: Boolean
   edited_not: Boolean
   video: VideoWhereInput

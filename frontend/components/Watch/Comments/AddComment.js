@@ -16,11 +16,11 @@ const CREATE_COMMENT_MUTATION = gql`
   }
 `
 
-const Container = styled.div`
+export const Container = styled.div`
   display: grid;
   grid-template-columns: 4rem 1fr;
   grid-gap: 3rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   img {
     width: 4rem;
     height: 4rem;
@@ -43,7 +43,7 @@ const Container = styled.div`
   }
 `
 
-const Underline = styled.div`
+export const Underline = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +60,7 @@ const Underline = styled.div`
   }
 `
 
-const CommentButtons = styled.div`
+export const CommentButtons = styled.div`
   justify-self: flex-end;
   display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;

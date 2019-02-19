@@ -57,10 +57,11 @@ type Comment {
   id: ID! @unique
   text: String!
   reply: Boolean!
+  replyTo: Comment @relation(name: "CommentOwnedReplies")
   edited: Boolean @default(value: "false")
   video: Video
   user: User
-  replies: [Comment]
+  replies: [Comment] @relation(name: "CommentOwnedReplies")
   reviews: [CommentReview]
   createdAt: DateTime!
 }

@@ -37,14 +37,14 @@ const Container = styled.div`
   }
 `
 
-const CommentThumbs = ({ reviews, review, onClick }) => {
+const CommentThumbs = ({ reviews, review, onReviewClick, onShowReplyInput }) => {
   const likes = reviews.reduce((x, r) => (r.status === 'LIKE' ? 1 : 0), 0)
   return (
     <Container status={review ? review.status : ''}>
-      <ThumbUp className="thumb-up" onClick={() => onClick('LIKE')} />
+      <ThumbUp className="thumb-up" onClick={() => onReviewClick('LIKE')} />
       <div className="likes">{likes}</div>
-      <ThumbDown className="thumb-down" onClick={() => onClick('DISLIKE')} />
-      <div>reply</div>
+      <ThumbDown className="thumb-down" onClick={() => onReviewClick('DISLIKE')} />
+      {onShowReplyInput ? <div onClick={onShowReplyInput}>reply</div> : <div />}
     </Container>
   )
 }

@@ -1,13 +1,15 @@
-import styled from 'styled-components'
-import { darken } from 'polished'
 import { MoreVert } from 'styled-icons/material/MoreVert'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import isEqual from 'lodash.isequal'
-import formatDistance from '../../../lib/formatDistance'
 import { linkifyComment } from '../../../lib/linkify'
+import NameAndDate from './NameAndDate'
 import CommentThumbs from './CommentThumbs'
 import CommentMenu from './CommentMenu'
+import AddReply from './AddReply'
+import ViewReplies from './ViewReplies'
+import ReplyItem from './ReplyItem'
+import CommentStyles from '../../styles/Comment'
 
 const CREATE_COMMENT_REVIEW_MUTATION = gql`
   mutation CREATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
@@ -31,71 +33,6 @@ const UPDATE_COMMENT_REVIEW_MUTATION = gql`
   }
 `
 
-const Container = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: 4rem 1fr 2.5rem;
-  grid-gap: 2rem;
-  margin-bottom: 2rem;
-  img {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-  }
-  .comment-main {
-    .user-row {
-      display: flex;
-      align-items: center;
-      font-size: 1.3rem;
-      margin-bottom: 0.75rem;
-      cursor: pointer;
-      .user-name {
-        font-family: 'Roboto Bold';
-        margin-right: 0.5rem;
-      }
-      .user-created {
-        color: ${props => props.theme.grey[10]};
-        margin-right: 0.5rem;
-        &:hover {
-          color: ${props => props.theme.black[0]};
-        }
-      }
-    }
-    .text-row {
-      max-height: ${props => (props.expand ? '100%' : '8rem')};
-      overflow: hidden;
-      font-size: 1.4rem;
-      line-height: 2rem;
-      margin-bottom: ${props => (props.more ? '0rem' : '1rem')};
-      white-space: pre-wrap;
-      a {
-        color: ${props => darken(0.2, props.theme.secondary)};
-      }
-    }
-    .more-row {
-      font-family: 'Roboto Bold';
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      cursor: pointer;
-    }
-  }
-  .more-vert {
-    width: 2.5rem;
-    height: 2.5rem;
-    display: none;
-    color: ${props => props.theme.grey[8]};
-    margin-top: 1rem;
-    cursor: pointer;
-    &:hover {
-      color: ${props => props.theme.grey[10]};
-    }
-  }
-
-  &:hover .more-vert {
-    display: block;
-  }
-`
-
 class CommentItem extends React.Component {
   state = {
     height: 0,
@@ -105,7 +42,10 @@ class CommentItem extends React.Component {
     x: null,
     y: null,
     isAuthor: false,
-    isOwner: false
+    isOwner: false,
+    replyInput: false,
+    replies: false,
+    moreVert: false
   }
 
   componentDidMount() {
@@ -153,6 +93,10 @@ class CommentItem extends React.Component {
     this.setState({ isOwner: user.id === video.user.id })
   }
 
+  onMouseEnter = () => this.setState({ moreVert: true })
+
+  onMouseLeave = () => this.setState({ moreVert: false })
+
   onReviewClick = async status => {
     const {
       props: { comment, client },
@@ -197,21 +141,43 @@ class CommentItem extends React.Component {
 
   toggleExpand = () => this.setState(({ expand }) => ({ expand: !expand }))
 
+  onShowReplyInput = () => this.setState({ replyInput: true })
+
+  onHideReplyInput = () => this.setState({ replyInput: false })
+
+  toggleReplies = () => this.setState(({ replies }) => ({ replies: !replies }))
+
   render() {
     const {
-      props: { video, comment },
-      state: { height, more, expand, popup, x, y, isAuthor, isOwner, review }
+      props: { video, comment, user, getComments },
+      state: {
+        height,
+        more,
+        expand,
+        popup,
+        x,
+        y,
+        isAuthor,
+        isOwner,
+        review,
+        replyInput,
+        replies,
+        moreVert
+      }
     } = this
     return (
-      <Container height={height} more={more} expand={expand}>
+      <CommentStyles
+        height={height}
+        more={more}
+        expand={expand}
+        img={4}
+        moreVert={moreVert}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      >
         <img src={comment.user.image} />
         <div className="comment-main">
-          <div className="user-row">
-            <div className="user-name">{comment.user.name}</div>
-            <div className="user-created">
-              {formatDistance(comment.createdAt)} ago {comment.edited ? '(edited)' : ''}
-            </div>
-          </div>
+          <NameAndDate comment={comment} />
           <div
             ref={el => (this.comment = el)}
             className="text-row"
@@ -222,14 +188,40 @@ class CommentItem extends React.Component {
               {expand ? 'Show less' : 'Read more'}
             </div>
           ) : null}
-          <CommentThumbs reviews={comment.reviews} review={review} onClick={this.onReviewClick} />
-          {comment.replies.length ? <div>replies</div> : null}
+          <CommentThumbs
+            reviews={comment.reviews}
+            review={review}
+            onReviewClick={this.onReviewClick}
+            onShowReplyInput={this.onShowReplyInput}
+          />
+          {replyInput ? (
+            <AddReply
+              commentId={comment.id}
+              image={user.image}
+              getComments={getComments}
+              onHideReplyInput={this.onHideReplyInput}
+            />
+          ) : null}
+          {comment.replies.length ? (
+            <ViewReplies
+              count={comment.replies.length}
+              expand={replies}
+              onClick={this.toggleReplies}
+            />
+          ) : null}
+          {replies ? (
+            <div className="comment-replies">
+              {comment.replies.map(r => (
+                <ReplyItem key={r.id} comment={r} video={video} user={user} />
+              ))}
+            </div>
+          ) : null}
         </div>
         <div ref={el => (this.anchor = el)}>
           <MoreVert className="more-vert" onClick={this.onMenuOpen} />
         </div>
         <CommentMenu show={popup} x={x} y={y} isAuthor={isAuthor} isOwner={isOwner} />
-      </Container>
+      </CommentStyles>
     )
   }
 }

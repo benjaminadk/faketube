@@ -190,6 +190,21 @@ module.exports = {
     }
   },
 
+  createReply: async (_, args, ctx, info) => {
+    try {
+      const comment = await ctx.prisma.createComment({
+        text: args.data.text,
+        reply: args.data.reply,
+        replyTo: { connect: { id: args.id } },
+        user: { connect: { id: ctx.userId } }
+      })
+      return { success: true, comment }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
   refreshGooglePhotoToken: async (_, args, ctx, info) => {
     try {
       const { id, googlePhotoRT } = ctx.user
