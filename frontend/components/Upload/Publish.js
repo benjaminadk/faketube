@@ -29,10 +29,12 @@ const PublishButton = styled.button`
   width: 12rem;
   height: 3rem;
   border: 0;
+  outline: 0;
   font-family: 'Roboto Bold';
   font-size: 1.1rem;
-  background: ${props => darken(0.2, props.theme.secondary)};
-  color: ${props => props.theme.white};
+  background: ${props => (props.saved ? props.theme.grey[0] : darken(0.2, props.theme.secondary))};
+  color: ${props => (props.saved ? props.theme.grey[10] : props.theme.white)};
+  border: 1px solid ${props => (props.saved ? props.theme.grey[5] : 'transparent')};
   border-radius: 2px;
   cursor: pointer;
   &:disabled {
@@ -42,12 +44,18 @@ const PublishButton = styled.button`
   }
 `
 
-const Publish = ({ videoID, saved, isPublished, onPublishClick }) => (
+const Publish = ({ videoID, saved, expand, isPublished, onPublishClick }) => (
   <Mutation mutation={UPDATE_VIDEO_MUTATION}>
     {(updateVideo, { loading }) => (
       <Container>
-        <PublishButton disabled={saved || loading} onClick={() => onPublishClick(updateVideo)}>
-          {loading ? 'Saving...' : isPublished ? 'Save changes' : 'Publish'}
+        <PublishButton saved={saved} disabled={loading} onClick={() => onPublishClick(updateVideo)}>
+          {loading
+            ? 'Saving...'
+            : isPublished && saved && !expand
+            ? 'Return to editing'
+            : isPublished
+            ? 'Save changes'
+            : 'Publish'}
         </PublishButton>
         <span>
           {!videoID

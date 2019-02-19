@@ -42,10 +42,11 @@ const REFRESH_GOOGLE_PHOTO_TOKEN = gql`
 const source = axios.CancelToken.source()
 
 const Container = styled.div`
-  height: calc(100% - 5.5rem);
+  height: ${props => (props.expand ? `calc(100% - 5.5rem)` : '25rem')};
   display: grid;
   justify-items: center;
   margin-bottom: 5rem;
+  transition: height 0.5s;
   input[type='file'] {
     display: none;
   }
@@ -56,6 +57,7 @@ const VideoScreen = styled.div`
   background: ${props => props.theme.white};
   padding: 1.5rem;
   margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   box-shadow: ${props => props.theme.shadows[1]};
   .video-top {
     display: grid;
@@ -65,7 +67,7 @@ const VideoScreen = styled.div`
       display: grid;
       grid-template-columns: 5fr 1fr;
       grid-gap: 1rem;
-      border-bottom: 1px solid ${props => props.theme.grey[5]};
+      border-bottom: 1px solid ${props => (props.expand ? props.theme.grey[5] : 'transparent')};
       .progress-left {
         display: grid;
         grid-template-rows: 3rem auto 1fr;
@@ -73,7 +75,7 @@ const VideoScreen = styled.div`
     }
   }
   .video-bottom {
-    display: grid;
+    display: ${props => (props.expand ? 'grid' : 'none')};
     grid-template-columns: 20rem 1fr;
     grid-gap: 1.5rem;
     margin-top: 1.5rem;
@@ -88,6 +90,7 @@ const BasicInfo = styled.div`
 class Upload extends React.Component {
   state = {
     saved: false,
+    expand: true,
     videoID: '',
     progress: 0,
     time: 0,
@@ -244,8 +247,11 @@ class Upload extends React.Component {
   onPublishClick = async updateVideo => {
     if (!this.state.videoID) return
     if (!this.state.isPublished) {
-      await this.setState({ isPublished: true })
+      await this.setState({ isPublished: true, expand: false })
+    } else {
+      await this.setState({ expand: !this.state.expand })
     }
+    if (this.state.saved) return
     const {
       videoID,
       title,
@@ -443,6 +449,7 @@ class Upload extends React.Component {
     const {
       state: {
         saved,
+        expand,
         videoID,
         progress,
         remaining,
@@ -466,7 +473,7 @@ class Upload extends React.Component {
       }
     } = this
     return (
-      <Container>
+      <Container expand={expand}>
         {progress === 0 ? (
           <InitialScreen
             inputRef={this.videoInput}
@@ -477,7 +484,7 @@ class Upload extends React.Component {
             onImportClick={this.onImportClick}
           />
         ) : (
-          <VideoScreen>
+          <VideoScreen expand={expand}>
             <div className="video-top">
               <BigThumbnail showThumbnails={showThumbnails} url={thumbnailURL} />
               <div className="progress">
@@ -498,11 +505,12 @@ class Upload extends React.Component {
                       onCancelClick={this.onCancelClick}
                     />
                   )}
-                  <TabBar tab={tab} onTabClick={this.onTabClick} />
+                  {expand ? <TabBar tab={tab} onTabClick={this.onTabClick} /> : null}
                 </div>
                 <Publish
                   videoID={videoID}
                   saved={saved}
+                  expand={expand}
                   isPublished={isPublished}
                   onPublishClick={this.onPublishClick}
                 />
