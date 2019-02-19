@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import { format } from 'date-fns'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import Thumbs from './Thumbs'
 import ShareButton from './ShareButton'
 import ShareModal from './ShareModal'
+import CreatedBy from './CreatedBy'
 import Description from './Description'
 import { VIDEO_QUERY } from '../../../apollo/video'
 import { ME_QUERY } from '../../../apollo/me'
@@ -57,28 +57,6 @@ const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    .author {
-      display: flex;
-      align-items: center;
-      img {
-        width: 5rem;
-        height: 5rem;
-        border-radius: 50%;
-        margin-right: 1rem;
-      }
-      .author-info {
-        & > :first-child {
-          display: flex;
-          font-family: 'Roboto Bold';
-          font-size: 1.4rem;
-          margin-bottom: 0.25rem;
-        }
-        & > :last-child {
-          font-size: 1.3rem;
-          color: ${props => props.theme.grey[10]};
-        }
-      }
-    }
     .subscribe {
       font-family: 'Roboto Bold';
       background: ${props => props.theme.primary};
@@ -164,16 +142,7 @@ class Details extends React.Component {
           </div>
         </div>
         <div className="author-row">
-          <div className="author">
-            <img src={video.user.image} />
-            <div className="author-info">
-              <div>
-                <div>{video.user.name}</div>
-                <div>+</div>
-              </div>
-              <div>Published on {format(new Date(video.createdAt), 'MMM do, y')}</div>
-            </div>
-          </div>
+          <CreatedBy video={video} />
           <div className="subscribe">Subscribe 50K</div>
         </div>
         <Description video={video} />

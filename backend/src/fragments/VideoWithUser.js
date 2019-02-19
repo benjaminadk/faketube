@@ -24,6 +24,7 @@ module.exports = `
       id
       name
       image
+      verified
     }
   }
 `

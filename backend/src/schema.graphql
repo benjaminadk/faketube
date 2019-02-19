@@ -31,6 +31,7 @@ type User {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: [Video]

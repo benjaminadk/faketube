@@ -1027,6 +1027,7 @@ type User {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
@@ -1049,6 +1050,7 @@ input UserCreateInput {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
@@ -1089,6 +1091,7 @@ input UserCreateWithoutCommentReviewsInput {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
@@ -1103,6 +1106,7 @@ input UserCreateWithoutCommentsInput {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
@@ -1117,6 +1121,7 @@ input UserCreateWithoutReviewsInput {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
@@ -1131,6 +1136,7 @@ input UserCreateWithoutVideosInput {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   views: ViewCreateManyWithoutUserInput
@@ -1145,6 +1151,7 @@ input UserCreateWithoutViewsInput {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
@@ -1170,6 +1177,8 @@ enum UserOrderByInput {
   name_DESC
   image_ASC
   image_DESC
+  verified_ASC
+  verified_DESC
   googlePhotoAT_ASC
   googlePhotoAT_DESC
   googlePhotoRT_ASC
@@ -1188,6 +1197,7 @@ type UserPreviousValues {
   email: String!
   name: String!
   image: String!
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   role: Role!
@@ -1217,6 +1227,7 @@ input UserUpdateInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
@@ -1232,6 +1243,7 @@ input UserUpdateManyMutationInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   role: Role
@@ -1287,6 +1299,7 @@ input UserUpdateWithoutCommentReviewsDataInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
@@ -1301,6 +1314,7 @@ input UserUpdateWithoutCommentsDataInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
@@ -1315,6 +1329,7 @@ input UserUpdateWithoutReviewsDataInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
@@ -1329,6 +1344,7 @@ input UserUpdateWithoutVideosDataInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   views: ViewUpdateManyWithoutUserInput
@@ -1343,6 +1359,7 @@ input UserUpdateWithoutViewsDataInput {
   email: String
   name: String
   image: String
+  verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
@@ -1448,6 +1465,8 @@ input UserWhereInput {
   image_not_starts_with: String
   image_ends_with: String
   image_not_ends_with: String
+  verified: Boolean
+  verified_not: Boolean
   googlePhotoAT: String
   googlePhotoAT_not: String
   googlePhotoAT_in: [String!]

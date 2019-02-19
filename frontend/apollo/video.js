@@ -24,6 +24,7 @@ export const VIDEO_QUERY = gql`
         id
         name
         image
+        verified
       }
     }
   }

@@ -4,6 +4,7 @@ type User {
   email: String! @unique
   name: String!
   image: String!
+  verified: Boolean @default(value: "false")
   googlePhotoAT: String
   googlePhotoRT: String
   videos: [Video] @relation(name: "UserOwnedVideos")

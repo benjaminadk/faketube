@@ -408,6 +408,8 @@ export type UserOrderByInput =
   | "name_DESC"
   | "image_ASC"
   | "image_DESC"
+  | "verified_ASC"
+  | "verified_DESC"
   | "googlePhotoAT_ASC"
   | "googlePhotoAT_DESC"
   | "googlePhotoRT_ASC"
@@ -505,6 +507,8 @@ export interface UserWhereInput {
   image_not_starts_with?: String;
   image_ends_with?: String;
   image_not_ends_with?: String;
+  verified?: Boolean;
+  verified_not?: Boolean;
   googlePhotoAT?: String;
   googlePhotoAT_not?: String;
   googlePhotoAT_in?: String[] | String;
@@ -931,6 +935,7 @@ export interface UserUpdateWithoutViewsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoUpdateManyWithoutUserInput;
@@ -1001,6 +1006,7 @@ export interface UserUpdateManyMutationInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   role?: Role;
@@ -1029,6 +1035,7 @@ export interface UserCreateInput {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoCreateManyWithoutUserInput;
@@ -1100,6 +1107,7 @@ export interface UserUpdateWithoutReviewsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoUpdateManyWithoutUserInput;
@@ -1380,6 +1388,7 @@ export interface UserCreateWithoutViewsInput {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoCreateManyWithoutUserInput;
@@ -1441,6 +1450,7 @@ export interface UserCreateWithoutReviewsInput {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoCreateManyWithoutUserInput;
@@ -1455,6 +1465,7 @@ export interface UserUpdateWithoutCommentsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoUpdateManyWithoutUserInput;
@@ -1530,6 +1541,7 @@ export interface UserCreateWithoutCommentsInput {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoCreateManyWithoutUserInput;
@@ -1603,6 +1615,7 @@ export interface UserCreateWithoutVideosInput {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   views?: ViewCreateManyWithoutUserInput;
@@ -1617,6 +1630,7 @@ export interface UserUpdateWithoutVideosDataInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   views?: ViewUpdateManyWithoutUserInput;
@@ -1688,6 +1702,7 @@ export interface UserCreateWithoutCommentReviewsInput {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoCreateManyWithoutUserInput;
@@ -1875,6 +1890,7 @@ export interface UserUpdateWithoutCommentReviewsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoUpdateManyWithoutUserInput;
@@ -1889,6 +1905,7 @@ export interface UserUpdateInput {
   email?: String;
   name?: String;
   image?: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   videos?: VideoUpdateManyWithoutUserInput;
@@ -2543,6 +2560,7 @@ export interface User {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   role: Role;
@@ -2555,6 +2573,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   name: () => Promise<String>;
   image: () => Promise<String>;
+  verified: () => Promise<Boolean>;
   googlePhotoAT: () => Promise<String>;
   googlePhotoRT: () => Promise<String>;
   videos: <T = FragmentableArray<Video>>(args?: {
@@ -2614,6 +2633,7 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
+  verified: () => Promise<AsyncIterator<Boolean>>;
   googlePhotoAT: () => Promise<AsyncIterator<String>>;
   googlePhotoRT: () => Promise<AsyncIterator<String>>;
   videos: <T = Promise<AsyncIterator<VideoSubscription>>>(args?: {
@@ -3282,6 +3302,7 @@ export interface UserPreviousValues {
   email: String;
   name: String;
   image: String;
+  verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
   role: Role;
@@ -3296,6 +3317,7 @@ export interface UserPreviousValuesPromise
   email: () => Promise<String>;
   name: () => Promise<String>;
   image: () => Promise<String>;
+  verified: () => Promise<Boolean>;
   googlePhotoAT: () => Promise<String>;
   googlePhotoRT: () => Promise<String>;
   role: () => Promise<Role>;
@@ -3310,6 +3332,7 @@ export interface UserPreviousValuesSubscription
   email: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
+  verified: () => Promise<AsyncIterator<Boolean>>;
   googlePhotoAT: () => Promise<AsyncIterator<String>>;
   googlePhotoRT: () => Promise<AsyncIterator<String>>;
   role: () => Promise<AsyncIterator<Role>>;
