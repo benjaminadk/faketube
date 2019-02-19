@@ -58,7 +58,8 @@ class Comments extends React.Component {
     comments: [],
     focus: false,
     text: '',
-    buttons: false
+    buttons: false,
+    count: 0
   }
 
   async componentDidMount() {
@@ -90,7 +91,11 @@ class Comments extends React.Component {
       },
       fetchPolicy: 'network-only'
     })
-    this.setState({ loading: false, comments: res.data.comments })
+    const { comments } = res.data
+    const count = comments.length
+      ? comments.reduce((acc, val) => acc + val.replies.length + 1, 0)
+      : 0
+    this.setState({ loading: false, comments, count })
   }
 
   onChange = e => {
@@ -124,11 +129,11 @@ class Comments extends React.Component {
   render() {
     const {
       props: { user, video },
-      state: { loading, comments, focus, text, buttons }
+      state: { loading, comments, count, focus, text, buttons }
     } = this
     return (
       <Container>
-        <TopRow length={comments.length} />
+        <TopRow count={count} />
         <AddComment
           loading={loading}
           image={user.image}

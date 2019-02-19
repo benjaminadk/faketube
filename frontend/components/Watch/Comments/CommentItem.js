@@ -11,7 +11,7 @@ import ViewReplies from './ViewReplies'
 import ReplyItem from './ReplyItem'
 import CommentStyles from '../../styles/Comment'
 
-const CREATE_COMMENT_REVIEW_MUTATION = gql`
+export const CREATE_COMMENT_REVIEW_MUTATION = gql`
   mutation CREATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
     createCommentReview(id: $id, status: $status) {
       success
@@ -22,7 +22,7 @@ const CREATE_COMMENT_REVIEW_MUTATION = gql`
   }
 `
 
-const UPDATE_COMMENT_REVIEW_MUTATION = gql`
+export const UPDATE_COMMENT_REVIEW_MUTATION = gql`
   mutation UPDATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
     updateCommentReview(id: $id, status: $status) {
       success
@@ -212,7 +212,13 @@ class CommentItem extends React.Component {
           {replies ? (
             <div className="comment-replies">
               {comment.replies.map(r => (
-                <ReplyItem key={r.id} comment={r} video={video} user={user} />
+                <ReplyItem
+                  key={r.id}
+                  comment={r}
+                  video={video}
+                  user={user}
+                  getComments={getComments}
+                />
               ))}
             </div>
           ) : null}

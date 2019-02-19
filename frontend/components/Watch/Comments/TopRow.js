@@ -26,9 +26,9 @@ const Container = styled.div`
   }
 `
 
-const TopRow = ({ length }) => (
+const TopRow = ({ count }) => (
   <Container>
-    <div>{length} Comments</div>
+    <div>{count} Comments</div>
     <div className="comments-sort">
       <Sort />
       <div>sort by</div>

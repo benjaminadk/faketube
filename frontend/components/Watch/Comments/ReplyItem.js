@@ -1,9 +1,11 @@
+import { withApollo } from 'react-apollo'
 import { MoreVert } from 'styled-icons/material/MoreVert'
 import { linkifyComment } from '../../../lib/linkify'
 import CommentStyles from '../../styles/Comment'
 import NameAndDate from './NameAndDate'
 import CommentThumbs from './CommentThumbs'
 import CommentMenu from './CommentMenu'
+import { CREATE_COMMENT_REVIEW_MUTATION, UPDATE_COMMENT_REVIEW_MUTATION } from './CommentItem'
 
 class ReplyItem extends React.Component {
   state = {
@@ -55,6 +57,37 @@ class ReplyItem extends React.Component {
   setOwner = () => {
     const { user, video } = this.props
     this.setState({ isOwner: user.id === video.user.id })
+  }
+
+  onReviewClick = async status => {
+    const {
+      props: { comment, client },
+      state: { review }
+    } = this
+    if (!review) {
+      let res = await client.mutate({
+        mutation: CREATE_COMMENT_REVIEW_MUTATION,
+        variables: { id: comment.id, status }
+      })
+      let { success, review: newReview } = res.data.createCommentReview
+      if (!success) {
+        return // error creating comment review
+      }
+      await this.setState({ review: newReview })
+      await this.props.getComments()
+    } else {
+      const newStatus = review.status === status ? 'NONE' : status
+      let res = await client.mutate({
+        mutation: UPDATE_COMMENT_REVIEW_MUTATION,
+        variables: { id: review.id, status: newStatus }
+      })
+      let { success, review: updatedReview } = res.data.updateCommentReview
+      if (!success) {
+        return // error updating comment review
+      }
+      await this.setState({ review: updatedReview })
+      await this.props.getComments()
+    }
   }
 
   onMouseEnter = () => this.setState({ moreVert: true })
@@ -117,4 +150,4 @@ class ReplyItem extends React.Component {
   }
 }
 
-export default ReplyItem
+export default withApollo(ReplyItem)

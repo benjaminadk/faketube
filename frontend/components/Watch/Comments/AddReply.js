@@ -18,10 +18,6 @@ const CREATE_REPLY_MUTATION = gql`
 const ReplyContainer = styled(Container)`
   grid-template-columns: 2.4rem 1fr;
   grid-gap: 1rem;
-  img {
-    width: 2.4rem !important;
-    height: 2.4rem !important;
-  }
 `
 
 class AddReply extends React.Component {
@@ -65,7 +61,7 @@ class AddReply extends React.Component {
     } = this
     return (
       <ReplyContainer>
-        <img src={image} />
+        <img className="image-sm" src={image} />
         <div>
           <div className="comments-input">
             <TextInput

@@ -38,7 +38,7 @@ const Container = styled.div`
 `
 
 const CommentThumbs = ({ reviews, review, onReviewClick, onShowReplyInput }) => {
-  const likes = reviews.reduce((x, r) => (r.status === 'LIKE' ? 1 : 0), 0)
+  const likes = reviews.reduce((x, r) => x + (r.status === 'LIKE' ? 1 : 0), 0)
   return (
     <Container status={review ? review.status : ''}>
       <ThumbUp className="thumb-up" onClick={() => onReviewClick('LIKE')} />

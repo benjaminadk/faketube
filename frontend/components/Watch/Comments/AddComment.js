@@ -21,9 +21,14 @@ export const Container = styled.div`
   grid-template-columns: 4rem 1fr;
   grid-gap: 3rem;
   margin-bottom: 2rem;
-  img {
+  .image-lg {
     width: 4rem;
     height: 4rem;
+    border-radius: 50%;
+  }
+  .image-sm {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
     border-radius: 50%;
   }
   & > :last-child {
@@ -134,7 +139,7 @@ const AddComment = ({
   } else {
     return (
       <Container>
-        <img src={image} />
+        <img className="image-lg" src={image} />
         <div>
           <div className="comments-input">
             <TextInput
