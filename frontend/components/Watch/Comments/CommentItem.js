@@ -211,15 +211,17 @@ class CommentItem extends React.Component {
           ) : null}
           {replies ? (
             <div className="comment-replies">
-              {comment.replies.map(r => (
-                <ReplyItem
-                  key={r.id}
-                  comment={r}
-                  video={video}
-                  user={user}
-                  getComments={getComments}
-                />
-              ))}
+              {comment.replies
+                .sort((a, b) => (b.createdAt >= a.createdAt ? 1 : -1))
+                .map(r => (
+                  <ReplyItem
+                    key={r.id}
+                    comment={r}
+                    video={video}
+                    user={user}
+                    getComments={getComments}
+                  />
+                ))}
             </div>
           ) : null}
         </div>

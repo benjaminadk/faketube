@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { Sort } from 'styled-icons/material/Sort'
+import Popup from '../../styles/Popup'
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   font-size: 1.6rem;
@@ -26,14 +28,47 @@ const Container = styled.div`
   }
 `
 
-const TopRow = ({ count }) => (
-  <Container>
-    <div>{count} Comments</div>
-    <div className="comments-sort">
-      <Sort />
-      <div>sort by</div>
-    </div>
-  </Container>
-)
+class TopRow extends React.Component {
+  state = {
+    show: false,
+    x: null,
+    y: null
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('click', this.onMenuClose)
+  }
+
+  onMenuOpen = () => {
+    const { offsetLeft: x, offsetTop: y } = this.anchor
+    this.setState({ show: true, x, y })
+    document.body.addEventListener('click', this.onMenuClose)
+  }
+
+  onMenuClose = () => {
+    document.body.removeEventListener('click', this.onMenuClose)
+    this.setState({ show: false })
+  }
+
+  render() {
+    const {
+      props: { count, setOrderBy },
+      state: { show, x, y }
+    } = this
+    return (
+      <Container>
+        <div>{count} Comments</div>
+        <div ref={el => (this.anchor = el)} className="comments-sort">
+          <Popup show={show} x={x} y={y + 40}>
+            <div onClick={() => setOrderBy('top')}>Top comments</div>
+            <div onClick={() => setOrderBy('date')}>Newest first</div>
+          </Popup>
+          <Sort onClick={this.onMenuOpen} />
+          <div onClick={this.onMenuOpen}>sort by</div>
+        </div>
+      </Container>
+    )
+  }
+}
 
 export default TopRow

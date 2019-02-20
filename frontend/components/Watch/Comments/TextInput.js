@@ -1,6 +1,7 @@
 class TextInput extends React.Component {
   componentDidMount() {
     this.text.addEventListener('input', this.resize)
+    this.props.placeholder.includes('reply') && this.text.focus()
   }
 
   componentWillUnmount() {

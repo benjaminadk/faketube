@@ -36,7 +36,7 @@ const Container = styled.div`
   }
 `
 
-class Description extends React.Component {
+export default class Description extends React.Component {
   state = {
     expand: false
   }
@@ -56,5 +56,3 @@ class Description extends React.Component {
     )
   }
 }
-
-export default Description

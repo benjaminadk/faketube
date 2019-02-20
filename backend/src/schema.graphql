@@ -4,7 +4,7 @@ type Query {
   me: User
   video(id: ID!): Video
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, first: Int): [Video]
-  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, first: Int): [Comment]
+  comments(where: CommentWhereInput, orderBy: String, skip: Int, first: Int): [Comment]
 }
 
 type Mutation {

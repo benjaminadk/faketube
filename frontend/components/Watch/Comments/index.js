@@ -6,12 +6,7 @@ import AddComment from './AddComment'
 import CommentItem from './CommentItem'
 
 const COMMENTS_QUERY = gql`
-  query COMMENTS_QUERY(
-    $where: CommentWhereInput
-    $orderBy: CommentOrderByInput
-    $skip: Int
-    $first: Int
-  ) {
+  query COMMENTS_QUERY($where: CommentWhereInput, $orderBy: String, $skip: Int, $first: Int) {
     comments(where: $where, orderBy: $orderBy, skip: $skip, first: $first) {
       id
       text
@@ -52,7 +47,7 @@ const Container = styled.div``
 class Comments extends React.Component {
   state = {
     loading: true,
-    orderBy: 'createdAt_DESC',
+    orderBy: 'top',
     skip: 0,
     first: 20,
     comments: [],
@@ -63,12 +58,15 @@ class Comments extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getComments('createdAt_DESC', 0, 20)
+    await this.getComments()
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.text.length === 0 && this.state.text.length >= 1) {
       this.setState({ buttons: true })
+    }
+    if (prevState.orderBy !== this.state.orderBy) {
+      this.getComments()
     }
   }
 
@@ -93,7 +91,7 @@ class Comments extends React.Component {
     })
     const { comments } = res.data
     const count = comments.length
-      ? comments.reduce((acc, val) => acc + val.replies.length + 1, 0)
+      ? comments.reduce((acc, val) => (acc += val.replies.length + 1), 0)
       : 0
     this.setState({ loading: false, comments, count })
   }
@@ -126,6 +124,8 @@ class Comments extends React.Component {
 
   onCancelClick = () => this.setState({ text: '', buttons: false })
 
+  setOrderBy = orderBy => this.setState({ orderBy })
+
   render() {
     const {
       props: { user, video },
@@ -133,7 +133,7 @@ class Comments extends React.Component {
     } = this
     return (
       <Container>
-        <TopRow count={count} />
+        <TopRow count={count} setOrderBy={this.setOrderBy} />
         <AddComment
           loading={loading}
           image={user.image}
