@@ -5,7 +5,7 @@ import { VIDEOS_QUERY } from '../../apollo/videos'
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   background: ${props => props.theme.white};
   .spacer {
@@ -24,10 +24,10 @@ const Container = styled.div`
 
 const Videos = styled.div`
   justify-self: center;
-  width: 90%;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
+  margin-left: 5rem;
 `
 
 class Home extends React.Component {

@@ -58,7 +58,7 @@ type Comment {
   id: ID! @unique
   text: String!
   reply: Boolean!
-  replyTo: Comment @relation(name: "CommentOwnedReplies", onDelete: CASCADE)
+  replyTo: Comment @relation(name: "CommentOwnedReplies")
   edited: Boolean @default(value: "false")
   video: Video
   user: User
@@ -70,7 +70,7 @@ type Comment {
 type CommentReview {
   id: ID! @unique
   status: ReviewStatus
-  comment: Comment @relation(name: "CommentOwnedReviews", onDelete: CASCADE)
+  comment: Comment @relation(name: "CommentOwnedReviews")
   user: User
   createdAt: DateTime!
 }

@@ -57,7 +57,9 @@ class TopRow extends React.Component {
     } = this
     return (
       <Container>
-        <div>{count} Comments</div>
+        <div>
+          {count} Comment{count === 1 ? '' : 's'}
+        </div>
         <div ref={el => (this.anchor = el)} className="comments-sort">
           <Popup show={show} x={x} y={y + 40}>
             <div onClick={() => setOrderBy('top')}>Top comments</div>

@@ -38,7 +38,14 @@ const Container = styled.div`
 
 export default class Description extends React.Component {
   state = {
-    expand: false
+    expand: false,
+    showExpand: true
+  }
+
+  componentDidMount() {
+    if (this.description.scrollHeight < 70) {
+      this.setState({ showExpand: false })
+    }
   }
 
   toggleExpand = () => this.setState(({ expand }) => ({ expand: !expand }))
@@ -46,12 +53,19 @@ export default class Description extends React.Component {
   render() {
     const {
       props: { video },
-      state: { expand }
+      state: { expand, showExpand }
     } = this
     return (
       <Container expand={expand}>
-        <pre dangerouslySetInnerHTML={{ __html: linkifyDescription(video) }} />
-        <div onClick={this.toggleExpand}>show {expand ? 'less' : 'more'}</div>
+        <pre
+          ref={el => (this.description = el)}
+          dangerouslySetInnerHTML={{ __html: linkifyDescription(video) }}
+        />
+        {showExpand ? (
+          <div onClick={this.toggleExpand}>show {expand ? 'less' : 'more'}</div>
+        ) : (
+          <div />
+        )}
       </Container>
     )
   }
