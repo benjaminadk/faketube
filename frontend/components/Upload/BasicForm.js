@@ -51,8 +51,8 @@ const Form = styled.div`
         display: flex;
         font-size: 1.3rem;
         margin-bottom: 2rem;
-        img {
-          width: 4.5rem !important;
+        .tip-img {
+          width: 4.5rem;
           height: 4.5rem;
           margin-right: 2rem;
         }
@@ -208,7 +208,10 @@ const BasicForm = ({
           </button>
         </PlaylistTool>
         <div className="tip">
-          <img src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-child-safety.png" />
+          <img
+            className="tip-img"
+            src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-child-safety.png"
+          />
           <div className="tip-main">
             <div>Do minors appear in this video?</div>
             <div>
@@ -221,7 +224,10 @@ const BasicForm = ({
           </div>
         </div>
         <div className="tip">
-          <img src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-education.png" />
+          <img
+            className="tip-img"
+            src="https://s3-us-west-1.amazonaws.com/faketube/assets/upload-education.png"
+          />
           <div className="tip-main">
             <div>Looking for overall content guidance?</div>
             <div>
