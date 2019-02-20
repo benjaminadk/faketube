@@ -1,27 +1,6 @@
 const VideoWithUser = require('../fragments/VideoWithUser')
 const CommentWithUser = require('../fragments/CommentWithUser')
-
-function commentsByDate(a, b) {
-  return b.createdAt - a.createdAt
-}
-
-function commentsByTop(a, b) {
-  return getCommentEngagement(b) - getCommentEngagement(a)
-}
-
-function getCommentEngagement(comment) {
-  return (
-    comment.reviews.reduce((acc, val) => {
-      if (val.status === 'LIKE') {
-        acc += 1
-      } else if (val.status === 'DISLIKE') {
-        acc -= 1
-      }
-      return acc
-    }, 0) +
-    comment.replies.length * 2
-  )
-}
+const { commentsByDate, commentsByTop } = require('./utils')
 
 module.exports = {
   me: async (_, args, ctx, info) => ctx.user,

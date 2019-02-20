@@ -163,6 +163,16 @@ module.exports = {
     }
   },
 
+  deleteComment: async (_, args, ctx, info) => {
+    try {
+      await ctx.prisma.deleteComment({ id: args.id })
+      return { success: true }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
   createCommentReview: async (_, args, ctx, info) => {
     try {
       const review = await ctx.prisma.createCommentReview({

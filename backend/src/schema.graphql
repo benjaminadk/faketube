@@ -19,6 +19,7 @@ type Mutation {
   createReview(id: ID!, status: ReviewStatus): ReviewPayload
   updateReview(id: ID!, status: ReviewStatus): ReviewPayload
   createComment(id: ID!, data: CommentCreateInput): CommentPayload
+  deleteComment(id: ID!): Payload
   createCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
   updateCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
   createReply(id: ID!, data: CommentCreateInput): CommentPayload
