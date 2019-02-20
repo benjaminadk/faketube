@@ -1,21 +1,26 @@
 import styled from 'styled-components'
 import { MoreVert } from 'styled-icons/material/MoreVert'
 import { WatchLater } from 'styled-icons/material/WatchLater'
+import { CheckCircle } from 'styled-icons/material/CheckCircle'
 import Router from 'next/router'
-import formatDistance from '../../lib/formatDistance'
-import formatDuration from '../../lib/formatDuration'
-import Popup from '../styles/Popup'
+import formatDistance from '../lib/formatDistance'
+import formatDuration from '../lib/formatDuration'
+import isVideoNew from '../lib/isVideoNew'
+import Popup from './styles/Popup'
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: ${props => (props.portrait ? 'column' : 'row')};
   margin-right: 0.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: ${props => (props.portrait ? '3rem' : '.75rem')};
   cursor: pointer;
   .top {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: ${props => (props.portrait ? '1rem' : 0)};
+    margin-right: ${props => (props.portrait ? 0 : '.75rem')};
     .thumb {
-      width: 21rem;
-      height: 11.8rem;
+      width: ${props => props.width}rem;
+      height: ${props => props.height}rem;
     }
     .watch {
       position: absolute;
@@ -91,8 +96,20 @@ const Container = styled.div`
     }
     .user,
     .info {
+      display: flex;
       font-size: 1.4rem;
       color: ${props => props.theme.grey[12]};
+    }
+    .verified {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .new {
+      font-size: 1.2rem;
+      background: ${props => props.theme.grey[1]};
+      color: ${props => props.theme.grey[10]};
+      padding: 0.1rem 0.25rem;
+      border-radius: 2px;
     }
   }
   &:hover .more-vert {
@@ -172,11 +189,17 @@ class VideoThumb extends React.Component {
 
   render() {
     const {
-      props: { video, view },
+      props: { video, view, portrait, width, height },
       state: { preview, x, y, popup }
     } = this
     return (
-      <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <Container
+        portrait={portrait}
+        width={width}
+        height={height}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      >
         <div className="top" onClick={() => this.onVideoClick(video.id)}>
           <img className="thumb" src={preview ? video.previewURL : video.thumbURL} />
           <div className="watch">
@@ -199,10 +222,15 @@ class VideoThumb extends React.Component {
               <MoreVert className="more-vert" />
             </div>
           </div>
-          <div className="user">{video.user.name}</div>
-          <div className="info">
-            {video.views.length} views &bull; {formatDistance(video.createdAt)} ago
+          <div className="user">
+            <div>{video.user.name}</div>
+            {video.user.verified ? <CheckCircle className="verified" /> : null}
           </div>
+          <div className="info">
+            <div>{video.views.length} views</div>
+            {portrait ? <div>&nbsp;&bull; {formatDistance(video.createdAt)} ago</div> : <div />}
+          </div>
+          {!portrait && isVideoNew(video.createdAt) ? <span className="new">New</span> : null}
         </div>
         <Popup show={popup} x={x - 120} y={y + 22.5}>
           <div>Not interested</div>

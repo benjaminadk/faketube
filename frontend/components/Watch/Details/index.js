@@ -1,9 +1,11 @@
 import styled from 'styled-components'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
+import { MoreHoriz } from 'styled-icons/material/MoreHoriz'
 import Thumbs from './Thumbs'
 import ShareButton from './ShareButton'
 import ShareModal from './ShareModal'
+import SaveButton from './SaveButton'
 import CreatedBy from './CreatedBy'
 import Description from './Description'
 import { VIDEO_QUERY } from '../../../apollo/video'
@@ -50,6 +52,12 @@ const Container = styled.div`
     }
     .actions {
       display: flex;
+      .more-horiz {
+        width: 2rem;
+        height: 2rem;
+        color: ${props => props.theme.grey[8]};
+        cursor: pointer;
+      }
     }
   }
   .author-row {
@@ -72,7 +80,8 @@ const Container = styled.div`
 class Details extends React.Component {
   state = {
     review: null,
-    shareModal: false
+    shareModal: false,
+    playlistModal: false
   }
 
   componentDidMount() {
@@ -122,6 +131,10 @@ class Details extends React.Component {
 
   onHideShareModal = () => this.setState({ shareModal: false })
 
+  onShowPlaylistModal = () => this.setState({ playlistModal: true })
+
+  onHidePlaylistModal = () => this.setState({ playlistModal: false })
+
   render() {
     const {
       props: { video, time },
@@ -137,8 +150,8 @@ class Details extends React.Component {
           <div className="actions">
             <Thumbs video={video} onClick={this.onReviewClick} />
             <ShareButton onClick={this.onShowShareModal} />
-            <div>save</div>
-            <div>more</div>
+            <SaveButton onClick={this.onShowPlaylistModal} />
+            <MoreHoriz className="more-horiz" />
           </div>
         </div>
         <div className="author-row">

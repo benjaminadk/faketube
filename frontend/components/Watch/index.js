@@ -3,12 +3,14 @@ import { Query } from 'react-apollo'
 import Player from './Player'
 import Details from './Details'
 import Comments from './Comments'
+import VideoList from './VideoList'
 import { VIDEO_QUERY } from '../../apollo/video'
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 75% 25%;
+  grid-template-columns: 70% 30%;
   padding-top: 3rem;
+  padding-bottom: 3rem;
   background: ${props => props.theme.white};
   .left {
     justify-self: center;
@@ -29,21 +31,21 @@ class Watch extends React.Component {
       state: { time }
     } = this
     return (
-      <Container>
-        <Query query={VIDEO_QUERY} variables={{ id: query.id }}>
-          {({ data, loading, error }) => {
-            if (loading) return null
-            return (
+      <Query query={VIDEO_QUERY} variables={{ id: query.id }}>
+        {({ data, loading, error }) => {
+          if (loading) return null
+          return (
+            <Container>
               <div className="left">
                 <Player video={data.video} user={user} query={query} updateTime={this.updateTime} />
                 <Details video={data.video} user={user} time={time} />
                 <Comments video={data.video} user={user} query={query} />
               </div>
-            )
-          }}
-        </Query>
-        <div>list</div>
-      </Container>
+              <VideoList video={data.video} user={user} />
+            </Container>
+          )
+        }}
+      </Query>
     )
   }
 }

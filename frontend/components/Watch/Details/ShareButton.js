@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Reply } from 'styled-icons/material/Reply'
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -12,8 +12,10 @@ const Container = styled.div`
     width: 2rem;
     height: 2rem;
     color: inherit;
-    transform: rotateY(180deg);
     margin-right: 1rem;
+  }
+  svg.reply {
+    transform: rotateY(180deg);
   }
   & > :last-child {
     text-transform: uppercase;
@@ -22,11 +24,9 @@ const Container = styled.div`
   }
 `
 
-const ShareButton = ({ onClick }) => (
+export default ({ onClick }) => (
   <Container onClick={onClick}>
-    <Reply />
+    <Reply className="reply" />
     <div>share</div>
   </Container>
 )
-
-export default ShareButton

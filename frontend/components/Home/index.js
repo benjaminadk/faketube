@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
-import VideoThumb from './VideoThumb'
+import VideoThumb from '../VideoThumb'
 import { VIDEOS_QUERY } from '../../apollo/videos'
 
 const Container = styled.div`
@@ -49,7 +49,16 @@ class Home extends React.Component {
                   <Videos>
                     {videos.map((v, i) => {
                       const view = user ? user.views.find(vi => vi.video.id === v.id) : null
-                      return <VideoThumb key={v.id} video={v} view={view} />
+                      return (
+                        <VideoThumb
+                          key={v.id}
+                          video={v}
+                          view={view}
+                          portrait={true}
+                          width={21}
+                          height={11.8}
+                        />
+                      )
                     })}
                   </Videos>
                 </div>
