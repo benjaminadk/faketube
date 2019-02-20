@@ -5,7 +5,11 @@ import CommentStyles from '../../styles/Comment'
 import NameAndDate from './NameAndDate'
 import CommentThumbs from './CommentThumbs'
 import CommentMenu from './CommentMenu'
-import { CREATE_COMMENT_REVIEW_MUTATION, UPDATE_COMMENT_REVIEW_MUTATION } from './CommentItem'
+import {
+  CREATE_COMMENT_REVIEW_MUTATION,
+  UPDATE_COMMENT_REVIEW_MUTATION,
+  DELETE_COMMENT_MUTATION
+} from './CommentItem'
 
 class ReplyItem extends React.Component {
   state = {
@@ -61,7 +65,7 @@ class ReplyItem extends React.Component {
 
   onReviewClick = async status => {
     const {
-      props: { comment, client },
+      props: { comment, client, getComments },
       state: { review }
     } = this
     if (!review) {
@@ -74,7 +78,7 @@ class ReplyItem extends React.Component {
         return // error creating comment review
       }
       await this.setState({ review: newReview })
-      await this.props.getComments()
+      await getComments()
     } else {
       const newStatus = review.status === status ? 'NONE' : status
       let res = await client.mutate({
@@ -86,7 +90,7 @@ class ReplyItem extends React.Component {
         return // error updating comment review
       }
       await this.setState({ review: updatedReview })
-      await this.props.getComments()
+      await getComments()
     }
   }
 
@@ -103,6 +107,23 @@ class ReplyItem extends React.Component {
   onMenuClose = () => {
     this.setState({ popup: false })
     document.body.removeEventListener('click', this.onMenuClose)
+  }
+
+  onDeleteComment = async () => {
+    const {
+      comment: { id },
+      client,
+      getComments
+    } = this.props
+    const res = await client.mutate({
+      mutation: DELETE_COMMENT_MUTATION,
+      variables: { id }
+    })
+    const { success } = res.data.deleteComment
+    if (!success) {
+      return // error deleting comment
+    }
+    await getComments()
   }
 
   toggleExpand = () => this.setState(({ expand }) => ({ expand: !expand }))
@@ -144,7 +165,14 @@ class ReplyItem extends React.Component {
         <div ref={el => (this.anchor = el)}>
           <MoreVert className="more-vert" onClick={this.onMenuOpen} />
         </div>
-        <CommentMenu show={popup} x={x} y={y} isAuthor={isAuthor} isOwner={isOwner} />
+        <CommentMenu
+          show={popup}
+          x={x}
+          y={y}
+          isAuthor={isAuthor}
+          isOwner={isOwner}
+          onDeleteComment={this.onDeleteComment}
+        />
       </CommentStyles>
     )
   }

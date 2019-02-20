@@ -33,6 +33,14 @@ export const UPDATE_COMMENT_REVIEW_MUTATION = gql`
   }
 `
 
+export const DELETE_COMMENT_MUTATION = gql`
+  mutation DELETE_COMMENT_MUTATION($id: ID!) {
+    deleteComment(id: $id) {
+      success
+    }
+  }
+`
+
 class CommentItem extends React.Component {
   state = {
     height: 0,
@@ -99,7 +107,7 @@ class CommentItem extends React.Component {
 
   onReviewClick = async status => {
     const {
-      props: { comment, client },
+      props: { comment, client, getComments },
       state: { review }
     } = this
     if (!review) {
@@ -112,7 +120,7 @@ class CommentItem extends React.Component {
         return // error creating comment review
       }
       await this.setState({ review: newReview })
-      await this.props.getComments()
+      await getComments()
     } else {
       const newStatus = review.status === status ? 'NONE' : status
       let res = await client.mutate({
@@ -124,7 +132,7 @@ class CommentItem extends React.Component {
         return // error updating comment review
       }
       await this.setState({ review: updatedReview })
-      await this.props.getComments()
+      await getComments()
     }
   }
 
@@ -137,6 +145,23 @@ class CommentItem extends React.Component {
   onMenuClose = () => {
     this.setState({ popup: false })
     document.body.removeEventListener('click', this.onMenuClose)
+  }
+
+  onDeleteComment = async () => {
+    const {
+      comment: { id },
+      client,
+      getComments
+    } = this.props
+    const res = await client.mutate({
+      mutation: DELETE_COMMENT_MUTATION,
+      variables: { id }
+    })
+    const { success } = res.data.deleteComment
+    if (!success) {
+      return // error deleting comment
+    }
+    await getComments()
   }
 
   toggleExpand = () => this.setState(({ expand }) => ({ expand: !expand }))
@@ -228,7 +253,14 @@ class CommentItem extends React.Component {
         <div ref={el => (this.anchor = el)}>
           <MoreVert className="more-vert" onClick={this.onMenuOpen} />
         </div>
-        <CommentMenu show={popup} x={x} y={y} isAuthor={isAuthor} isOwner={isOwner} />
+        <CommentMenu
+          show={popup}
+          x={x}
+          y={y}
+          isAuthor={isAuthor}
+          isOwner={isOwner}
+          onDeleteComment={this.onDeleteComment}
+        />
       </CommentStyles>
     )
   }

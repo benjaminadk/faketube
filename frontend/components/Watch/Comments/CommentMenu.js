@@ -1,11 +1,11 @@
 import Popup from '../../styles/Popup'
 
-const CommentMenu = ({ show, x, y, isAuthor, isOwner }) => (
+const CommentMenu = ({ show, x, y, isAuthor, isOwner, onDeleteComment }) => (
   <Popup show={show} x={x} y={y + 40} width={isOwner && !isAuthor ? 17 : ''}>
     {isAuthor ? (
       <React.Fragment>
         <div>Edit</div>
-        <div>Delete</div>
+        <div onClick={onDeleteComment}>Delete</div>
       </React.Fragment>
     ) : isOwner ? (
       <React.Fragment>

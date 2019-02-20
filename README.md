@@ -1,19 +1,23 @@
-## FakeTube
+# FooTube
 
-## Notes
+A clone of YouYube
 
-- nextjs, react-apollo frontend
-- express/apollo-server
-- prisma database
-- oauth w/Google
-- jsonwebtoken + cookie auth system
-- user/admin roles
-- video/image uploads to aws s3
-- aws lambda function to create thumbnails
-  - uses ffmpeg and ffprobe w/Nodejs `child_process`
-  - finds duration of video
-  - creates and sends three thumbnails to s3
-  - 3sec preview GIF sent to s3
+## Contents
+
+- [FooTube](#footube)
+
+## Features
+
+FooTube attempts go re-create some of the core functionality of YouTube. This includes:
+
+1. Video uploads
+
+- video files are saved to AWS S3
+- bucket access restricted to FooTube
+
+2. Video pre-processing
+
+- videos are processed with `ffmpeg` and `ffprobe`
 
 ## Todos
 
