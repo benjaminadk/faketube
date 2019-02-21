@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { Check } from 'styled-icons/material/Check'
 import { KeyboardArrowLeft } from 'styled-icons/material/KeyboardArrowLeft'
 import { KeyboardArrowRight } from 'styled-icons/material/KeyboardArrowRight'
+import Switch from '../../Switch'
 
 const Container = styled.div`
   position: absolute;
@@ -107,7 +108,7 @@ class SettingsMenu extends React.Component {
 
   render() {
     const {
-      props: { show, speed },
+      props: { show, speed, autoplay, toggleAutoplay },
       state: { showSpeed }
     } = this
     return (
@@ -129,7 +130,7 @@ class SettingsMenu extends React.Component {
           <React.Fragment>
             <div className="settings-row">
               <div>Autoplay</div>
-              <div>switch</div>
+              <Switch color="red" on={autoplay} onClick={toggleAutoplay} />
             </div>
             <div className="settings-row" onClick={this.onShowSpeed}>
               <div>Speed</div>

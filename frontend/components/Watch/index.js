@@ -52,6 +52,7 @@ class Watch extends React.Component {
                   query={query}
                   autoplay={autoplay}
                   updateTime={this.updateTime}
+                  toggleAutoplay={this.toggleAutoplay}
                 />
                 <Details video={data.video} user={user} time={time} />
                 <Comments video={data.video} user={user} query={query} />

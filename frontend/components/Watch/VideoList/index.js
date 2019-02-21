@@ -55,7 +55,7 @@ class VideoList extends React.Component {
     await this.setState({ loading: true })
     const {
       props: { video, client },
-      state: { first }
+      state: { first, lastVideo }
     } = this
     const res = await client.query({
       query: VIDEOS_QUERY,
@@ -78,6 +78,7 @@ class VideoList extends React.Component {
             )
           : 0
         pts += v.views.length
+        if (lastVideo && lastVideo.id === v.id) pts = 0
         v.points = pts
         return v
       })
@@ -94,7 +95,7 @@ class VideoList extends React.Component {
     const nextVideo = rankedVideos.shift()
 
     this.props.setNextVideo(nextVideo)
-    await this.setState({ loading: false, videos: rankedVideos })
+    await this.setState({ loading: false, videos: rankedVideos, lastVideo: video })
   }
 
   render() {
@@ -112,7 +113,7 @@ class VideoList extends React.Component {
               <div>Up next</div>
               <div className="up-next-switch">
                 <div>autoplay</div>
-                <Switch on={autoplay} onClick={toggleAutoplay} />
+                <Switch color="blue" on={autoplay} onClick={toggleAutoplay} />
               </div>
             </div>
             <VideoThumb video={nextVideo} portrait={false} width={16.8} height={9.4} />

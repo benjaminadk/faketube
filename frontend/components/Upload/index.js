@@ -226,8 +226,7 @@ class Upload extends React.Component {
           previewURL: this.getPreviewSrc(),
           isPublic: this.state.isPublic
         }
-      },
-      refetchQueries: [{ query: VIDEOS_QUERY }]
+      }
     })
     const { success: success2, video } = res2.data.createVideo
     if (!success2) {
@@ -277,7 +276,7 @@ class Upload extends React.Component {
           category
         }
       },
-      refetchQueries: [{ query: VIDEOS_QUERY }]
+      refetchQueries: [{ query: VIDEOS_QUERY, variables: { isPublic: true, isPublished: true } }]
     })
     const { success } = res.data.updateVideo
     if (!success) {

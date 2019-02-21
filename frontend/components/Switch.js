@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
 
-const Container = styled.div`
+const Switch = styled.div`
   position: relative;
   width: 3.5rem;
   height: 1.25rem;
@@ -9,7 +9,7 @@ const Container = styled.div`
   border-radius: 1rem;
   .switch-handle {
     position: absolute;
-    top: -0.3rem;
+    top: -0.35rem;
     right: ${props => (props.on ? 0 : '1.5rem')};
     width: 2rem;
     height: 2rem;
@@ -20,8 +20,27 @@ const Container = styled.div`
   }
 `
 
-export default ({ on, onClick }) => (
-  <Container on={on} onClick={onClick}>
-    <div className="switch-handle" />
-  </Container>
-)
+const RedSwitch = styled(Switch)`
+  background: ${props => (props.on ? props.theme.primary : props.theme.grey[10])};
+  .switch-handle {
+    background: ${props => (props.on ? props.theme.white : props.theme.grey[5])};
+  }
+`
+
+export default ({ color, on, onClick }) => {
+  if (color === 'blue') {
+    return (
+      <Switch on={on} onClick={onClick}>
+        <div className="switch-handle" />
+      </Switch>
+    )
+  } else if (color === 'red') {
+    return (
+      <RedSwitch on={on} onClick={onClick}>
+        <div className="switch-handle" />
+      </RedSwitch>
+    )
+  } else {
+    return null
+  }
+}

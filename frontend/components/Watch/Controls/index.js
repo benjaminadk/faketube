@@ -47,6 +47,7 @@ const Controls = ({
   showVolume,
   showSettings,
   speed,
+  autoplay,
   onTimeChange,
   onTimeSlideStart,
   onTimeSlideEnd,
@@ -58,7 +59,8 @@ const Controls = ({
   onHideSettings,
   onShowSettings,
   onSpeedChange,
-  onFullscreenClick
+  onFullscreenClick,
+  toggleAutoplay
 }) => (
   <Container controls={controls}>
     <div className="controls-top">
@@ -96,7 +98,13 @@ const Controls = ({
         <FullscreenButton onClick={onFullscreenClick} />
       </div>
     </div>
-    <SettingsMenu show={showSettings} speed={speed} onSpeedChange={onSpeedChange} />
+    <SettingsMenu
+      show={showSettings}
+      speed={speed}
+      autoplay={autoplay}
+      toggleAutoplay={toggleAutoplay}
+      onSpeedChange={onSpeedChange}
+    />
   </Container>
 )
 

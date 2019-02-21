@@ -232,7 +232,7 @@ class Player extends React.Component {
 
   render() {
     const {
-      props: { video },
+      props: { video, autoplay, toggleAutoplay },
       state: { controls, time, buffered, playing, showVolume, volume, muted, showSettings, speed }
     } = this
     return (
@@ -256,6 +256,7 @@ class Player extends React.Component {
           showVolume={showVolume}
           showSettings={showSettings}
           speed={speed}
+          autoplay={autoplay}
           onTimeChange={this.onTimeChange}
           onTimeSlideStart={this.onTimeSlideStart}
           onTimeSlideEnd={this.onTimeSlideEnd}
@@ -268,6 +269,7 @@ class Player extends React.Component {
           onShowSettings={this.onShowSettings}
           onSpeedChange={this.onSpeedChange}
           onFullscreenClick={this.onFullscreenClick}
+          toggleAutoplay={toggleAutoplay}
         />
       </Container>
     )

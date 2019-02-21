@@ -8,7 +8,7 @@ const Container = styled.div`
   border-bottom: 1px solid ${props => props.theme.grey[2]};
   pre {
     width: 80%;
-    height: ${props => (props.expand ? '100%' : '6.75rem')};
+    height: ${props => (props.expand ? '100%' : '6.9rem')};
     font-family: 'Roboto';
     font-size: 1.4rem;
     white-space: pre-wrap;
@@ -43,7 +43,7 @@ export default class Description extends React.Component {
   }
 
   componentDidMount() {
-    if (this.description.scrollHeight < 70) {
+    if (this.description.scrollHeight < 75) {
       this.setState({ showExpand: false })
     }
   }
