@@ -1,1 +1,1 @@
-console.log('seed')
+require('./withSheets')()

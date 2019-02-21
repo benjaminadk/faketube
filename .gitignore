@@ -9,3 +9,6 @@ node_modules
 
 # next build folder
 .next
+
+# google sheets api token
+token.json
