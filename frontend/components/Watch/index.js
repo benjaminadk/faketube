@@ -20,15 +20,23 @@ const Container = styled.div`
 
 class Watch extends React.Component {
   state = {
-    time: 0
+    time: 0,
+    autoplay: true,
+    nextVideo: null
   }
 
   updateTime = time => this.setState({ time })
 
+  toggleAutoplay = () => this.setState(({ autoplay }) => ({ autoplay: !autoplay }))
+
+  setNextVideo = nextVideo => {
+    this.setState({ nextVideo })
+  }
+
   render() {
     const {
       props: { user, query },
-      state: { time }
+      state: { time, autoplay, nextVideo }
     } = this
     return (
       <Query query={VIDEO_QUERY} variables={{ id: query.id }}>
@@ -37,11 +45,26 @@ class Watch extends React.Component {
           return (
             <Container>
               <div className="left">
-                <Player video={data.video} user={user} query={query} updateTime={this.updateTime} />
+                <Player
+                  video={data.video}
+                  nextVideo={nextVideo}
+                  user={user}
+                  query={query}
+                  autoplay={autoplay}
+                  updateTime={this.updateTime}
+                />
                 <Details video={data.video} user={user} time={time} />
                 <Comments video={data.video} user={user} query={query} />
               </div>
-              <VideoList video={data.video} user={user} />
+              <VideoList
+                video={data.video}
+                user={user}
+                query={query}
+                autoplay={autoplay}
+                nextVideo={nextVideo}
+                setNextVideo={this.setNextVideo}
+                toggleAutoplay={this.toggleAutoplay}
+              />
             </Container>
           )
         }}

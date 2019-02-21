@@ -26,7 +26,7 @@ module.exports = async (videos, users) => {
   const relations = []
   const date = new Date().toISOString()
 
-  const adminID = createRandomId()
+  const adminID = 'cjsdxbonw27a70b906tggjp38'
   const admin = {
     _typeName: 'User',
     id: adminID,

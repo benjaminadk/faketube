@@ -38,12 +38,17 @@ class VideoList extends React.Component {
   state = {
     loading: true,
     videos: [],
-    first: 20,
-    autoplay: true
+    first: 20
   }
 
   componentDidMount() {
     this.getVideos()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.video.id !== this.props.video.id) {
+      this.getVideos()
+    }
   }
 
   getVideos = async () => {
@@ -56,15 +61,46 @@ class VideoList extends React.Component {
       query: VIDEOS_QUERY,
       variables: { where: { isPublic: true, isPublished: true }, first }
     })
-    const videos = res.data.videos.filter(v => v.id !== video.id)
-    await this.setState({ loading: false, videos })
-  }
 
-  toggleAutoplay = () => this.setState(({ autoplay }) => ({ autoplay: !autoplay }))
+    const rankedVideos = res.data.videos
+      .filter(v => v.id !== video.id)
+      .map((v, i) => {
+        let pts = 0
+        if (video.category === v.category) pts += 2
+        if (video.user.id === v.user.id) pts += 1
+        v.tags.forEach(t => {
+          if (video.tags.includes(t)) pts += 3
+        })
+        pts += v.reviews
+          ? v.reviews.reduce(
+              (acc, val) => (acc + val.status === 'LIKE' ? 4 : val.status === 'DISLIKE' ? -4 : 0),
+              0
+            )
+          : 0
+        pts += v.views.length
+        v.points = pts
+        return v
+      })
+      .sort((a, b) => {
+        if (b.points > a.points) return 1
+        else if (b.points < a.points) return -1
+        else {
+          if (b.createdAt > a.createdAt) return 1
+          else if (b.createdAt < a.createdAt) return -1
+          else return 0
+        }
+      })
+
+    const nextVideo = rankedVideos.shift()
+
+    this.props.setNextVideo(nextVideo)
+    await this.setState({ loading: false, videos: rankedVideos })
+  }
 
   render() {
     const {
-      state: { loading, videos, autoplay }
+      props: { autoplay, nextVideo, toggleAutoplay },
+      state: { loading, videos }
     } = this
     if (loading) {
       return null
@@ -76,10 +112,10 @@ class VideoList extends React.Component {
               <div>Up next</div>
               <div className="up-next-switch">
                 <div>autoplay</div>
-                <Switch on={autoplay} onClick={this.toggleAutoplay} />
+                <Switch on={autoplay} onClick={toggleAutoplay} />
               </div>
             </div>
-            <VideoThumb video={this.props.video} portrait={false} width={16.8} height={9.4} />
+            <VideoThumb video={nextVideo} portrait={false} width={16.8} height={9.4} />
           </div>
           <div className="video-list">
             {videos.map((v, i) => (

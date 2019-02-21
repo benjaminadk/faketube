@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
+import Router from 'next/router'
 import Controls from './Controls'
+import OverlayIcon from './OverlayIcon'
 import { VIDEO_QUERY } from '../../apollo/video'
 import { ME_QUERY } from '../../apollo/me'
 
@@ -66,17 +68,31 @@ class Player extends React.Component {
   componentDidMount() {
     this.createVideoView()
     this.setInitialTime()
-    this.video.current.addEventListener('ended', () => this.onUpdateView(true))
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.time !== this.state.time) {
       this.props.updateTime(this.state.time)
     }
+    if (this.state.time >= this.props.video.duration) {
+      this.onVideoEnded()
+    }
+    if (prevProps.query.id !== this.props.query.id) {
+      this.createVideoView()
+      this.setInitialTime()
+    }
   }
 
   async componentWillUnmount() {
     await this.onUpdateView(false)
+  }
+
+  onVideoEnded = async () => {
+    await this.onUpdateView(true)
+    const { autoplay, nextVideo } = this.props
+    if (autoplay) {
+      Router.push({ pathname: '/watch', query: { id: nextVideo.id } })
+    }
   }
 
   setInitialTime = () => {
@@ -110,11 +126,6 @@ class Player extends React.Component {
   }
 
   onUpdateView = async complete => {
-    if (complete) {
-      this.video.current.pause()
-      this.setState({ playing: false })
-      this.video.current.removeEventListener('ended', () => this.onUpdateView(true))
-    }
     const {
       state: { view, time },
       props: { client, query }
@@ -140,8 +151,8 @@ class Player extends React.Component {
 
   onTimeUpdate = () => {
     this.setState({
-      time: Math.ceil(this.video.current.currentTime),
-      buffered: Math.ceil((this.video.current.buffered.end(0) / this.props.video.duration) * 100)
+      time: Math.ceil(this.video.current.currentTime)
+      // buffered: Math.ceil((this.video.current.buffered.end(0) / this.props.video.duration) * 100)
     })
   }
 
@@ -226,7 +237,13 @@ class Player extends React.Component {
     } = this
     return (
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-        <Video ref={this.video} src={video.videoURL} onTimeUpdate={this.onTimeUpdate} />
+        <OverlayIcon playing={playing} />
+        <Video
+          ref={this.video}
+          src={video.videoURL}
+          onTimeUpdate={this.onTimeUpdate}
+          onClick={this.onPlayPauseClick}
+        />
         <Controls
           src={video.videoURL}
           controls={controls}

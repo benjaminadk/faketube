@@ -40,7 +40,7 @@ const LikesRatio = styled.div`
   position: relative;
   width: 100%;
   height: 0.3rem;
-  background: ${props => props.theme.grey[4]};
+  background: ${props => props.theme.grey[2]};
   .bar {
     position: absolute;
     width: ${props => props.percent}%;

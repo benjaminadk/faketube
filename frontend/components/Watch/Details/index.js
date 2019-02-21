@@ -88,6 +88,12 @@ class Details extends React.Component {
     this.setReview()
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.video.id !== this.props.video.id) {
+      this.setReview()
+    }
+  }
+
   setReview = () => {
     const {
       props: { video, user }
