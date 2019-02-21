@@ -36,6 +36,7 @@ type User {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: [Video]
+  playlists: [Playlist]
   views: [View]
   reviews: [Review]
   comments: [Comment]
@@ -100,6 +101,14 @@ type CommentReview {
   status: ReviewStatus
   comment: Comment
   user: User
+  createdAt: DateTime!
+}
+
+type Playlist {
+  id: ID!
+  name: String!
+  description: String
+  videos: [Video]
   createdAt: DateTime!
 }
 

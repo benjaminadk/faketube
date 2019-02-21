@@ -8,6 +8,7 @@ type User {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: [Video] @relation(name: "UserOwnedVideos")
+  playlists: [Playlist]
   views: [View]
   reviews: [Review]
   comments: [Comment]
@@ -72,6 +73,15 @@ type CommentReview {
   status: ReviewStatus
   comment: Comment @relation(name: "CommentOwnedReviews")
   user: User
+  createdAt: DateTime!
+}
+
+type Playlist {
+  id: ID! @unique
+  name: String!
+  description: String
+  isPublic: Boolean @default(value: "true")
+  videos: [Video]
   createdAt: DateTime!
 }
 

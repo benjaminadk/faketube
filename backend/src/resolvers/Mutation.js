@@ -11,7 +11,17 @@ module.exports = {
       var user
       const exists = await ctx.prisma.$exists.user({ googleID: args.data.googleID })
       if (!exists) {
-        user = await ctx.prisma.createUser({ ...args.data })
+        user = await ctx.prisma.createUser({
+          ...args.data,
+          playlists: {
+            create: [
+              {
+                name: 'Watch later',
+                isPublic: false
+              }
+            ]
+          }
+        })
       } else {
         user = await ctx.prisma.user({ googleID: args.data.googleID })
       }

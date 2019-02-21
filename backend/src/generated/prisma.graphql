@@ -6,6 +6,10 @@ type AggregateCommentReview {
   count: Int!
 }
 
+type AggregatePlaylist {
+  count: Int!
+}
+
 type AggregateReview {
   count: Int!
 }
@@ -712,6 +716,12 @@ type Mutation {
   upsertCommentReview(where: CommentReviewWhereUniqueInput!, create: CommentReviewCreateInput!, update: CommentReviewUpdateInput!): CommentReview!
   deleteCommentReview(where: CommentReviewWhereUniqueInput!): CommentReview
   deleteManyCommentReviews(where: CommentReviewWhereInput): BatchPayload!
+  createPlaylist(data: PlaylistCreateInput!): Playlist!
+  updatePlaylist(data: PlaylistUpdateInput!, where: PlaylistWhereUniqueInput!): Playlist
+  updateManyPlaylists(data: PlaylistUpdateManyMutationInput!, where: PlaylistWhereInput): BatchPayload!
+  upsertPlaylist(where: PlaylistWhereUniqueInput!, create: PlaylistCreateInput!, update: PlaylistUpdateInput!): Playlist!
+  deletePlaylist(where: PlaylistWhereUniqueInput!): Playlist
+  deleteManyPlaylists(where: PlaylistWhereInput): BatchPayload!
   createReview(data: ReviewCreateInput!): Review!
   updateReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
   updateManyReviews(data: ReviewUpdateManyMutationInput!, where: ReviewWhereInput): BatchPayload!
@@ -755,6 +765,255 @@ type PageInfo {
   endCursor: String
 }
 
+type Playlist {
+  id: ID!
+  name: String!
+  description: String
+  isPublic: Boolean
+  videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
+  createdAt: DateTime!
+}
+
+type PlaylistConnection {
+  pageInfo: PageInfo!
+  edges: [PlaylistEdge]!
+  aggregate: AggregatePlaylist!
+}
+
+input PlaylistCreateInput {
+  name: String!
+  description: String
+  isPublic: Boolean
+  videos: VideoCreateManyInput
+}
+
+input PlaylistCreateManyInput {
+  create: [PlaylistCreateInput!]
+  connect: [PlaylistWhereUniqueInput!]
+}
+
+type PlaylistEdge {
+  node: Playlist!
+  cursor: String!
+}
+
+enum PlaylistOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  isPublic_ASC
+  isPublic_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type PlaylistPreviousValues {
+  id: ID!
+  name: String!
+  description: String
+  isPublic: Boolean
+  createdAt: DateTime!
+}
+
+input PlaylistScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  isPublic: Boolean
+  isPublic_not: Boolean
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [PlaylistScalarWhereInput!]
+  OR: [PlaylistScalarWhereInput!]
+  NOT: [PlaylistScalarWhereInput!]
+}
+
+type PlaylistSubscriptionPayload {
+  mutation: MutationType!
+  node: Playlist
+  updatedFields: [String!]
+  previousValues: PlaylistPreviousValues
+}
+
+input PlaylistSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PlaylistWhereInput
+  AND: [PlaylistSubscriptionWhereInput!]
+  OR: [PlaylistSubscriptionWhereInput!]
+  NOT: [PlaylistSubscriptionWhereInput!]
+}
+
+input PlaylistUpdateDataInput {
+  name: String
+  description: String
+  isPublic: Boolean
+  videos: VideoUpdateManyInput
+}
+
+input PlaylistUpdateInput {
+  name: String
+  description: String
+  isPublic: Boolean
+  videos: VideoUpdateManyInput
+}
+
+input PlaylistUpdateManyDataInput {
+  name: String
+  description: String
+  isPublic: Boolean
+}
+
+input PlaylistUpdateManyInput {
+  create: [PlaylistCreateInput!]
+  update: [PlaylistUpdateWithWhereUniqueNestedInput!]
+  upsert: [PlaylistUpsertWithWhereUniqueNestedInput!]
+  delete: [PlaylistWhereUniqueInput!]
+  connect: [PlaylistWhereUniqueInput!]
+  disconnect: [PlaylistWhereUniqueInput!]
+  deleteMany: [PlaylistScalarWhereInput!]
+  updateMany: [PlaylistUpdateManyWithWhereNestedInput!]
+}
+
+input PlaylistUpdateManyMutationInput {
+  name: String
+  description: String
+  isPublic: Boolean
+}
+
+input PlaylistUpdateManyWithWhereNestedInput {
+  where: PlaylistScalarWhereInput!
+  data: PlaylistUpdateManyDataInput!
+}
+
+input PlaylistUpdateWithWhereUniqueNestedInput {
+  where: PlaylistWhereUniqueInput!
+  data: PlaylistUpdateDataInput!
+}
+
+input PlaylistUpsertWithWhereUniqueNestedInput {
+  where: PlaylistWhereUniqueInput!
+  update: PlaylistUpdateDataInput!
+  create: PlaylistCreateInput!
+}
+
+input PlaylistWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  isPublic: Boolean
+  isPublic_not: Boolean
+  videos_every: VideoWhereInput
+  videos_some: VideoWhereInput
+  videos_none: VideoWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [PlaylistWhereInput!]
+  OR: [PlaylistWhereInput!]
+  NOT: [PlaylistWhereInput!]
+}
+
+input PlaylistWhereUniqueInput {
+  id: ID
+}
+
 type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
@@ -762,6 +1021,9 @@ type Query {
   commentReview(where: CommentReviewWhereUniqueInput!): CommentReview
   commentReviews(where: CommentReviewWhereInput, orderBy: CommentReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CommentReview]!
   commentReviewsConnection(where: CommentReviewWhereInput, orderBy: CommentReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentReviewConnection!
+  playlist(where: PlaylistWhereUniqueInput!): Playlist
+  playlists(where: PlaylistWhereInput, orderBy: PlaylistOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Playlist]!
+  playlistsConnection(where: PlaylistWhereInput, orderBy: PlaylistOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PlaylistConnection!
   review(where: ReviewWhereUniqueInput!): Review
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review]!
   reviewsConnection(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewConnection!
@@ -1014,6 +1276,7 @@ enum Role {
 type Subscription {
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   commentReview(where: CommentReviewSubscriptionWhereInput): CommentReviewSubscriptionPayload
+  playlist(where: PlaylistSubscriptionWhereInput): PlaylistSubscriptionPayload
   review(where: ReviewSubscriptionWhereInput): ReviewSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   video(where: VideoSubscriptionWhereInput): VideoSubscriptionPayload
@@ -1030,6 +1293,7 @@ type User {
   googlePhotoAT: String
   googlePhotoRT: String
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
+  playlists(where: PlaylistWhereInput, orderBy: PlaylistOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Playlist!]
   views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
@@ -1053,6 +1317,7 @@ input UserCreateInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
+  playlists: PlaylistCreateManyInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
@@ -1094,6 +1359,7 @@ input UserCreateWithoutCommentReviewsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
+  playlists: PlaylistCreateManyInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
@@ -1109,6 +1375,7 @@ input UserCreateWithoutCommentsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
+  playlists: PlaylistCreateManyInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   commentReviews: CommentReviewCreateManyWithoutUserInput
@@ -1124,6 +1391,7 @@ input UserCreateWithoutReviewsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
+  playlists: PlaylistCreateManyInput
   views: ViewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
   commentReviews: CommentReviewCreateManyWithoutUserInput
@@ -1138,6 +1406,7 @@ input UserCreateWithoutVideosInput {
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
+  playlists: PlaylistCreateManyInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
@@ -1154,6 +1423,7 @@ input UserCreateWithoutViewsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
+  playlists: PlaylistCreateManyInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
   commentReviews: CommentReviewCreateManyWithoutUserInput
@@ -1230,6 +1500,7 @@ input UserUpdateInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
+  playlists: PlaylistUpdateManyInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
@@ -1302,6 +1573,7 @@ input UserUpdateWithoutCommentReviewsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
+  playlists: PlaylistUpdateManyInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
@@ -1317,6 +1589,7 @@ input UserUpdateWithoutCommentsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
+  playlists: PlaylistUpdateManyInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   commentReviews: CommentReviewUpdateManyWithoutUserInput
@@ -1332,6 +1605,7 @@ input UserUpdateWithoutReviewsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
+  playlists: PlaylistUpdateManyInput
   views: ViewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
   commentReviews: CommentReviewUpdateManyWithoutUserInput
@@ -1346,6 +1620,7 @@ input UserUpdateWithoutVideosDataInput {
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
+  playlists: PlaylistUpdateManyInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
@@ -1362,6 +1637,7 @@ input UserUpdateWithoutViewsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
+  playlists: PlaylistUpdateManyInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
   commentReviews: CommentReviewUpdateManyWithoutUserInput
@@ -1497,6 +1773,9 @@ input UserWhereInput {
   videos_every: VideoWhereInput
   videos_some: VideoWhereInput
   videos_none: VideoWhereInput
+  playlists_every: PlaylistWhereInput
+  playlists_some: PlaylistWhereInput
+  playlists_none: PlaylistWhereInput
   views_every: ViewWhereInput
   views_some: ViewWhereInput
   views_none: ViewWhereInput
@@ -1576,6 +1855,11 @@ input VideoCreateInput {
   allowComments: Boolean
   comments: CommentCreateManyWithoutVideoInput
   user: UserCreateOneWithoutVideosInput
+}
+
+input VideoCreateManyInput {
+  create: [VideoCreateInput!]
+  connect: [VideoWhereUniqueInput!]
 }
 
 input VideoCreateManyWithoutUserInput {
@@ -1875,6 +2159,25 @@ input VideoSubscriptionWhereInput {
   NOT: [VideoSubscriptionWhereInput!]
 }
 
+input VideoUpdateDataInput {
+  videoURL: String
+  thumbURL: String
+  posterURL: String
+  previewURL: String
+  duration: Int
+  title: String
+  description: String
+  tags: VideoUpdatetagsInput
+  isPublished: Boolean
+  isPublic: Boolean
+  category: Category
+  views: ViewUpdateManyWithoutVideoInput
+  reviews: ReviewUpdateManyWithoutVideoInput
+  allowComments: Boolean
+  comments: CommentUpdateManyWithoutVideoInput
+  user: UserUpdateOneWithoutVideosInput
+}
+
 input VideoUpdateInput {
   videoURL: String
   thumbURL: String
@@ -1907,6 +2210,17 @@ input VideoUpdateManyDataInput {
   isPublic: Boolean
   category: Category
   allowComments: Boolean
+}
+
+input VideoUpdateManyInput {
+  create: [VideoCreateInput!]
+  update: [VideoUpdateWithWhereUniqueNestedInput!]
+  upsert: [VideoUpsertWithWhereUniqueNestedInput!]
+  delete: [VideoWhereUniqueInput!]
+  connect: [VideoWhereUniqueInput!]
+  disconnect: [VideoWhereUniqueInput!]
+  deleteMany: [VideoScalarWhereInput!]
+  updateMany: [VideoUpdateManyWithWhereNestedInput!]
 }
 
 input VideoUpdateManyMutationInput {
@@ -2043,6 +2357,11 @@ input VideoUpdateWithoutViewsDataInput {
   user: UserUpdateOneWithoutVideosInput
 }
 
+input VideoUpdateWithWhereUniqueNestedInput {
+  where: VideoWhereUniqueInput!
+  data: VideoUpdateDataInput!
+}
+
 input VideoUpdateWithWhereUniqueWithoutUserInput {
   where: VideoWhereUniqueInput!
   data: VideoUpdateWithoutUserDataInput!
@@ -2061,6 +2380,12 @@ input VideoUpsertWithoutReviewsInput {
 input VideoUpsertWithoutViewsInput {
   update: VideoUpdateWithoutViewsDataInput!
   create: VideoCreateWithoutViewsInput!
+}
+
+input VideoUpsertWithWhereUniqueNestedInput {
+  where: VideoWhereUniqueInput!
+  update: VideoUpdateDataInput!
+  create: VideoCreateInput!
 }
 
 input VideoUpsertWithWhereUniqueWithoutUserInput {

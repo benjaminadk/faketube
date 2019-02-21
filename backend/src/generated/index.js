@@ -17,6 +17,10 @@ var models = [
     embedded: false
   },
   {
+    name: "Playlist",
+    embedded: false
+  },
+  {
     name: "Review",
     embedded: false
   },
