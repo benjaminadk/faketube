@@ -23,6 +23,9 @@ type Mutation {
   createCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
   updateCommentReview(id: ID!, status: ReviewStatus): CommentReviewPayload
   createReply(id: ID!, data: CommentCreateInput): CommentPayload
+  createPlaylist(id: ID!, data: PlaylistCreateInput): PlaylistPayload
+  updatePlaylist(id: ID!, data: PlaylistCreateInput): PlaylistPayload
+  togglePlaylist(id: ID!, videoID: ID!, status: Boolean!): Payload
   refreshGooglePhotoToken: TokenPayload
 }
 
@@ -147,6 +150,11 @@ type CommentPayload {
 type CommentReviewPayload {
   success: Boolean
   review: CommentReview
+}
+
+type PlaylistPayload {
+  success: Boolean
+  playlist: Playlist
 }
 
 type TokenPayload {

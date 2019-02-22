@@ -225,6 +225,49 @@ module.exports = {
     }
   },
 
+  createPlaylist: async (_, args, ctx, info) => {
+    try {
+      const playlist = await ctx.prisma.createPlaylist({
+        ...args.data,
+        user: { connect: { id: ctx.userId } },
+        videos: { connect: [{ id: args.id }] }
+      })
+      return { success: true, playlist }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
+  updatePlaylist: async (_, args, ctx, info) => {
+    try {
+      const playlist = await ctx.prisma.updatePlaylist({
+        where: { id: args.id },
+        data: { ...args.data }
+      })
+      return { success: true, playlist }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
+  togglePlaylist: async (_, args, ctx, info) => {
+    try {
+      const videos = args.status
+        ? { connect: [{ id: args.videoID }] }
+        : { disconnect: [{ id: args.videoID }] }
+      await ctx.prisma.updatePlaylist({
+        where: { id: args.id },
+        data: { videos }
+      })
+      return { success: true }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
   refreshGooglePhotoToken: async (_, args, ctx, info) => {
     try {
       const { id, googlePhotoRT } = ctx.user

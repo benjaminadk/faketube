@@ -12,6 +12,13 @@ export const ME_QUERY = gql`
       googlePhotoRT
       role
       createdAt
+      playlists {
+        id
+        name
+        description
+        isPublic
+        createdAt
+      }
       views {
         id
         complete

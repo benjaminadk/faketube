@@ -9,6 +9,13 @@ module.exports = `
     googlePhotoRT
     role
     createdAt
+    playlists {
+      id
+      name
+      description
+      isPublic
+      createdAt
+    }
     views {
       id
       complete

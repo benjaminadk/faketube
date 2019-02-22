@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
 import { Close } from 'styled-icons/material/Close'
+import PlaylistTool from './PlaylistTool'
 
-const Form = styled.div`
+const Container = styled.div`
   .basic-top {
     display: grid;
     grid-template-columns: 45rem 1fr;
@@ -42,10 +43,11 @@ const Form = styled.div`
         margin: 0;
         list-style: none;
       }
-      select {
+      select.isPublic {
         width: 100%;
         margin-top: 1rem;
         margin-bottom: 1.5rem;
+        font-family: 'Roboto Bold';
       }
       .tip {
         display: flex;
@@ -123,25 +125,6 @@ const TagInput = styled.input.attrs(props => ({
   }
 `
 
-const PlaylistTool = styled.div`
-  width: 100%;
-  margin-bottom: 3rem;
-  .add {
-    width: 100%;
-    font-family: 'Roboto';
-    font-size: 1.1rem;
-    text-align: left;
-    background: ${props => props.theme.grey[0]};
-    padding: 0.75rem;
-    border: 1px solid ${props => props.theme.grey[7]};
-    border-radius: 2px;
-    cursor: pointer;
-    &:hover {
-      background: ${props => props.theme.grey[1]};
-    }
-  }
-`
-
 const BasicForm = ({
   inputRef,
   title,
@@ -149,13 +132,15 @@ const BasicForm = ({
   tag,
   tags,
   isPublic,
+  videoID,
+  user,
   onChange,
   onTagsClick,
   onTagChange,
   onTagDelete,
   onTagKeyDown
 }) => (
-  <Form>
+  <Container>
     <div className="basic-top">
       <div className="left">
         <input type="text" name="title" placeholder="Title" value={title} onChange={onChange} />
@@ -198,15 +183,11 @@ const BasicForm = ({
           <li>{'\u00b7'} Chat with fans before and during the Premiere</li>
           <li>{'\u00b7'} Watch the Premiere with fans in real time</li>
         </ul>
-        <select name="isPublic" value={isPublic} onChange={onChange}>
+        <select className="isPublic" name="isPublic" value={isPublic} onChange={onChange}>
           <option value={true}>Public</option>
           <option value={false}>Private</option>
         </select>
-        <PlaylistTool>
-          <button type="button" className="add">
-            + Add to playlist
-          </button>
-        </PlaylistTool>
+        <PlaylistTool playlists={user.playlists} videoID={videoID} />
         <div className="tip">
           <img
             className="tip-img"
@@ -241,7 +222,7 @@ const BasicForm = ({
         </div>
       </div>
     </div>
-  </Form>
+  </Container>
 )
 
 export default BasicForm

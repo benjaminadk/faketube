@@ -532,6 +532,8 @@ class Upload extends React.Component {
                       tag={tag}
                       tags={tags}
                       isPublic={isPublic}
+                      videoID={videoID}
+                      user={this.props.user}
                       onChange={this.onChange}
                       onTagsClick={this.onTagsClick}
                       onTagChange={this.onTagChange}
