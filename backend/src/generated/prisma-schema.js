@@ -771,6 +771,7 @@ type Playlist {
   name: String!
   description: String
   isPublic: Boolean
+  user: User
   videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
   createdAt: DateTime!
 }
@@ -785,12 +786,20 @@ input PlaylistCreateInput {
   name: String!
   description: String
   isPublic: Boolean
+  user: UserCreateOneWithoutPlaylistsInput
   videos: VideoCreateManyInput
 }
 
-input PlaylistCreateManyInput {
-  create: [PlaylistCreateInput!]
+input PlaylistCreateManyWithoutUserInput {
+  create: [PlaylistCreateWithoutUserInput!]
   connect: [PlaylistWhereUniqueInput!]
+}
+
+input PlaylistCreateWithoutUserInput {
+  name: String!
+  description: String
+  isPublic: Boolean
+  videos: VideoCreateManyInput
 }
 
 type PlaylistEdge {
@@ -897,17 +906,11 @@ input PlaylistSubscriptionWhereInput {
   NOT: [PlaylistSubscriptionWhereInput!]
 }
 
-input PlaylistUpdateDataInput {
-  name: String
-  description: String
-  isPublic: Boolean
-  videos: VideoUpdateManyInput
-}
-
 input PlaylistUpdateInput {
   name: String
   description: String
   isPublic: Boolean
+  user: UserUpdateOneWithoutPlaylistsInput
   videos: VideoUpdateManyInput
 }
 
@@ -917,21 +920,21 @@ input PlaylistUpdateManyDataInput {
   isPublic: Boolean
 }
 
-input PlaylistUpdateManyInput {
-  create: [PlaylistCreateInput!]
-  update: [PlaylistUpdateWithWhereUniqueNestedInput!]
-  upsert: [PlaylistUpsertWithWhereUniqueNestedInput!]
-  delete: [PlaylistWhereUniqueInput!]
-  connect: [PlaylistWhereUniqueInput!]
-  disconnect: [PlaylistWhereUniqueInput!]
-  deleteMany: [PlaylistScalarWhereInput!]
-  updateMany: [PlaylistUpdateManyWithWhereNestedInput!]
-}
-
 input PlaylistUpdateManyMutationInput {
   name: String
   description: String
   isPublic: Boolean
+}
+
+input PlaylistUpdateManyWithoutUserInput {
+  create: [PlaylistCreateWithoutUserInput!]
+  delete: [PlaylistWhereUniqueInput!]
+  connect: [PlaylistWhereUniqueInput!]
+  disconnect: [PlaylistWhereUniqueInput!]
+  update: [PlaylistUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [PlaylistUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [PlaylistScalarWhereInput!]
+  updateMany: [PlaylistUpdateManyWithWhereNestedInput!]
 }
 
 input PlaylistUpdateManyWithWhereNestedInput {
@@ -939,15 +942,22 @@ input PlaylistUpdateManyWithWhereNestedInput {
   data: PlaylistUpdateManyDataInput!
 }
 
-input PlaylistUpdateWithWhereUniqueNestedInput {
-  where: PlaylistWhereUniqueInput!
-  data: PlaylistUpdateDataInput!
+input PlaylistUpdateWithoutUserDataInput {
+  name: String
+  description: String
+  isPublic: Boolean
+  videos: VideoUpdateManyInput
 }
 
-input PlaylistUpsertWithWhereUniqueNestedInput {
+input PlaylistUpdateWithWhereUniqueWithoutUserInput {
   where: PlaylistWhereUniqueInput!
-  update: PlaylistUpdateDataInput!
-  create: PlaylistCreateInput!
+  data: PlaylistUpdateWithoutUserDataInput!
+}
+
+input PlaylistUpsertWithWhereUniqueWithoutUserInput {
+  where: PlaylistWhereUniqueInput!
+  update: PlaylistUpdateWithoutUserDataInput!
+  create: PlaylistCreateWithoutUserInput!
 }
 
 input PlaylistWhereInput {
@@ -995,6 +1005,7 @@ input PlaylistWhereInput {
   description_not_ends_with: String
   isPublic: Boolean
   isPublic_not: Boolean
+  user: UserWhereInput
   videos_every: VideoWhereInput
   videos_some: VideoWhereInput
   videos_none: VideoWhereInput
@@ -1318,7 +1329,7 @@ input UserCreateInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
-  playlists: PlaylistCreateManyInput
+  playlists: PlaylistCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
@@ -1333,6 +1344,11 @@ input UserCreateOneWithoutCommentReviewsInput {
 
 input UserCreateOneWithoutCommentsInput {
   create: UserCreateWithoutCommentsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutPlaylistsInput {
+  create: UserCreateWithoutPlaylistsInput
   connect: UserWhereUniqueInput
 }
 
@@ -1360,7 +1376,7 @@ input UserCreateWithoutCommentReviewsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
-  playlists: PlaylistCreateManyInput
+  playlists: PlaylistCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
@@ -1376,9 +1392,25 @@ input UserCreateWithoutCommentsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
-  playlists: PlaylistCreateManyInput
+  playlists: PlaylistCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
+  commentReviews: CommentReviewCreateManyWithoutUserInput
+  role: Role!
+}
+
+input UserCreateWithoutPlaylistsInput {
+  googleID: String!
+  email: String!
+  name: String!
+  image: String!
+  verified: Boolean
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoCreateManyWithoutUserInput
+  views: ViewCreateManyWithoutUserInput
+  reviews: ReviewCreateManyWithoutUserInput
+  comments: CommentCreateManyWithoutUserInput
   commentReviews: CommentReviewCreateManyWithoutUserInput
   role: Role!
 }
@@ -1392,7 +1424,7 @@ input UserCreateWithoutReviewsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
-  playlists: PlaylistCreateManyInput
+  playlists: PlaylistCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
   commentReviews: CommentReviewCreateManyWithoutUserInput
@@ -1407,7 +1439,7 @@ input UserCreateWithoutVideosInput {
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
-  playlists: PlaylistCreateManyInput
+  playlists: PlaylistCreateManyWithoutUserInput
   views: ViewCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
@@ -1424,7 +1456,7 @@ input UserCreateWithoutViewsInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoCreateManyWithoutUserInput
-  playlists: PlaylistCreateManyInput
+  playlists: PlaylistCreateManyWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
   comments: CommentCreateManyWithoutUserInput
   commentReviews: CommentReviewCreateManyWithoutUserInput
@@ -1501,7 +1533,7 @@ input UserUpdateInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
-  playlists: PlaylistUpdateManyInput
+  playlists: PlaylistUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
@@ -1533,6 +1565,15 @@ input UserUpdateOneWithoutCommentsInput {
   create: UserCreateWithoutCommentsInput
   update: UserUpdateWithoutCommentsDataInput
   upsert: UserUpsertWithoutCommentsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneWithoutPlaylistsInput {
+  create: UserCreateWithoutPlaylistsInput
+  update: UserUpdateWithoutPlaylistsDataInput
+  upsert: UserUpsertWithoutPlaylistsInput
   delete: Boolean
   disconnect: Boolean
   connect: UserWhereUniqueInput
@@ -1574,7 +1615,7 @@ input UserUpdateWithoutCommentReviewsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
-  playlists: PlaylistUpdateManyInput
+  playlists: PlaylistUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
@@ -1590,9 +1631,25 @@ input UserUpdateWithoutCommentsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
-  playlists: PlaylistUpdateManyInput
+  playlists: PlaylistUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
+  commentReviews: CommentReviewUpdateManyWithoutUserInput
+  role: Role
+}
+
+input UserUpdateWithoutPlaylistsDataInput {
+  googleID: String
+  email: String
+  name: String
+  image: String
+  verified: Boolean
+  googlePhotoAT: String
+  googlePhotoRT: String
+  videos: VideoUpdateManyWithoutUserInput
+  views: ViewUpdateManyWithoutUserInput
+  reviews: ReviewUpdateManyWithoutUserInput
+  comments: CommentUpdateManyWithoutUserInput
   commentReviews: CommentReviewUpdateManyWithoutUserInput
   role: Role
 }
@@ -1606,7 +1663,7 @@ input UserUpdateWithoutReviewsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
-  playlists: PlaylistUpdateManyInput
+  playlists: PlaylistUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
   commentReviews: CommentReviewUpdateManyWithoutUserInput
@@ -1621,7 +1678,7 @@ input UserUpdateWithoutVideosDataInput {
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
-  playlists: PlaylistUpdateManyInput
+  playlists: PlaylistUpdateManyWithoutUserInput
   views: ViewUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
@@ -1638,7 +1695,7 @@ input UserUpdateWithoutViewsDataInput {
   googlePhotoAT: String
   googlePhotoRT: String
   videos: VideoUpdateManyWithoutUserInput
-  playlists: PlaylistUpdateManyInput
+  playlists: PlaylistUpdateManyWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
   comments: CommentUpdateManyWithoutUserInput
   commentReviews: CommentReviewUpdateManyWithoutUserInput
@@ -1653,6 +1710,11 @@ input UserUpsertWithoutCommentReviewsInput {
 input UserUpsertWithoutCommentsInput {
   update: UserUpdateWithoutCommentsDataInput!
   create: UserCreateWithoutCommentsInput!
+}
+
+input UserUpsertWithoutPlaylistsInput {
+  update: UserUpdateWithoutPlaylistsDataInput!
+  create: UserCreateWithoutPlaylistsInput!
 }
 
 input UserUpsertWithoutReviewsInput {

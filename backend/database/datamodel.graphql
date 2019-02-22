@@ -81,6 +81,7 @@ type Playlist {
   name: String!
   description: String
   isPublic: Boolean @default(value: "true")
+  user: User
   videos: [Video]
   createdAt: DateTime!
 }

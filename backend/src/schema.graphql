@@ -108,6 +108,8 @@ type Playlist {
   id: ID!
   name: String!
   description: String
+  isPublic: Boolean
+  user: User
   videos: [Video]
   createdAt: DateTime!
 }
