@@ -4,6 +4,7 @@ import gql from 'graphql-tag'
 import Router from 'next/router'
 import Controls from './Controls'
 import OverlayIcon from './OverlayIcon'
+import Overlay from './Overlay'
 import { VIDEO_QUERY } from '../../apollo/video'
 import { ME_QUERY } from '../../apollo/me'
 
@@ -39,10 +40,7 @@ const Container = styled.div`
   margin-bottom: 2rem;
 `
 
-const Video = styled.video.attrs(props => ({
-  autoPlay: true,
-  muted: true
-}))`
+const Video = styled.video`
   max-width: 100%;
   min-width: 875px;
   max-height: 490px;
@@ -58,9 +56,10 @@ class Player extends React.Component {
     time: 0,
     buffered: 0,
     volume: 0.75,
-    muted: false,
+    muted: true,
     speed: 1,
-    view: null
+    view: null,
+    intermission: false
   }
 
   video = React.createRef()
@@ -68,28 +67,36 @@ class Player extends React.Component {
   componentDidMount() {
     this.createVideoView()
     this.setInitialTime()
+    this.video.current.addEventListener('ended', this.onVideoEnded)
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.time !== this.state.time) {
       this.props.updateTime(this.state.time)
     }
-    if (this.state.time >= this.props.video.duration) {
-      this.onVideoEnded()
-    }
     if (prevProps.query.id !== this.props.query.id) {
       this.createVideoView()
       this.setInitialTime()
+      this.setState({ playing: this.props.autoplay })
     }
   }
 
   async componentWillUnmount() {
+    this.video.current.removeEventListener('ended', this.onVideoEnded)
     await this.onUpdateView(false)
   }
 
   onVideoEnded = async () => {
-    await this.onUpdateView(true)
     const { autoplay, nextVideo } = this.props
+
+    if (!autoplay) {
+      this.video.current.pause()
+      this.video.current.src = ''
+      this.setState({ intermission: true })
+    }
+
+    await this.onUpdateView(true)
+
     if (autoplay) {
       Router.push({ pathname: '/watch', query: { id: nextVideo.id } })
     }
@@ -128,7 +135,7 @@ class Player extends React.Component {
   onUpdateView = async complete => {
     const {
       state: { view, time },
-      props: { client, query }
+      props: { client, query, video }
     } = this
 
     if (view.complete) {
@@ -136,7 +143,7 @@ class Player extends React.Component {
     }
     await client.mutate({
       mutation: UPDATE_VIEW_MUTATION,
-      variables: { id: view.id, data: { complete, progress: time } },
+      variables: { id: view.id, data: { complete, progress: complete ? video.duration : time } },
       refetchQueries: [{ query: VIDEO_QUERY, variables: { id: query.id } }, { query: ME_QUERY }]
     })
   }
@@ -180,13 +187,12 @@ class Player extends React.Component {
   }
 
   onPlayPauseClick = () => {
-    const { playing } = this.state
-    if (playing) {
+    if (this.state.playing) {
       this.video.current.pause()
     } else {
       this.video.current.play()
     }
-    this.setState({ playing: !playing })
+    this.setState(({ playing }) => ({ playing: !playing, intermission: false }))
   }
 
   onVolumeClick = () => {
@@ -233,14 +239,28 @@ class Player extends React.Component {
   render() {
     const {
       props: { video, autoplay, toggleAutoplay },
-      state: { controls, time, buffered, playing, showVolume, volume, muted, showSettings, speed }
+      state: {
+        controls,
+        time,
+        buffered,
+        playing,
+        showVolume,
+        volume,
+        muted,
+        showSettings,
+        speed,
+        intermission
+      }
     } = this
     return (
       <Container onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <OverlayIcon playing={playing} />
+        <Overlay show={intermission} />
         <Video
           ref={this.video}
           src={video.videoURL}
+          autoPlay={autoplay}
+          muted={muted}
           onTimeUpdate={this.onTimeUpdate}
           onClick={this.onPlayPauseClick}
         />

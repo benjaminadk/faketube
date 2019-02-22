@@ -27,7 +27,7 @@ class Watch extends React.Component {
 
   updateTime = time => this.setState({ time })
 
-  toggleAutoplay = () => this.setState(({ autoplay }) => ({ autoplay: !autoplay }))
+  toggleAutoplay = () => this.setState(({ autoplay }) => ({ autoplay: true })) // bug when false
 
   setNextVideo = nextVideo => {
     this.setState({ nextVideo })

@@ -8,7 +8,7 @@ const Container = styled.div`
   border-bottom: 1px solid ${props => props.theme.grey[2]};
   pre {
     width: 80%;
-    height: ${props => (props.expand ? '100%' : '6.9rem')};
+    height: ${props => (props.expand ? '100%' : '7rem')};
     font-family: 'Roboto';
     font-size: 1.4rem;
     white-space: pre-wrap;
@@ -39,14 +39,22 @@ const Container = styled.div`
 export default class Description extends React.Component {
   state = {
     expand: false,
-    showExpand: true
+    showExpand: false
   }
 
   componentDidMount() {
-    if (this.description.scrollHeight < 75) {
-      this.setState({ showExpand: false })
+    this.setShowExpand()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.video.id !== this.props.video.id) {
+      console.log(this.description.scrollHeight)
+      this.setShowExpand()
+      this.setState({ expand: false })
     }
   }
+
+  setShowExpand = () => this.setState({ showExpand: this.description.scrollHeight > 70 })
 
   toggleExpand = () => this.setState(({ expand }) => ({ expand: !expand }))
 
