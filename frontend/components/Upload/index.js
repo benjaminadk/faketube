@@ -144,6 +144,11 @@ class Upload extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timer1)
+    clearInterval(this.timer2)
+  }
+
   uploadTimer = () => {
     const { progress, time } = this.state
     const x = (time * 100) / progress - time + 20

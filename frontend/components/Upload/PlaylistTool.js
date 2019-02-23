@@ -72,6 +72,15 @@ const Container = styled.div`
     max-height: 20rem;
     padding-bottom: 1rem;
     overflow-y: auto;
+    ::-webkit-scrollbar {
+      width: 1rem;
+    }
+    ::-webkit-scrollbar-track {
+      background: white;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: ${props => props.theme.grey[3]};
+    }
   }
   .tool-bottom {
     border-top: 1px solid ${props => props.theme.grey[5]};
@@ -189,13 +198,22 @@ export default class PlaylistTool extends React.Component {
     this.setState({ playlists: sortPlaylist(this.props.playlists) })
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.playlists.length !== this.props.playlists.length) {
       const { checked } = this.state
       this.setState({
         playlists: sortPlaylist(this.props.playlists),
         checked: [0, ...checked.map(c => c + 1)]
       })
+    }
+    if (this.state.search) {
+      if (!this.state.bottom) {
+        if (!this.props.playlists.find(p => new RegExp(this.state.search, 'i').test(p.name))) {
+          if (this.state.create.length !== this.state.search.length) {
+            this.setState({ create: this.state.search })
+          }
+        }
+      }
     }
   }
 
@@ -245,6 +263,15 @@ export default class PlaylistTool extends React.Component {
     this.setState({ playlist, create: '' })
   }
 
+  filterPlaylist = p => {
+    const { search } = this.state
+    if (!search) {
+      return true
+    } else {
+      return new RegExp(search, 'i').test(p.name)
+    }
+  }
+
   render() {
     const {
       props: { videoID },
@@ -274,21 +301,26 @@ export default class PlaylistTool extends React.Component {
             </div>
           </div>
           <div className="tool-main">
-            {playlists.map((p, i) => (
-              <Mutation mutation={TOGGLE_PLAYLIST_MUTATION}>
-                {(togglePlaylist, { loading }) => (
-                  <ListItem key={p.id} onClick={() => this.onCheckClick(i, togglePlaylist)}>
-                    {checked.indexOf(i) !== -1 ? (
-                      <CheckBox className="check" />
-                    ) : (
-                      <CheckBoxOutlineBlank className="check" />
-                    )}
-                    <div className="item-text">{p.name}</div>
-                    <Public className="globe" />
-                  </ListItem>
-                )}
-              </Mutation>
-            ))}
+            {playlists.map((p, i) => {
+              if (!this.filterPlaylist(p)) {
+                return null
+              }
+              return (
+                <Mutation key={p.id} mutation={TOGGLE_PLAYLIST_MUTATION}>
+                  {(togglePlaylist, { loading }) => (
+                    <ListItem onClick={() => this.onCheckClick(i, togglePlaylist)}>
+                      {checked.indexOf(i) !== -1 ? (
+                        <CheckBox className="check" />
+                      ) : (
+                        <CheckBoxOutlineBlank className="check" />
+                      )}
+                      <div className="item-text">{p.name}</div>
+                      <Public className="globe" />
+                    </ListItem>
+                  )}
+                </Mutation>
+              )
+            })}
           </div>
           <div className="tool-bottom">
             {bottom ? (
@@ -320,7 +352,7 @@ export default class PlaylistTool extends React.Component {
               </div>
             ) : (
               <div className="initial" onClick={this.onBottomClick}>
-                Create new playlist
+                {!bottom && create ? `"${create}" (create new)` : 'Create new playlist'}
               </div>
             )}
           </div>
