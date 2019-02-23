@@ -461,6 +461,8 @@ export type UserOrderByInput =
   | "name_DESC"
   | "image_ASC"
   | "image_DESC"
+  | "backgroundImage_ASC"
+  | "backgroundImage_DESC"
   | "verified_ASC"
   | "verified_DESC"
   | "googlePhotoAT_ASC"
@@ -695,6 +697,20 @@ export interface UserWhereInput {
   image_not_starts_with?: String;
   image_ends_with?: String;
   image_not_ends_with?: String;
+  backgroundImage?: String;
+  backgroundImage_not?: String;
+  backgroundImage_in?: String[] | String;
+  backgroundImage_not_in?: String[] | String;
+  backgroundImage_lt?: String;
+  backgroundImage_lte?: String;
+  backgroundImage_gt?: String;
+  backgroundImage_gte?: String;
+  backgroundImage_contains?: String;
+  backgroundImage_not_contains?: String;
+  backgroundImage_starts_with?: String;
+  backgroundImage_not_starts_with?: String;
+  backgroundImage_ends_with?: String;
+  backgroundImage_not_ends_with?: String;
   verified?: Boolean;
   verified_not?: Boolean;
   googlePhotoAT?: String;
@@ -792,6 +808,7 @@ export interface UserUpdateWithoutCommentsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -890,6 +907,7 @@ export interface UserUpdateWithoutViewsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1007,6 +1025,7 @@ export interface UserUpdateManyMutationInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1023,6 +1042,7 @@ export interface UserUpdateInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1064,6 +1084,7 @@ export interface UserUpdateWithoutReviewsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1305,6 +1326,7 @@ export interface UserCreateWithoutViewsInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1372,6 +1394,7 @@ export interface UserCreateWithoutReviewsInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1460,6 +1483,7 @@ export interface UserUpdateWithoutVideosDataInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1476,6 +1500,7 @@ export interface UserCreateWithoutCommentsInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1543,6 +1568,7 @@ export interface UserCreateWithoutVideosInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -1682,6 +1708,7 @@ export interface UserCreateWithoutCommentReviewsInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -2019,6 +2046,7 @@ export interface UserUpdateWithoutCommentReviewsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -2376,6 +2404,7 @@ export interface UserCreateWithoutPlaylistsInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -2651,6 +2680,7 @@ export interface UserUpdateWithoutPlaylistsDataInput {
   email?: String;
   name?: String;
   image?: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -2829,6 +2859,7 @@ export interface UserCreateInput {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -2946,6 +2977,7 @@ export interface User {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -2959,6 +2991,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   name: () => Promise<String>;
   image: () => Promise<String>;
+  backgroundImage: () => Promise<String>;
   verified: () => Promise<Boolean>;
   googlePhotoAT: () => Promise<String>;
   googlePhotoRT: () => Promise<String>;
@@ -3028,6 +3061,7 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
+  backgroundImage: () => Promise<AsyncIterator<String>>;
   verified: () => Promise<AsyncIterator<Boolean>>;
   googlePhotoAT: () => Promise<AsyncIterator<String>>;
   googlePhotoRT: () => Promise<AsyncIterator<String>>;
@@ -3936,6 +3970,7 @@ export interface UserPreviousValues {
   email: String;
   name: String;
   image: String;
+  backgroundImage?: String;
   verified?: Boolean;
   googlePhotoAT?: String;
   googlePhotoRT?: String;
@@ -3951,6 +3986,7 @@ export interface UserPreviousValuesPromise
   email: () => Promise<String>;
   name: () => Promise<String>;
   image: () => Promise<String>;
+  backgroundImage: () => Promise<String>;
   verified: () => Promise<Boolean>;
   googlePhotoAT: () => Promise<String>;
   googlePhotoRT: () => Promise<String>;
@@ -3966,6 +4002,7 @@ export interface UserPreviousValuesSubscription
   email: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
+  backgroundImage: () => Promise<AsyncIterator<String>>;
   verified: () => Promise<AsyncIterator<Boolean>>;
   googlePhotoAT: () => Promise<AsyncIterator<String>>;
   googlePhotoRT: () => Promise<AsyncIterator<String>>;

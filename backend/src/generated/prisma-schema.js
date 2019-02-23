@@ -1301,6 +1301,7 @@ type User {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1325,6 +1326,7 @@ input UserCreateInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1372,6 +1374,7 @@ input UserCreateWithoutCommentReviewsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1388,6 +1391,7 @@ input UserCreateWithoutCommentsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1404,6 +1408,7 @@ input UserCreateWithoutPlaylistsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1420,6 +1425,7 @@ input UserCreateWithoutReviewsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1436,6 +1442,7 @@ input UserCreateWithoutVideosInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1452,6 +1459,7 @@ input UserCreateWithoutViewsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1479,6 +1487,8 @@ enum UserOrderByInput {
   name_DESC
   image_ASC
   image_DESC
+  backgroundImage_ASC
+  backgroundImage_DESC
   verified_ASC
   verified_DESC
   googlePhotoAT_ASC
@@ -1499,6 +1509,7 @@ type UserPreviousValues {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1529,6 +1540,7 @@ input UserUpdateInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1546,6 +1558,7 @@ input UserUpdateManyMutationInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1611,6 +1624,7 @@ input UserUpdateWithoutCommentReviewsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1627,6 +1641,7 @@ input UserUpdateWithoutCommentsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1643,6 +1658,7 @@ input UserUpdateWithoutPlaylistsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1659,6 +1675,7 @@ input UserUpdateWithoutReviewsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1675,6 +1692,7 @@ input UserUpdateWithoutVideosDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1691,6 +1709,7 @@ input UserUpdateWithoutViewsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1803,6 +1822,20 @@ input UserWhereInput {
   image_not_starts_with: String
   image_ends_with: String
   image_not_ends_with: String
+  backgroundImage: String
+  backgroundImage_not: String
+  backgroundImage_in: [String!]
+  backgroundImage_not_in: [String!]
+  backgroundImage_lt: String
+  backgroundImage_lte: String
+  backgroundImage_gt: String
+  backgroundImage_gte: String
+  backgroundImage_contains: String
+  backgroundImage_not_contains: String
+  backgroundImage_starts_with: String
+  backgroundImage_not_starts_with: String
+  backgroundImage_ends_with: String
+  backgroundImage_not_ends_with: String
   verified: Boolean
   verified_not: Boolean
   googlePhotoAT: String

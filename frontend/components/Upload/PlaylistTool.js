@@ -21,7 +21,7 @@ const PlaylistButton = styled.div`
     text-align: left;
     background: ${props => props.theme.grey[0]};
     padding: 0.75rem;
-    border: 1px solid ${props => props.theme.grey[7]};
+    border: 1px solid ${props => props.theme.grey[5]};
     border-radius: 2px;
     outline: 0;
     cursor: pointer;

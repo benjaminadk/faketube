@@ -4,6 +4,7 @@ type User {
   email: String! @unique
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean @default(value: "false")
   googlePhotoAT: String
   googlePhotoRT: String

@@ -144,13 +144,18 @@ class UserMenu extends React.Component {
     }
   }
 
+  onNavigate = url => Router.push(url)
+
   render() {
     const {
-      props: { show, user, closeUserMenu }
+      props: { show, user }
     } = this
     return (
       <Container show={show}>
-        <div className="menu-top">
+        <div
+          className="menu-top"
+          onClick={() => this.onNavigate({ pathname: '/channel', query: { id: user.id } })}
+        >
           <img src={user ? user.image : ''} />
           <div className="menu-user">
             <div>{user ? user.name : ''}</div>

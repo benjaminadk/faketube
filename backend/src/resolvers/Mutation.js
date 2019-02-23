@@ -42,6 +42,16 @@ module.exports = {
     return { success: true }
   },
 
+  updateUser: async (_, args, ctx, info) => {
+    try {
+      await ctx.prisma.updateUser({ where: { id: args.id }, data: args.data })
+      return { success: true }
+    } catch (error) {
+      console.log(error)
+      return { success: false }
+    }
+  },
+
   signS3: async (_, args, ctx, info) => {
     const Bucket = process.env.AWS_BUCKET
     const params = {

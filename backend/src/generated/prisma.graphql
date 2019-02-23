@@ -56,24 +56,8 @@ type Comment {
   edited: Boolean
   video: Video
   user: User
-  replies(
-    where: CommentWhereInput
-    orderBy: CommentOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Comment!]
-  reviews(
-    where: CommentReviewWhereInput
-    orderBy: CommentReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [CommentReview!]
+  replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  reviews(where: CommentReviewWhereInput, orderBy: CommentReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CommentReview!]
   createdAt: DateTime!
 }
 
@@ -723,80 +707,43 @@ type Mutation {
   createComment(data: CommentCreateInput!): Comment!
   updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
   updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
-  upsertComment(
-    where: CommentWhereUniqueInput!
-    create: CommentCreateInput!
-    update: CommentUpdateInput!
-  ): Comment!
+  upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
   deleteComment(where: CommentWhereUniqueInput!): Comment
   deleteManyComments(where: CommentWhereInput): BatchPayload!
   createCommentReview(data: CommentReviewCreateInput!): CommentReview!
-  updateCommentReview(
-    data: CommentReviewUpdateInput!
-    where: CommentReviewWhereUniqueInput!
-  ): CommentReview
-  updateManyCommentReviews(
-    data: CommentReviewUpdateManyMutationInput!
-    where: CommentReviewWhereInput
-  ): BatchPayload!
-  upsertCommentReview(
-    where: CommentReviewWhereUniqueInput!
-    create: CommentReviewCreateInput!
-    update: CommentReviewUpdateInput!
-  ): CommentReview!
+  updateCommentReview(data: CommentReviewUpdateInput!, where: CommentReviewWhereUniqueInput!): CommentReview
+  updateManyCommentReviews(data: CommentReviewUpdateManyMutationInput!, where: CommentReviewWhereInput): BatchPayload!
+  upsertCommentReview(where: CommentReviewWhereUniqueInput!, create: CommentReviewCreateInput!, update: CommentReviewUpdateInput!): CommentReview!
   deleteCommentReview(where: CommentReviewWhereUniqueInput!): CommentReview
   deleteManyCommentReviews(where: CommentReviewWhereInput): BatchPayload!
   createPlaylist(data: PlaylistCreateInput!): Playlist!
   updatePlaylist(data: PlaylistUpdateInput!, where: PlaylistWhereUniqueInput!): Playlist
-  updateManyPlaylists(
-    data: PlaylistUpdateManyMutationInput!
-    where: PlaylistWhereInput
-  ): BatchPayload!
-  upsertPlaylist(
-    where: PlaylistWhereUniqueInput!
-    create: PlaylistCreateInput!
-    update: PlaylistUpdateInput!
-  ): Playlist!
+  updateManyPlaylists(data: PlaylistUpdateManyMutationInput!, where: PlaylistWhereInput): BatchPayload!
+  upsertPlaylist(where: PlaylistWhereUniqueInput!, create: PlaylistCreateInput!, update: PlaylistUpdateInput!): Playlist!
   deletePlaylist(where: PlaylistWhereUniqueInput!): Playlist
   deleteManyPlaylists(where: PlaylistWhereInput): BatchPayload!
   createReview(data: ReviewCreateInput!): Review!
   updateReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
   updateManyReviews(data: ReviewUpdateManyMutationInput!, where: ReviewWhereInput): BatchPayload!
-  upsertReview(
-    where: ReviewWhereUniqueInput!
-    create: ReviewCreateInput!
-    update: ReviewUpdateInput!
-  ): Review!
+  upsertReview(where: ReviewWhereUniqueInput!, create: ReviewCreateInput!, update: ReviewUpdateInput!): Review!
   deleteReview(where: ReviewWhereUniqueInput!): Review
   deleteManyReviews(where: ReviewWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  upsertUser(
-    where: UserWhereUniqueInput!
-    create: UserCreateInput!
-    update: UserUpdateInput!
-  ): User!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   createVideo(data: VideoCreateInput!): Video!
   updateVideo(data: VideoUpdateInput!, where: VideoWhereUniqueInput!): Video
   updateManyVideos(data: VideoUpdateManyMutationInput!, where: VideoWhereInput): BatchPayload!
-  upsertVideo(
-    where: VideoWhereUniqueInput!
-    create: VideoCreateInput!
-    update: VideoUpdateInput!
-  ): Video!
+  upsertVideo(where: VideoWhereUniqueInput!, create: VideoCreateInput!, update: VideoUpdateInput!): Video!
   deleteVideo(where: VideoWhereUniqueInput!): Video
   deleteManyVideos(where: VideoWhereInput): BatchPayload!
   createView(data: ViewCreateInput!): View!
   updateView(data: ViewUpdateInput!, where: ViewWhereUniqueInput!): View
   updateManyViews(data: ViewUpdateManyMutationInput!, where: ViewWhereInput): BatchPayload!
-  upsertView(
-    where: ViewWhereUniqueInput!
-    create: ViewCreateInput!
-    update: ViewUpdateInput!
-  ): View!
+  upsertView(where: ViewWhereUniqueInput!, create: ViewCreateInput!, update: ViewUpdateInput!): View!
   deleteView(where: ViewWhereUniqueInput!): View
   deleteManyViews(where: ViewWhereInput): BatchPayload!
 }
@@ -824,15 +771,7 @@ type Playlist {
   description: String
   isPublic: Boolean
   user: User
-  videos(
-    where: VideoWhereInput
-    orderBy: VideoOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Video!]
+  videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
   createdAt: DateTime!
 }
 
@@ -1088,138 +1027,26 @@ input PlaylistWhereUniqueInput {
 
 type Query {
   comment(where: CommentWhereUniqueInput!): Comment
-  comments(
-    where: CommentWhereInput
-    orderBy: CommentOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Comment]!
-  commentsConnection(
-    where: CommentWhereInput
-    orderBy: CommentOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): CommentConnection!
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
+  commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
   commentReview(where: CommentReviewWhereUniqueInput!): CommentReview
-  commentReviews(
-    where: CommentReviewWhereInput
-    orderBy: CommentReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [CommentReview]!
-  commentReviewsConnection(
-    where: CommentReviewWhereInput
-    orderBy: CommentReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): CommentReviewConnection!
+  commentReviews(where: CommentReviewWhereInput, orderBy: CommentReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CommentReview]!
+  commentReviewsConnection(where: CommentReviewWhereInput, orderBy: CommentReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentReviewConnection!
   playlist(where: PlaylistWhereUniqueInput!): Playlist
-  playlists(
-    where: PlaylistWhereInput
-    orderBy: PlaylistOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Playlist]!
-  playlistsConnection(
-    where: PlaylistWhereInput
-    orderBy: PlaylistOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): PlaylistConnection!
+  playlists(where: PlaylistWhereInput, orderBy: PlaylistOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Playlist]!
+  playlistsConnection(where: PlaylistWhereInput, orderBy: PlaylistOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PlaylistConnection!
   review(where: ReviewWhereUniqueInput!): Review
-  reviews(
-    where: ReviewWhereInput
-    orderBy: ReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Review]!
-  reviewsConnection(
-    where: ReviewWhereInput
-    orderBy: ReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): ReviewConnection!
+  reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review]!
+  reviewsConnection(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewConnection!
   user(where: UserWhereUniqueInput!): User
-  users(
-    where: UserWhereInput
-    orderBy: UserOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [User]!
-  usersConnection(
-    where: UserWhereInput
-    orderBy: UserOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): UserConnection!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   video(where: VideoWhereUniqueInput!): Video
-  videos(
-    where: VideoWhereInput
-    orderBy: VideoOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Video]!
-  videosConnection(
-    where: VideoWhereInput
-    orderBy: VideoOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): VideoConnection!
+  videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video]!
+  videosConnection(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VideoConnection!
   view(where: ViewWhereUniqueInput!): View
-  views(
-    where: ViewWhereInput
-    orderBy: ViewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [View]!
-  viewsConnection(
-    where: ViewWhereInput
-    orderBy: ViewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): ViewConnection!
+  views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View]!
+  viewsConnection(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ViewConnection!
   node(id: ID!): Node
 }
 
@@ -1473,63 +1300,16 @@ type User {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
-  videos(
-    where: VideoWhereInput
-    orderBy: VideoOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Video!]
-  playlists(
-    where: PlaylistWhereInput
-    orderBy: PlaylistOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Playlist!]
-  views(
-    where: ViewWhereInput
-    orderBy: ViewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [View!]
-  reviews(
-    where: ReviewWhereInput
-    orderBy: ReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Review!]
-  comments(
-    where: CommentWhereInput
-    orderBy: CommentOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Comment!]
-  commentReviews(
-    where: CommentReviewWhereInput
-    orderBy: CommentReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [CommentReview!]
+  videos(where: VideoWhereInput, orderBy: VideoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Video!]
+  playlists(where: PlaylistWhereInput, orderBy: PlaylistOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Playlist!]
+  views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
+  reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  commentReviews(where: CommentReviewWhereInput, orderBy: CommentReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CommentReview!]
   role: Role!
   createdAt: DateTime!
 }
@@ -1545,6 +1325,7 @@ input UserCreateInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1592,6 +1373,7 @@ input UserCreateWithoutCommentReviewsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1608,6 +1390,7 @@ input UserCreateWithoutCommentsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1624,6 +1407,7 @@ input UserCreateWithoutPlaylistsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1640,6 +1424,7 @@ input UserCreateWithoutReviewsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1656,6 +1441,7 @@ input UserCreateWithoutVideosInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1672,6 +1458,7 @@ input UserCreateWithoutViewsInput {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1699,6 +1486,8 @@ enum UserOrderByInput {
   name_DESC
   image_ASC
   image_DESC
+  backgroundImage_ASC
+  backgroundImage_DESC
   verified_ASC
   verified_DESC
   googlePhotoAT_ASC
@@ -1719,6 +1508,7 @@ type UserPreviousValues {
   email: String!
   name: String!
   image: String!
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1749,6 +1539,7 @@ input UserUpdateInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1766,6 +1557,7 @@ input UserUpdateManyMutationInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1831,6 +1623,7 @@ input UserUpdateWithoutCommentReviewsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1847,6 +1640,7 @@ input UserUpdateWithoutCommentsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1863,6 +1657,7 @@ input UserUpdateWithoutPlaylistsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1879,6 +1674,7 @@ input UserUpdateWithoutReviewsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1895,6 +1691,7 @@ input UserUpdateWithoutVideosDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -1911,6 +1708,7 @@ input UserUpdateWithoutViewsDataInput {
   email: String
   name: String
   image: String
+  backgroundImage: String
   verified: Boolean
   googlePhotoAT: String
   googlePhotoRT: String
@@ -2023,6 +1821,20 @@ input UserWhereInput {
   image_not_starts_with: String
   image_ends_with: String
   image_not_ends_with: String
+  backgroundImage: String
+  backgroundImage_not: String
+  backgroundImage_in: [String!]
+  backgroundImage_not_in: [String!]
+  backgroundImage_lt: String
+  backgroundImage_lte: String
+  backgroundImage_gt: String
+  backgroundImage_gte: String
+  backgroundImage_contains: String
+  backgroundImage_not_contains: String
+  backgroundImage_starts_with: String
+  backgroundImage_not_starts_with: String
+  backgroundImage_ends_with: String
+  backgroundImage_not_ends_with: String
   verified: Boolean
   verified_not: Boolean
   googlePhotoAT: String
@@ -2107,34 +1919,10 @@ type Video {
   isPublished: Boolean!
   isPublic: Boolean!
   category: Category
-  views(
-    where: ViewWhereInput
-    orderBy: ViewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [View!]
-  reviews(
-    where: ReviewWhereInput
-    orderBy: ReviewOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Review!]
+  views(where: ViewWhereInput, orderBy: ViewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [View!]
+  reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
   allowComments: Boolean
-  comments(
-    where: CommentWhereInput
-    orderBy: CommentOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Comment!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   user: User
   createdAt: DateTime!
 }
