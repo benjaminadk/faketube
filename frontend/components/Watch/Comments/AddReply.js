@@ -1,26 +1,9 @@
-import styled from 'styled-components'
-import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import { Container, Underline, CommentButtons } from './AddComment'
-import TextInput from './TextInput'
+import { CREATE_REPLY_MUTATION } from '../../../apollo/createReply'
+import CommentInput from '../../Shared/CommentInput'
+import { AddReplyStyles, CommentButtons } from './styles/AddComment'
 
-const CREATE_REPLY_MUTATION = gql`
-  mutation CREATE_REPLY_MUTATION($id: ID!, $data: CommentCreateInput) {
-    createReply(id: $id, data: $data) {
-      success
-      comment {
-        id
-      }
-    }
-  }
-`
-
-const ReplyContainer = styled(Container)`
-  grid-template-columns: 2.4rem 1fr;
-  grid-gap: 1rem;
-`
-
-class AddReply extends React.Component {
+export default class AddReply extends React.Component {
   state = {
     focus: false,
     text: ''
@@ -60,22 +43,17 @@ class AddReply extends React.Component {
       state: { focus, text }
     } = this
     return (
-      <ReplyContainer>
+      <AddReplyStyles>
         <img className="image-sm" src={image} />
         <div>
-          <div className="comments-input">
-            <TextInput
-              placeholder="Add a public reply..."
-              value={text}
-              onChange={this.onChange}
-              onFocus={this.onFocus}
-              onBlur={this.onBlur}
-            />
-            <Underline focus={focus}>
-              <div />
-              <div />
-            </Underline>
-          </div>
+          <CommentInput
+            focus={focus}
+            placeholder="Add a public reply..."
+            value={text}
+            onChange={this.onChange}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+          />
           <CommentButtons show={true} text={Boolean(text)}>
             <div onClick={this.onCancelClick}>cancel</div>
             <Mutation mutation={CREATE_REPLY_MUTATION}>
@@ -87,9 +65,7 @@ class AddReply extends React.Component {
             </Mutation>
           </CommentButtons>
         </div>
-      </ReplyContainer>
+      </AddReplyStyles>
     )
   }
 }
-
-export default AddReply

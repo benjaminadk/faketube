@@ -35,6 +35,13 @@ class PlaylistTool extends React.Component {
     }
   }
 
+  onBottomClick = () => this.setState({ bottom: true })
+
+  onChange = e => {
+    const { name, value } = e.target
+    this.setState({ [name]: value })
+  }
+
   render() {
     const {
       props: { show, playlists },
@@ -70,7 +77,7 @@ class PlaylistTool extends React.Component {
           {bottom ? (
             <div className="final" />
           ) : (
-            <div className="initial">
+            <div className="initial" onClick={this.onBottomClick}>
               <Add />
               <div>Create new playlist</div>
             </div>

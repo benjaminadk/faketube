@@ -1,48 +1,8 @@
-import styled from 'styled-components'
-import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
+import { COMMENTS_QUERY } from '../../../apollo/comments'
 import TopRow from './TopRow'
 import AddComment from './AddComment'
 import CommentItem from './CommentItem'
-
-const COMMENTS_QUERY = gql`
-  query COMMENTS_QUERY($where: CommentWhereInput, $orderBy: String, $skip: Int, $first: Int) {
-    comments(where: $where, orderBy: $orderBy, skip: $skip, first: $first) {
-      id
-      text
-      reply
-      edited
-      createdAt
-      user {
-        id
-        image
-        name
-      }
-      reviews {
-        id
-        status
-      }
-      replies {
-        id
-        text
-        reply
-        edited
-        createdAt
-        user {
-          id
-          image
-          name
-        }
-        reviews {
-          id
-          status
-        }
-      }
-    }
-  }
-`
-
-const Container = styled.div``
 
 class Comments extends React.Component {
   state = {
@@ -132,7 +92,7 @@ class Comments extends React.Component {
       state: { loading, comments, count, focus, text, buttons }
     } = this
     return (
-      <Container>
+      <div>
         <TopRow count={count} setOrderBy={this.setOrderBy} />
         <AddComment
           loading={loading}
@@ -157,7 +117,7 @@ class Comments extends React.Component {
             />
           ))}
         </div>
-      </Container>
+      </div>
     )
   }
 }

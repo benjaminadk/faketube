@@ -1,15 +1,13 @@
-import { withApollo } from 'react-apollo'
 import { MoreVert } from 'styled-icons/material/MoreVert'
+import { withApollo } from 'react-apollo'
+import { CREATE_COMMENT_REVIEW_MUTATION } from '../../../apollo/createCommentReview'
+import { UPDATE_COMMENT_REVIEW_MUTATION } from '../../../apollo/updateCommentReview'
+import { DELETE_COMMENT_MUTATION } from '../../../apollo/deleteComment'
 import { linkifyComment } from '../../../lib/linkify'
-import CommentStyles from '../../styles/Comment'
-import NameAndDate from './NameAndDate'
-import CommentThumbs from './CommentThumbs'
+import { CommentItemStyles } from './styles/CommentItem'
+import NameDate from './NameDate'
+import CommentReviews from './CommentReviews'
 import CommentMenu from './CommentMenu'
-import {
-  CREATE_COMMENT_REVIEW_MUTATION,
-  UPDATE_COMMENT_REVIEW_MUTATION,
-  DELETE_COMMENT_MUTATION
-} from './CommentItem'
 
 class ReplyItem extends React.Component {
   state = {
@@ -134,7 +132,7 @@ class ReplyItem extends React.Component {
       state: { height, more, expand, popup, x, y, isAuthor, isOwner, review, moreVert }
     } = this
     return (
-      <CommentStyles
+      <CommentItemStyles
         height={height}
         more={more}
         expand={expand}
@@ -145,7 +143,7 @@ class ReplyItem extends React.Component {
       >
         <img src={comment.user.image} />
         <div className="comment-main">
-          <NameAndDate comment={comment} />
+          <NameDate comment={comment} />
           <div
             ref={el => (this.comment = el)}
             className="text-row"
@@ -156,7 +154,7 @@ class ReplyItem extends React.Component {
               {expand ? 'Show less' : 'Read more'}
             </div>
           ) : null}
-          <CommentThumbs
+          <CommentReviews
             reviews={comment.reviews}
             review={review}
             onReviewClick={this.onReviewClick}
@@ -173,7 +171,7 @@ class ReplyItem extends React.Component {
           isOwner={isOwner}
           onDeleteComment={this.onDeleteComment}
         />
-      </CommentStyles>
+      </CommentItemStyles>
     )
   }
 }

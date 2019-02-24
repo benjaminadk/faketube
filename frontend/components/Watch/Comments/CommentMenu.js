@@ -1,6 +1,6 @@
 import Popup from '../../styles/Popup'
 
-const CommentMenu = ({ show, x, y, isAuthor, isOwner, onDeleteComment }) => (
+export default ({ show, x, y, isAuthor, isOwner, onDeleteComment }) => (
   <Popup show={show} x={x} y={y + 40} width={isOwner && !isAuthor ? 17 : ''}>
     {isAuthor ? (
       <React.Fragment>
@@ -19,5 +19,3 @@ const CommentMenu = ({ show, x, y, isAuthor, isOwner, onDeleteComment }) => (
     )}
   </Popup>
 )
-
-export default CommentMenu

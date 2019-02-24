@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
 
-const CommentStyles = styled.div`
+export const CommentItemStyles = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: ${props => props.img}rem 1fr 2.5rem;
@@ -43,5 +43,3 @@ const CommentStyles = styled.div`
     }
   }
 `
-
-export default CommentStyles

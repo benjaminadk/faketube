@@ -1,45 +1,17 @@
 import { MoreVert } from 'styled-icons/material/MoreVert'
-import gql from 'graphql-tag'
-import { withApollo } from 'react-apollo'
 import isEqual from 'lodash.isequal'
+import { withApollo } from 'react-apollo'
+import { CREATE_COMMENT_REVIEW_MUTATION } from '../../../apollo/createCommentReview'
+import { UPDATE_COMMENT_REVIEW_MUTATION } from '../../../apollo/updateCommentReview'
+import { DELETE_COMMENT_MUTATION } from '../../../apollo/deleteComment'
 import { linkifyComment } from '../../../lib/linkify'
-import NameAndDate from './NameAndDate'
-import CommentThumbs from './CommentThumbs'
+import NameDate from './NameDate'
+import CommentReviews from './CommentReviews'
 import CommentMenu from './CommentMenu'
 import AddReply from './AddReply'
 import ViewReplies from './ViewReplies'
 import ReplyItem from './ReplyItem'
-import CommentStyles from '../../styles/Comment'
-
-export const CREATE_COMMENT_REVIEW_MUTATION = gql`
-  mutation CREATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
-    createCommentReview(id: $id, status: $status) {
-      success
-      review {
-        id
-      }
-    }
-  }
-`
-
-export const UPDATE_COMMENT_REVIEW_MUTATION = gql`
-  mutation UPDATE_COMMENT_REVIEW_MUTATION($id: ID!, $status: ReviewStatus) {
-    updateCommentReview(id: $id, status: $status) {
-      success
-      review {
-        id
-      }
-    }
-  }
-`
-
-export const DELETE_COMMENT_MUTATION = gql`
-  mutation DELETE_COMMENT_MUTATION($id: ID!) {
-    deleteComment(id: $id) {
-      success
-    }
-  }
-`
+import { CommentItemStyles } from './styles/CommentItem'
 
 class CommentItem extends React.Component {
   state = {
@@ -191,7 +163,7 @@ class CommentItem extends React.Component {
       }
     } = this
     return (
-      <CommentStyles
+      <CommentItemStyles
         height={height}
         more={more}
         expand={expand}
@@ -202,7 +174,7 @@ class CommentItem extends React.Component {
       >
         <img src={comment.user.image} />
         <div className="comment-main">
-          <NameAndDate comment={comment} />
+          <NameDate comment={comment} />
           <div
             ref={el => (this.comment = el)}
             className="text-row"
@@ -213,7 +185,7 @@ class CommentItem extends React.Component {
               {expand ? 'Show less' : 'Read more'}
             </div>
           ) : null}
-          <CommentThumbs
+          <CommentReviews
             reviews={comment.reviews}
             review={review}
             onReviewClick={this.onReviewClick}
@@ -261,7 +233,7 @@ class CommentItem extends React.Component {
           isOwner={isOwner}
           onDeleteComment={this.onDeleteComment}
         />
-      </CommentStyles>
+      </CommentItemStyles>
     )
   }
 }

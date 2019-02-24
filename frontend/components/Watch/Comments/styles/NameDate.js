@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import formatDistance from '../../../lib/formatDistance'
 
-const Container = styled.div`
+export const NameDateStyles = styled.div`
   display: flex;
   align-items: center;
   font-size: 1.3rem;
@@ -19,14 +18,3 @@ const Container = styled.div`
     }
   }
 `
-
-const NameAndDate = ({ comment }) => (
-  <Container>
-    <div className="user-name">{comment.user.name}</div>
-    <div className="user-created">
-      {formatDistance(comment.createdAt)} ago {comment.edited ? '(edited)' : ''}
-    </div>
-  </Container>
-)
-
-export default NameAndDate

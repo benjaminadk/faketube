@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
-import { ThumbUp } from 'styled-icons/material/ThumbUp'
-import { ThumbDown } from 'styled-icons/material/ThumbDown'
 
-const Container = styled.div`
+export const CommentReviewsStyles = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
@@ -36,17 +34,3 @@ const Container = styled.div`
     cursor: pointer;
   }
 `
-
-const CommentThumbs = ({ reviews, review, onReviewClick, onShowReplyInput }) => {
-  const likes = reviews.reduce((x, r) => x + (r.status === 'LIKE' ? 1 : 0), 0)
-  return (
-    <Container status={review ? review.status : ''}>
-      <ThumbUp className="thumb-up" onClick={() => onReviewClick('LIKE')} />
-      <div className="likes">{likes}</div>
-      <ThumbDown className="thumb-down" onClick={() => onReviewClick('DISLIKE')} />
-      {onShowReplyInput ? <div onClick={onShowReplyInput}>reply</div> : <div />}
-    </Container>
-  )
-}
-
-export default CommentThumbs

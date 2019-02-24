@@ -8,6 +8,7 @@ import { PhotoCamera } from 'styled-icons/material/PhotoCamera'
 import { Search } from 'styled-icons/material/Search'
 import formatFilename from '../../lib/formatFilename'
 import Background from './Background'
+import UnderlinedInput from '../Shared/UnderlinedInput'
 
 const Container = styled.div`
   width: 100%;
@@ -107,31 +108,6 @@ const Tab = styled.div`
   padding: 1.5rem 3rem;
   border-bottom: 3px solid ${props => (props.selected ? props.theme.grey[10] : 'transparent')};
   cursor: pointer;
-`
-
-const SearchInput = styled.div`
-  display: ${props => (props.show ? 'block' : 'none')};
-  input {
-    background: ${props => props.theme.grey[1]};
-    outline: 0;
-    border: 0;
-  }
-  .underline {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 0.1rem;
-    background: ${props => props.theme.black[0]};
-    & > :first-child,
-    & > :last-child {
-      opacity: ${props => (props.focus ? 1 : 0)};
-      width: ${props => (props.focus ? '50%' : '0%')};
-      height: 0.22rem;
-      background: ${props => props.theme.black[2]};
-      transition: width 0.3s;
-    }
-  }
 `
 
 const tabs = ['home', 'videos', 'playlists', 'channels', 'discussion', 'about']
@@ -253,21 +229,17 @@ class Channel extends React.Component {
             ))}
             <div className="search">
               <Search onClick={this.onSearchClick} />
-              <SearchInput show={showSearch} focus={focusSearch}>
-                <input
-                  ref={el => (this.search = el)}
-                  name="search"
-                  placeholder="Search"
-                  value={search}
-                  onChange={this.onChange}
-                  onFocus={this.onSearchFocus}
-                  onBlur={this.onSearchBlur}
-                />
-                <div className="underline">
-                  <div />
-                  <div />
-                </div>
-              </SearchInput>
+              <UnderlinedInput
+                ref={el => (this.search = el)}
+                show={showSearch}
+                focus={focusSearch}
+                name="search"
+                placeholder="Search"
+                value={search}
+                onChange={this.onChange}
+                onFocus={this.onSearchFocus}
+                onBlur={this.onSearchBlur}
+              />
             </div>
           </Tabs>
         </div>
