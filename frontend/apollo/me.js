@@ -7,6 +7,7 @@ export const ME_QUERY = gql`
       name
       email
       image
+      backgroundImage
       verified
       googlePhotoAT
       googlePhotoRT

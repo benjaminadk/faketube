@@ -1,12 +1,23 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
+import { withApollo } from 'react-apollo'
+import { SIGN_S3_MUTATION } from '../../apollo/signS3'
+import { ME_QUERY } from '../../apollo/me'
+import axios from 'axios'
 import { PhotoCamera } from 'styled-icons/material/PhotoCamera'
 import { Search } from 'styled-icons/material/Search'
+import formatFilename from '../../lib/formatFilename'
+import Background from './Background'
 
 const Container = styled.div`
-  .background {
-    height: 35vh;
-    background: pink;
+  width: 100%;
+  display: flex;
+  .spacer {
+    width: ${props => (props.drawer ? '24rem' : 0)};
+    transition: width 0.25s ease-out;
+  }
+  .content {
+    width: 100%;
   }
   .user-row {
     display: flex;
@@ -134,6 +145,9 @@ class Channel extends React.Component {
     search: ''
   }
 
+  file1 = React.createRef()
+  file2 = React.createRef()
+
   componentDidMount() {
     const { user, query } = this.props
     if (user.id === query.id) {
@@ -141,7 +155,37 @@ class Channel extends React.Component {
     }
   }
 
-  onUserImageClick = () => this.file2.click()
+  onBackgroundClick = () => this.file1.current.click()
+
+  onUserImageClick = () => this.file2.current.click()
+
+  onImageChange = async (e, updateUser, background) => {
+    const { client, user } = this.props
+    const file = e.target.files[0]
+    const filename = formatFilename('user', user.id, 'images', file.name)
+    const filetype = file.type
+    const res1 = await client.mutate({
+      mutation: SIGN_S3_MUTATION,
+      variables: { filename, filetype }
+    })
+    const { success: success1, requestURL, fileURL } = res1.data.signS3
+    if (!success1) {
+      return // error getting signed url
+    }
+    await axios({
+      method: 'PUT',
+      url: requestURL,
+      headers: {
+        'Content-Type': filetype
+      },
+      data: file
+    })
+    const data = background ? { backgroundImage: fileURL } : { image: fileURL }
+    await updateUser({
+      variables: { id: user.id, data },
+      refetchQueries: [{ query: ME_QUERY }]
+    })
+  }
 
   onUserImageChange = async e => {}
 
@@ -159,68 +203,77 @@ class Channel extends React.Component {
 
   render() {
     const {
-      props: { user },
+      props: { user, drawer },
       state: { asOwner, tab, showSearch, focusSearch, search }
     } = this
     return (
-      <Container>
-        <div className="background" />
-        <div className="user-row">
-          <div className="user-left">
-            <div className="user-image">
-              <img src={user.image} />
-              <input
-                ref={el => (this.file2 = el)}
-                type="file"
-                accept="image/*"
-                multiple={false}
-                onChange={this.onUserImageChange}
-              />
-              <div className="overlay">
-                <PhotoCamera size={25} />
+      <Container drawer={drawer}>
+        <div className="spacer" />
+        <div className="content">
+          <Background
+            inputRef={this.file1}
+            image={user.backgroundImage}
+            onClick={this.onBackgroundClick}
+            onChange={this.onImageChange}
+          />
+          <div className="user-row">
+            <div className="user-left">
+              <div className="user-image">
+                <img src={user.image} />
+                <input
+                  ref={el => (this.file2 = el)}
+                  type="file"
+                  accept="image/*"
+                  multiple={false}
+                  onChange={this.onUserImageChange}
+                />
+                <div className="overlay">
+                  <PhotoCamera size={25} />
+                </div>
+              </div>
+              <div className="user-subs">
+                <div>{user.name}</div>
+                <div>124 subscribers</div>
               </div>
             </div>
-            <div className="user-subs">
-              <div>{user.name}</div>
-              <div>124 subscribers</div>
-            </div>
+            {asOwner ? (
+              <div className="user-right">
+                <button>customize channel</button>
+                <button>creator studio</button>
+              </div>
+            ) : (
+              <div />
+            )}
           </div>
-          {asOwner ? (
-            <div className="user-right">
-              <button>customize channel</button>
-              <button>creator studio</button>
+          <Tabs>
+            {tabs.map((t, i) => (
+              <Tab key={t} selected={tab === i} onClick={() => this.onTabClick(i)}>
+                {t}
+              </Tab>
+            ))}
+            <div className="search">
+              <Search onClick={this.onSearchClick} />
+              <SearchInput show={showSearch} focus={focusSearch}>
+                <input
+                  ref={el => (this.search = el)}
+                  name="search"
+                  placeholder="Search"
+                  value={search}
+                  onChange={this.onChange}
+                  onFocus={this.onSearchFocus}
+                  onBlur={this.onSearchBlur}
+                />
+                <div className="underline">
+                  <div />
+                  <div />
+                </div>
+              </SearchInput>
             </div>
-          ) : (
-            <div />
-          )}
+          </Tabs>
         </div>
-        <Tabs>
-          {tabs.map((t, i) => (
-            <Tab key={t} selected={tab === i} onClick={() => this.onTabClick(i)}>
-              {t}
-            </Tab>
-          ))}
-          <div className="search">
-            <Search onClick={this.onSearchClick} />
-            <SearchInput show={showSearch} focus={focusSearch}>
-              <input
-                ref={el => (this.search = el)}
-                name="search"
-                value={search}
-                onChange={this.onChange}
-                onFocus={this.onSearchFocus}
-                onBlur={this.onSearchBlur}
-              />
-              <div className="underline">
-                <div />
-                <div />
-              </div>
-            </SearchInput>
-          </div>
-        </Tabs>
       </Container>
     )
   }
 }
 
-export default Channel
+export default withApollo(Channel)

@@ -39,6 +39,7 @@ const Container = styled.div`
     grid-gap: 1rem;
     background: ${props => props.theme.grey[1]};
     padding: 2rem;
+    cursor: pointer;
     img {
       width: 4rem;
       height: 4rem;
@@ -93,14 +94,6 @@ const BottomMenuItem = styled(MenuItem)`
   }
 `
 
-const menu1 = [
-  { text: 'My channel', icon: <AccountBox />, arrow: false },
-  { text: 'Paid memberships', icon: <MonetizationOn />, arrow: false },
-  { text: 'Creator Studio', icon: <Settings />, arrow: false },
-  { text: 'Switch account', icon: <AccountBox />, arrow: true },
-  { text: 'Sign out', icon: <ExitToApp />, arrow: false }
-]
-
 const menu2 = [
   { text: 'Dark theme: Off', icon: <Brightness4 />, arrow: true },
   { text: 'Language: English', icon: <Translate />, arrow: true },
@@ -150,6 +143,18 @@ class UserMenu extends React.Component {
     const {
       props: { show, user }
     } = this
+    const menu1 = [
+      {
+        text: 'My channel',
+        icon: <AccountBox />,
+        arrow: false,
+        onClick: () => this.onNavigate({ pathname: '/channel', query: { id: user.id } })
+      },
+      { text: 'Paid memberships', icon: <MonetizationOn />, arrow: false },
+      { text: 'Creator Studio', icon: <Settings />, arrow: false },
+      { text: 'Switch account', icon: <AccountBox />, arrow: true },
+      { text: 'Sign out', icon: <ExitToApp />, arrow: false }
+    ]
     return (
       <Container show={show}>
         <div
@@ -189,7 +194,7 @@ class UserMenu extends React.Component {
               )
             } else {
               return (
-                <MenuItem key={m.text}>
+                <MenuItem key={m.text} onClick={m.onClick}>
                   {m.icon}
                   <div className="menu-text">{m.text}</div>
                   {m.arrow ? <KeyboardArrowRight /> : <div />}

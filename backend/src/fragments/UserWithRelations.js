@@ -4,6 +4,7 @@ module.exports = `
     name
     email
     image
+    backgroundImage
     verified
     googlePhotoAT
     googlePhotoRT

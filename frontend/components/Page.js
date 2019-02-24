@@ -106,7 +106,11 @@ export default class Page extends React.Component {
     }
   }
 
-  openDrawer = () => this.setState({ drawer: true, backdrop: true })
+  openDrawer = () => {
+    const re = /channel/
+    const backdrop = !re.test(this.props.pathname)
+    this.setState({ drawer: true, backdrop })
+  }
 
   closeDrawer = () => this.setState({ drawer: false, backdrop: false })
 
