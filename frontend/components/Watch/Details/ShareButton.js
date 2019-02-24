@@ -2,16 +2,16 @@ import styled from 'styled-components'
 import { Reply } from 'styled-icons/material/Reply'
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: ${props => props.theme.grey[8]};
   padding-bottom: 2rem;
   margin-right: 2rem;
   svg {
     width: 2rem;
     height: 2rem;
-    color: inherit;
+    color: ${props => props.theme.grey[8]};
     margin-right: 1rem;
   }
   svg.reply {
@@ -21,6 +21,7 @@ export const Container = styled.div`
     text-transform: uppercase;
     font-family: 'Roboto Bold';
     font-size: 1.3rem;
+    color: ${props => props.theme.grey[8]};
   }
 `
 

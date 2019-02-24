@@ -12,7 +12,7 @@ const Container = styled.div`
   padding-top: 3rem;
   padding-bottom: 3rem;
   background: ${props => props.theme.white};
-  .left {
+  .watch-left {
     justify-self: center;
     max-width: 875px;
   }
@@ -40,11 +40,11 @@ class Watch extends React.Component {
     } = this
     return (
       <Query query={VIDEO_QUERY} variables={{ id: query.id }}>
-        {({ data, loading, error }) => {
+        {({ data, loading }) => {
           if (loading) return null
           return (
             <Container>
-              <div className="left">
+              <div className="watch-left">
                 <Player
                   video={data.video}
                   nextVideo={nextVideo}

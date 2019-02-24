@@ -56,6 +56,7 @@ const Controls = ({
   onVolumeClick,
   onVolumeChange,
   onPlayPauseClick,
+  onNextVideoClick,
   onHideSettings,
   onShowSettings,
   onSpeedChange,
@@ -77,7 +78,7 @@ const Controls = ({
     <div className="controls-bottom">
       <div onMouseLeave={onHideVolume}>
         <PlayButton playing={playing} onClick={onPlayPauseClick} />
-        <SkipButton />
+        <SkipButton onClick={onNextVideoClick} />
         <VolumeButton
           muted={muted}
           volume={volume}

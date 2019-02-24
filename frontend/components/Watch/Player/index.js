@@ -2,11 +2,11 @@ import styled from 'styled-components'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import Router from 'next/router'
-import Controls from './Controls'
+import Controls from '../Controls'
 import OverlayIcon from './OverlayIcon'
 import Overlay from './Overlay'
-import { VIDEO_QUERY } from '../../apollo/video'
-import { ME_QUERY } from '../../apollo/me'
+import { VIDEO_QUERY } from '../../../apollo/video'
+import { ME_QUERY } from '../../../apollo/me'
 
 const CREATE_VIEW_MUTATION = gql`
   mutation CREATE_VIEW_MUTATION($id: ID!) {
@@ -159,6 +159,7 @@ class Player extends React.Component {
   onTimeUpdate = () => {
     this.setState({
       time: Math.ceil(this.video.current.currentTime)
+      // causes error when new video loads
       // buffered: Math.ceil((this.video.current.buffered.end(0) / this.props.video.duration) * 100)
     })
   }
@@ -193,6 +194,13 @@ class Player extends React.Component {
       this.video.current.play()
     }
     this.setState(({ playing }) => ({ playing: !playing, intermission: false }))
+  }
+
+  onNextVideoClick = () => {
+    const { nextVideo } = this.props
+    if (nextVideo) {
+      Router.push({ pathname: '/watch', query: { id: nextVideo.id } })
+    }
   }
 
   onVolumeClick = () => {
@@ -259,7 +267,7 @@ class Player extends React.Component {
         <Video
           ref={this.video}
           src={video.videoURL}
-          autoPlay={autoplay}
+          autoPlay={!autoplay}
           muted={muted}
           onTimeUpdate={this.onTimeUpdate}
           onClick={this.onPlayPauseClick}
@@ -281,6 +289,7 @@ class Player extends React.Component {
           onTimeSlideStart={this.onTimeSlideStart}
           onTimeSlideEnd={this.onTimeSlideEnd}
           onPlayPauseClick={this.onPlayPauseClick}
+          onNextVideoClick={this.onNextVideoClick}
           onVolumeClick={this.onVolumeClick}
           onVolumeChange={this.onVolumeChange}
           onHideVolume={this.onHideVolume}

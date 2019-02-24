@@ -1,9 +1,11 @@
 import { Container } from './ShareButton'
 import { PlaylistAdd } from 'styled-icons/material/PlaylistAdd'
+import PlaylistTool from '../../PlaylistTool'
 
-export default ({ onClick }) => (
+export default ({ videoID, playlists, playlistTool, onClick }) => (
   <Container>
-    <PlaylistAdd />
-    <div>save</div>
+    <PlaylistTool show={playlistTool} videoID={videoID} playlists={playlists} />
+    <PlaylistAdd onClick={onClick} />
+    <div onClick={onClick}>save</div>
   </Container>
 )
