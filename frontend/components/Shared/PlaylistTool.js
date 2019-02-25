@@ -4,12 +4,12 @@ import { CheckBox } from 'styled-icons/material/CheckBox'
 import { CheckBoxOutlineBlank } from 'styled-icons/material/CheckBoxOutlineBlank'
 import { Public } from 'styled-icons/material/Public'
 import { Lock } from 'styled-icons/material/Lock'
-import { CREATE_PLAYLIST_MUTATION } from '../apollo/createPlaylist'
-import { TOGGLE_PLAYLIST_MUTATION } from '../apollo/togglePlaylist'
-import { ME_QUERY } from '../apollo/me'
-import sortByDate from '../lib/sortByDate'
+import { CREATE_PLAYLIST_MUTATION } from '../../apollo/createPlaylist'
+import { TOGGLE_PLAYLIST_MUTATION } from '../../apollo/togglePlaylist'
+import { ME_QUERY } from '../../apollo/me'
+import sortByDate from '../../lib/sortByDate'
 import { PlaylistStyles, ListItem } from './styles/PlaylistTool'
-import UnderlinedInput from './Shared/UnderlinedInput'
+import UnderlinedInput from './UnderlinedInput'
 
 class PlaylistTool extends React.Component {
   state = {
@@ -17,6 +17,10 @@ class PlaylistTool extends React.Component {
     bottom: false,
     create: '',
     focus: false
+  }
+
+  componentDidMount() {
+    this.setChecked()
   }
 
   componentDidUpdate(prevProps) {
@@ -30,6 +34,22 @@ class PlaylistTool extends React.Component {
         checked: [0, ...checked.map(c => c + 1)]
       })
     }
+
+    if (prevProps.videoID !== this.props.videoID) {
+      this.setChecked()
+    }
+  }
+
+  setChecked = () => {
+    const {
+      props: { playlists, videoID }
+    } = this
+    const checked = sortByDate(playlists).map((p, i) => {
+      if (p.videos.find(v => v.id === videoID)) {
+        return i
+      }
+    })
+    this.setState({ checked })
   }
 
   onCheckClick = async (i, togglePlaylist) => {
@@ -58,6 +78,7 @@ class PlaylistTool extends React.Component {
       props: { videoID },
       state: { create }
     } = this
+    if (!create) return // error create is required
     const res = await createPlaylist({
       variables: { id: videoID, data: { name: create } },
       refetchQueries: [{ query: ME_QUERY }]

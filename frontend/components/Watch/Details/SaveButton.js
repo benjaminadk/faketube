@@ -1,6 +1,6 @@
 import { Container } from './ShareButton'
 import { PlaylistAdd } from 'styled-icons/material/PlaylistAdd'
-import PlaylistTool from '../../PlaylistTool'
+import PlaylistTool from '../../Shared/PlaylistTool'
 
 export default ({ videoID, playlists, playlistTool, onClick }) => (
   <Container>

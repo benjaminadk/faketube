@@ -19,6 +19,9 @@ export const ME_QUERY = gql`
         description
         isPublic
         createdAt
+        videos {
+          id
+        }
       }
       views {
         id

@@ -16,6 +16,8 @@ export const PlaylistStyles = styled.div`
     border-bottom: 1px solid ${props => props.theme.grey[5]};
   }
   .main {
+    max-height: 40rem;
+    overflow-y: auto;
     border-bottom: 1px solid ${props => props.theme.grey[5]};
   }
   .bottom {
@@ -35,6 +37,9 @@ export const PlaylistStyles = styled.div`
         margin-bottom: 2rem;
         & > :first-child {
           font-size: 1.2rem;
+        }
+        input {
+          width: 100%;
         }
         & > :last-child {
           font-size: 1.2rem;

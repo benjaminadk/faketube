@@ -16,6 +16,9 @@ module.exports = `
       description
       isPublic
       createdAt
+      videos {
+        id
+      }
     }
     views {
       id
