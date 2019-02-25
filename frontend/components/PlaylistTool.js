@@ -4,14 +4,32 @@ import { CheckBox } from 'styled-icons/material/CheckBox'
 import { CheckBoxOutlineBlank } from 'styled-icons/material/CheckBoxOutlineBlank'
 import { Public } from 'styled-icons/material/Public'
 import { Lock } from 'styled-icons/material/Lock'
+import { CREATE_PLAYLIST_MUTATION } from '../apollo/createPlaylist'
 import { TOGGLE_PLAYLIST_MUTATION } from '../apollo/togglePlaylist'
 import { ME_QUERY } from '../apollo/me'
+import sortByDate from '../lib/sortByDate'
 import { PlaylistStyles, ListItem } from './styles/PlaylistTool'
+import UnderlinedInput from './Shared/UnderlinedInput'
 
 class PlaylistTool extends React.Component {
   state = {
     checked: [],
-    bottom: false
+    bottom: false,
+    create: '',
+    focus: false
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.show && !this.props.show) {
+      this.setState({ bottom: false, create: '', focus: false })
+    }
+
+    if (prevProps.playlists.length !== this.props.playlists.length) {
+      const { checked } = this.state
+      this.setState({
+        checked: [0, ...checked.map(c => c + 1)]
+      })
+    }
   }
 
   onCheckClick = async (i, togglePlaylist) => {
@@ -35,23 +53,48 @@ class PlaylistTool extends React.Component {
     }
   }
 
-  onBottomClick = () => this.setState({ bottom: true })
+  onCreatePlaylist = async createPlaylist => {
+    const {
+      props: { videoID },
+      state: { create }
+    } = this
+    const res = await createPlaylist({
+      variables: { id: videoID, data: { name: create } },
+      refetchQueries: [{ query: ME_QUERY }]
+    })
+    const { success } = res.data.createPlaylist
+    if (!success) {
+      return // error creating playlist
+    }
+    this.setState({ create: '' })
+  }
+
+  onBottomClick = () => {
+    this.setState({ bottom: true })
+    this.onFocus()
+  }
 
   onChange = e => {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
 
+  onFocus = () => {
+    this.setState({ focus: true }, () => this.create.focus())
+  }
+
+  onBlur = () => this.setState({ focus: false })
+
   render() {
     const {
       props: { show, playlists },
-      state: { checked, bottom }
+      state: { checked, bottom, create, focus }
     } = this
     return (
       <PlaylistStyles show={show}>
         <div className="top">Save to...</div>
         <div className="main">
-          {playlists.map((p, i) => {
+          {sortByDate(playlists).map((p, i) => {
             return (
               <Mutation key={p.id} mutation={TOGGLE_PLAYLIST_MUTATION}>
                 {(togglePlaylist, { loading }) => (
@@ -75,7 +118,35 @@ class PlaylistTool extends React.Component {
         </div>
         <div className="bottom">
           {bottom ? (
-            <div className="final" />
+            <div className="final">
+              <div className="create-input">
+                <div>Name</div>
+                <UnderlinedInput
+                  ref={el => (this.create = el)}
+                  show={true}
+                  focus={focus}
+                  name="create"
+                  placeholder="Enter playlist name..."
+                  maxLength={150}
+                  value={create}
+                  background="white"
+                  onChange={this.onChange}
+                  onFocus={this.onFocus}
+                  onBlur={this.onBlur}
+                />
+                <div>{create.length}/150</div>
+              </div>
+              <Mutation mutation={CREATE_PLAYLIST_MUTATION}>
+                {createPlaylist => (
+                  <div
+                    className="create-button"
+                    onClick={() => this.onCreatePlaylist(createPlaylist)}
+                  >
+                    create
+                  </div>
+                )}
+              </Mutation>
+            </div>
           ) : (
             <div className="initial" onClick={this.onBottomClick}>
               <Add />

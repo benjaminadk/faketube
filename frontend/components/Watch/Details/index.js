@@ -17,9 +17,7 @@ class Details extends React.Component {
 
   onHideShareModal = () => this.setState({ shareModal: false })
 
-  onShowPlaylistTool = () => this.setState({ playlistTool: true })
-
-  onHidePlaylistTool = () => this.setState({ playlistTool: false })
+  togglePlaylistTool = () => this.setState(({ playlistTool }) => ({ playlistTool: !playlistTool }))
 
   render() {
     const {
@@ -40,7 +38,7 @@ class Details extends React.Component {
               videoID={video.id}
               playlists={user.playlists}
               playlistTool={playlistTool}
-              onClick={this.onShowPlaylistTool}
+              onClick={this.togglePlaylistTool}
             />
             <MoreHoriz className="more-horiz" />
           </div>

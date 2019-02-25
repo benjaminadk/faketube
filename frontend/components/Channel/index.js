@@ -236,6 +236,7 @@ class Channel extends React.Component {
                 name="search"
                 placeholder="Search"
                 value={search}
+                background="grey"
                 onChange={this.onChange}
                 onFocus={this.onSearchFocus}
                 onBlur={this.onSearchBlur}

@@ -6,6 +6,7 @@ export const PlaylistStyles = styled.div`
   bottom: 2.5rem;
   left: 7rem;
   z-index: 3;
+  display: ${props => (props.show ? 'block' : 'none')};
   width: 30rem;
   background: ${props => props.theme.white};
   color: ${props => props.theme.black[0]};
@@ -27,6 +28,26 @@ export const PlaylistStyles = styled.div`
         width: 2.5rem;
         height: 2.5rem;
         color: ${props => props.theme.grey[5]};
+      }
+    }
+    .final {
+      .create-input {
+        margin-bottom: 2rem;
+        & > :first-child {
+          font-size: 1.2rem;
+        }
+        & > :last-child {
+          font-size: 1.2rem;
+          text-align: right;
+          padding-top: 0.35rem;
+        }
+      }
+      .create-button {
+        text-align: right;
+        text-transform: uppercase;
+        color: ${props => darken(0.2, props.theme.secondary)};
+        font-family: 'Roboto Bold';
+        font-size: 1.3rem;
       }
     }
   }

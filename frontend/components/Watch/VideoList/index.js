@@ -1,38 +1,8 @@
-import styled from 'styled-components'
 import { withApollo } from 'react-apollo'
 import { VIDEOS_QUERY } from '../../../apollo/videos'
-import VideoThumb from '../../VideoThumb'
-import Switch from '../../Switch'
-
-const Container = styled.div`
-  max-width: 400px;
-  .up-next {
-    margin-bottom: 1rem;
-    .up-next-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      & > :first-child {
-        font-size: 1.6rem;
-      }
-      .up-next-switch {
-        display: flex;
-        align-items: center;
-        & > :first-child {
-          font-family: 'Roboto Bold';
-          font-size: 1.3rem;
-          text-transform: uppercase;
-          color: ${props => props.theme.grey[8]};
-          margin-right: 1rem;
-        }
-      }
-    }
-  }
-  .video-list {
-    padding-top: 1.5rem;
-    border-top: 1px solid ${props => props.theme.grey[3]};
-  }
-`
+import VideoThumb from '../../Shared/VideoThumb'
+import Switch from '../../Shared/Switch'
+import { VideoListStyles } from './styles/VideoList'
 
 class VideoList extends React.Component {
   state = {
@@ -62,14 +32,22 @@ class VideoList extends React.Component {
       variables: { where: { isPublic: true, isPublished: true }, first }
     })
 
-    const rankedVideos = res.data.videos
-      .filter(v => v.id !== video.id)
+    const rankedVideos = this.rankVideos(res.data.videos, video, lastVideo)
+    const nextVideo = rankedVideos.shift()
+
+    this.props.setNextVideo(nextVideo)
+    await this.setState({ loading: false, videos: rankedVideos, lastVideo: video })
+  }
+
+  rankVideos = (videos, currentVideo, prevVideo) => {
+    return videos
+      .filter(v => v.id !== currentVideo.id)
       .map((v, i) => {
         let pts = 0
-        if (video.category === v.category) pts += 2
-        if (video.user.id === v.user.id) pts += 1
+        if (currentVideo.category === v.category) pts += 2
+        if (currentVideo.user.id === v.user.id) pts += 1
         v.tags.forEach(t => {
-          if (video.tags.includes(t)) pts += 3
+          if (currentVideo.tags.includes(t)) pts += 3
         })
         pts += v.reviews
           ? v.reviews.reduce(
@@ -78,7 +56,7 @@ class VideoList extends React.Component {
             )
           : 0
         pts += v.views.length
-        if (lastVideo && lastVideo.id === v.id) pts = 0
+        if (prevVideo && prevVideo.id === v.id) pts = 0
         v.points = pts
         return v
       })
@@ -91,11 +69,6 @@ class VideoList extends React.Component {
           else return 0
         }
       })
-
-    const nextVideo = rankedVideos.shift()
-
-    this.props.setNextVideo(nextVideo)
-    await this.setState({ loading: false, videos: rankedVideos, lastVideo: video })
   }
 
   render() {
@@ -107,7 +80,7 @@ class VideoList extends React.Component {
       return null
     } else {
       return (
-        <Container>
+        <VideoListStyles>
           <div className="up-next">
             <div className="up-next-top">
               <div>Up next</div>
@@ -123,7 +96,7 @@ class VideoList extends React.Component {
               <VideoThumb key={v.id} video={v} portrait={false} width={16.8} height={9.4} />
             ))}
           </div>
-        </Container>
+        </VideoListStyles>
       )
     }
   }

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const Container = styled.div`
+const ToastStyles = styled.div`
   position: fixed;
   bottom: 2rem;
   left: 2rem;
@@ -13,6 +13,4 @@ const Container = styled.div`
   border-radius: 2px;
 `
 
-const Toast = ({ show, text }) => <Container show={show}>{text}</Container>
-
-export default Toast
+export default ({ show, text }) => <ToastStyles show={show}>{text}</ToastStyles>

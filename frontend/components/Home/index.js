@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
-import VideoThumb from '../VideoThumb'
+import VideoThumb from '../Shared/VideoThumb'
 import { VIDEOS_QUERY } from '../../apollo/videos'
 
 const Container = styled.div`

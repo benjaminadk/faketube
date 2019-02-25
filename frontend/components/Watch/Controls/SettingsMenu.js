@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Check } from 'styled-icons/material/Check'
 import { KeyboardArrowLeft } from 'styled-icons/material/KeyboardArrowLeft'
 import { KeyboardArrowRight } from 'styled-icons/material/KeyboardArrowRight'
-import Switch from '../../Switch'
+import Switch from '../../Shared/Switch'
 
 const Container = styled.div`
   position: absolute;

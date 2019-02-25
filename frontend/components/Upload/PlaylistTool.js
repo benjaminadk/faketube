@@ -9,6 +9,7 @@ import { Subscriptions } from 'styled-icons/material/Subscriptions'
 import { CREATE_PLAYLIST_MUTATION } from '../../apollo/createPlaylist'
 import { TOGGLE_PLAYLIST_MUTATION } from '../../apollo/togglePlaylist'
 import { ME_QUERY } from '../../apollo/me'
+import sortByDate from '../../lib/sortByDate'
 
 const PlaylistButton = styled.div`
   position: relative;
@@ -176,14 +177,6 @@ const Arrow = styled.div`
   }
 `
 
-function sortPlaylist(arr) {
-  return arr.sort((a, b) => {
-    if (b.createdAt > a.createdAt) return 1
-    else if (b.createdAt < a.createdAt) return -1
-    else return 0
-  })
-}
-
 export default class PlaylistTool extends React.Component {
   state = {
     show: false,
@@ -195,14 +188,14 @@ export default class PlaylistTool extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ playlists: sortPlaylist(this.props.playlists) })
+    this.setState({ playlists: sortByDate(this.props.playlists) })
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.playlists.length !== this.props.playlists.length) {
       const { checked } = this.state
       this.setState({
-        playlists: sortPlaylist(this.props.playlists),
+        playlists: sortByDate(this.props.playlists),
         checked: [0, ...checked.map(c => c + 1)]
       })
     }
@@ -256,11 +249,11 @@ export default class PlaylistTool extends React.Component {
       variables: { id: videoID, data: { name: create } },
       refetchQueries: [{ query: ME_QUERY }]
     })
-    const { success, playlist } = res.data.createPlaylist
+    const { success } = res.data.createPlaylist
     if (!success) {
       return // error creating playlist
     }
-    this.setState({ playlist, create: '' })
+    this.setState({ create: '' })
   }
 
   filterPlaylist = p => {
