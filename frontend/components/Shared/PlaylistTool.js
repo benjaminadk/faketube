@@ -14,7 +14,7 @@ import UnderlinedInput from './UnderlinedInput'
 class PlaylistTool extends React.Component {
   state = {
     checked: [],
-    bottom: false,
+    showBottom: false,
     create: '',
     focus: false
   }
@@ -25,7 +25,7 @@ class PlaylistTool extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.show && !this.props.show) {
-      this.setState({ bottom: false, create: '', focus: false })
+      this.setState({ showBottom: false, create: '', focus: false })
     }
 
     if (prevProps.playlists.length !== this.props.playlists.length) {
@@ -91,7 +91,7 @@ class PlaylistTool extends React.Component {
   }
 
   onBottomClick = () => {
-    this.setState({ bottom: true })
+    this.setState({ showBottom: true })
     this.onFocus()
   }
 
@@ -108,11 +108,11 @@ class PlaylistTool extends React.Component {
 
   render() {
     const {
-      props: { show, playlists },
-      state: { checked, bottom, create, focus }
+      props: { show, playlists, bottom, left },
+      state: { checked, showBottom, create, focus }
     } = this
     return (
-      <PlaylistStyles show={show}>
+      <PlaylistStyles show={show} bottom={bottom} left={left}>
         <div className="top">Save to...</div>
         <div className="main">
           {sortByDate(playlists).map((p, i) => {
@@ -138,7 +138,7 @@ class PlaylistTool extends React.Component {
           })}
         </div>
         <div className="bottom">
-          {bottom ? (
+          {showBottom ? (
             <div className="final">
               <div className="create-input">
                 <div>Name</div>

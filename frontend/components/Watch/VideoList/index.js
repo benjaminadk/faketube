@@ -73,7 +73,7 @@ class VideoList extends React.Component {
 
   render() {
     const {
-      props: { autoplay, nextVideo, toggleAutoplay },
+      props: { pageRef, user, autoplay, nextVideo, toggleAutoplay },
       state: { loading, videos }
     } = this
     if (loading) {
@@ -89,11 +89,19 @@ class VideoList extends React.Component {
                 <Switch color="blue" on={autoplay} onClick={toggleAutoplay} />
               </div>
             </div>
-            <VideoThumb video={nextVideo} portrait={false} width={16.8} height={9.4} />
+            <VideoThumb video={nextVideo} user={user} portrait={false} width={16.8} height={9.4} />
           </div>
           <div className="video-list">
             {videos.map((v, i) => (
-              <VideoThumb key={v.id} video={v} portrait={false} width={16.8} height={9.4} />
+              <VideoThumb
+                key={v.id}
+                pageRef={pageRef}
+                user={user}
+                video={v}
+                portrait={false}
+                width={16.8}
+                height={9.4}
+              />
             ))}
           </div>
         </VideoListStyles>

@@ -3,8 +3,8 @@ import { darken } from 'polished'
 
 export const PlaylistStyles = styled.div`
   position: absolute;
-  bottom: 2.5rem;
-  left: 7rem;
+  bottom: ${props => props.bottom}px;
+  left: ${props => props.left}px;
   z-index: 3;
   display: ${props => (props.show ? 'block' : 'none')};
   width: 30rem;

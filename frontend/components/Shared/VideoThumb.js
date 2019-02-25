@@ -7,6 +7,7 @@ import formatDuration from '../../lib/formatDuration'
 import isVideoNew from '../../lib/isVideoNew'
 import Popup from '../styles/Popup'
 import { VideoThumbStyles, ViewProgress } from './styles/VideoThumb'
+import PlaylistTool from './PlaylistTool'
 
 class VideoThumb extends React.Component {
   state = {
@@ -14,7 +15,8 @@ class VideoThumb extends React.Component {
     previewFlag: true,
     x: null,
     y: null,
-    popup: false
+    popup: false,
+    showPlaylist: false
   }
 
   componentDidMount() {
@@ -26,7 +28,11 @@ class VideoThumb extends React.Component {
   }
 
   setPopupCoordinates = () => {
-    const { offsetLeft: x, offsetTop: y } = this.anchor
+    const { pageRef } = this.props
+    let { offsetLeft: x, offsetTop: y } = this.anchor
+    if (pageRef && pageRef.scrollTop) {
+      y -= pageRef.scrollTop
+    }
     this.setState({ x, y })
   }
 
@@ -55,10 +61,12 @@ class VideoThumb extends React.Component {
 
   onVideoClick = id => Router.push({ pathname: '/watch', query: { id } })
 
+  onShowPlaylist = () => this.setState({ showPlaylist: true, popup: false })
+
   render() {
     const {
-      props: { video, view, portrait, width, height },
-      state: { preview, x, y, popup }
+      props: { video, user, view, portrait, width, height },
+      state: { preview, x, y, popup, showPlaylist }
     } = this
     return (
       <VideoThumbStyles
@@ -103,9 +111,16 @@ class VideoThumb extends React.Component {
         <Popup show={popup} x={x - 120} y={y + 22.5}>
           <div>Not interested</div>
           <div>Save to Watch later</div>
-          <div>Save to playlist</div>
+          <div onClick={this.onShowPlaylist}>Save to playlist</div>
           <div>Report</div>
         </Popup>
+        {/* <PlaylistTool
+          show={showPlaylist}
+          videoID={video.id}
+          playlists={user.playlists}
+          bottom={y - 200}
+          left={x - 400}
+        /> */}
       </VideoThumbStyles>
     )
   }

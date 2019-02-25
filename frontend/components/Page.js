@@ -137,11 +137,12 @@ export default class Page extends React.Component {
                   openDrawer={this.openDrawer}
                   openUserMenu={this.openUserMenu}
                 />
-                <Inner>
+                <Inner ref={el => (this.page = el)}>
                   {React.Children.map(this.props.children, child =>
                     React.cloneElement(child, {
                       user: data.me,
-                      drawer
+                      drawer,
+                      pageRef: this.page
                     })
                   )}
                 </Inner>

@@ -35,7 +35,7 @@ class Watch extends React.Component {
 
   render() {
     const {
-      props: { user, query },
+      props: { user, query, pageRef },
       state: { time, autoplay, nextVideo }
     } = this
     return (
@@ -58,6 +58,7 @@ class Watch extends React.Component {
                 <Comments video={data.video} user={user} query={query} />
               </div>
               <VideoList
+                pageRef={pageRef}
                 video={data.video}
                 user={user}
                 query={query}
